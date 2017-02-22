@@ -1,0 +1,12 @@
+.DS_Store
+.project
+*.log
+*.pid
+tmp/
+.settings/**/*
+.env
+.bundle/
+.byebug_history
+cpp_so/bins/
+cpp_so/build/
+
