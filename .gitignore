@@ -7,6 +7,5 @@ tmp/
 .env
 .bundle/
 .byebug_history
-cpp_so/bins/
-cpp_so/build/
+
 
