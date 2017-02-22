@@ -4,7 +4,7 @@ require 'ffi'
 module FFIFptr
   extend FFI::Library
 
-  ffi_lib "./bins/linux-x64/libfptr.so"
+  ffi_lib "./cpp_so/bins/linux-x64/libfptr.so"
 
   attach_function(:CreateFptrInterface, [:int], :pointer)
   attach_function(:ReleaseFptrInterface, [:pointer], :int)
@@ -13,7 +13,7 @@ end
 module FFIKkm
   extend FFI::Library
 
-  ffi_lib "./bins/linux-x64/libKkm.so"
+  ffi_lib "./cpp_so/build/libkkm_interface.so"
   enum :Alignment, [:AlignmentLeft, 0,
               :AlignmentCenter,
               :AlignmentRight

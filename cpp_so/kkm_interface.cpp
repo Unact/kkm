@@ -9,11 +9,10 @@
 #include "dto_errors.h"
 #include "dto_const.h"
 
-#include "fptrexample.h"
+#include "kkm_interface.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #  include <QTextCodec>
-
 static class TrInit
 {
 public:
