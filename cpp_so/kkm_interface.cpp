@@ -140,22 +140,6 @@ void closeCheck(TED::Fptr::IFptr *ifptr, int typeClose)
         checkError(ifptr);
 }
 
-void registration(TED::Fptr::IFptr *ifptr, const char *name, double price, double quantity)
-{
-    wchar_t *buff;
-    buff = charToWChar(name);
-    
-    if(ifptr->put_Quantity(quantity) < 0)
-        checkError(ifptr);
-    if(ifptr->put_Price(price) < 0)
-        checkError(ifptr);
-    if(ifptr->put_TextWrap(TED::Fptr::TextWrapWord) < 0)
-        checkError(ifptr);
-    if(ifptr->put_Name(buff) < 0)
-        checkError(ifptr);
-    if(ifptr->Registration() < 0)
-        checkError(ifptr);
-}
 
 void registrationFZ54(TED::Fptr::IFptr *ifptr, const char *name, double price,
                       double quantity, 
@@ -176,22 +160,6 @@ void registrationFZ54(TED::Fptr::IFptr *ifptr, const char *name, double price,
         checkError(ifptr);
     if(ifptr->Registration() < 0)
         checkError(ifptr);
-}
-
-void payment(TED::Fptr::IFptr *ifptr, double sum, int type)
-{
-    if(ifptr->put_Summ(sum) < 0)
-        checkError(ifptr);
-    if(ifptr->put_TypeClose(type) < 0)
-        checkError(ifptr);
-    if(ifptr->Payment() < 0)
-        checkError(ifptr);
-    double remainder, change;
-    ifptr->get_Remainder(&remainder);
-    ifptr->get_Change(&change);
-    qDebug() << qPrintable(QObject::trUtf8("Remainder: %1, Change: %2")
-                               .arg(remainder)
-                               .arg(change));
 }
 
 void reportZ(TED::Fptr::IFptr *ifptr)
@@ -330,4 +298,202 @@ int GetStatus(TED::Fptr::IFptr *ifptr)
 int CancelCheck(TED::Fptr::IFptr *ifptr)
 {
   return ifptr->CancelCheck();
+}
+
+int get_ResultCode(TED::Fptr::IFptr *ifptr, int *resultCode){
+  return ifptr->get_ResultCode(resultCode);
+}
+
+int get_ResultDescription(TED::Fptr::IFptr *ifptr, char *bfr, int bfrSize){
+  QVector<wchar_t> v(bfrSize);
+  int size = ifptr->get_ResultDescription(&v[0], v.size());
+  QString settings = QString::fromWCharArray(&v[0], v.size());
+  QByteArray ba = settings.toLocal8Bit();
+  const char *c_str2 = ba.data();
+  strcpy(bfr, c_str2);  
+  return size;
+}
+
+int get_BadParamDescription(TED::Fptr::IFptr *ifptr, char *bfr, int bfrSize){
+  QVector<wchar_t> v(bfrSize);
+  int size = ifptr->get_BadParamDescription(&v[0], v.size());
+  QString settings = QString::fromWCharArray(&v[0], v.size());
+  QByteArray ba = settings.toLocal8Bit();
+  const char *c_str2 = ba.data();
+  strcpy(bfr, c_str2);
+  return size;
+}
+
+int put_Caption(TED::Fptr::IFptr *ifptr, const char *caption){
+  wchar_t *buff;
+  buff = charToWChar(caption);
+  return ifptr->put_Caption(buff);
+}
+
+int put_TextWrap(TED::Fptr::IFptr *ifptr, int textWrap){
+  return ifptr->put_TextWrap(textWrap);
+}
+
+int put_Alignment(TED::Fptr::IFptr *ifptr, int alignment){
+  return ifptr->put_Alignment(alignment);
+}
+
+int PrintString(TED::Fptr::IFptr *ifptr){
+  return ifptr->PrintString();
+}
+
+int put_Mode(TED::Fptr::IFptr *ifptr, int mode){
+  return ifptr->put_Mode(mode);
+}
+
+int SetMode(TED::Fptr::IFptr *ifptr){
+  return ifptr->SetMode();
+}
+
+int put_CheckType(TED::Fptr::IFptr *ifptr, int type){
+  return ifptr->put_CheckType(type);
+}
+
+int OpenCheck(TED::Fptr::IFptr *ifptr){
+  return ifptr->OpenCheck();
+}
+
+int put_TypeClose(TED::Fptr::IFptr *ifptr, int typeClose){
+  return ifptr->put_TypeClose(typeClose);
+}
+
+int CloseCheck(TED::Fptr::IFptr *ifptr){
+  return ifptr->CloseCheck();
+}
+
+int put_TaxNumber(TED::Fptr::IFptr *ifptr, int taxNumber){
+  return ifptr->put_TaxNumber(taxNumber);
+}
+
+int put_Quantity(TED::Fptr::IFptr *ifptr, double quantity){
+  return ifptr->put_Quantity(quantity);
+}
+
+int put_Price(TED::Fptr::IFptr *ifptr, double price){
+  return ifptr->put_Price(price);
+}
+  
+int put_Name(TED::Fptr::IFptr *ifptr, const char *name){
+  wchar_t *buff;
+  buff = charToWChar(name);
+  return ifptr->put_Name(buff);
+}
+
+int Registration(TED::Fptr::IFptr *ifptr){
+  return ifptr->Registration();
+}
+
+int put_Summ(TED::Fptr::IFptr *ifptr, double sum){
+  return ifptr->put_Summ(sum);
+}
+
+int Payment(TED::Fptr::IFptr *ifptr){
+  return ifptr->Payment();
+}
+
+int get_Remainder(TED::Fptr::IFptr *ifptr, double *remainder){
+  return ifptr->get_Remainder(remainder);
+}
+
+int get_Change(TED::Fptr::IFptr *ifptr, double *change){
+  return ifptr->get_Change(change);
+}
+
+int put_ReportType(TED::Fptr::IFptr *ifptr, int reportType){
+  return ifptr->put_ReportType(reportType);
+}
+
+int Report(TED::Fptr::IFptr *ifptr){
+  return ifptr->Report();
+}
+
+int PrintFooter(TED::Fptr::IFptr *ifptr){
+  return ifptr->PrintFooter();
+}
+
+int put_BarcodeType(TED::Fptr::IFptr *ifptr, int type){
+  return ifptr->put_BarcodeType(type);
+}
+
+int put_Barcode(TED::Fptr::IFptr *ifptr, const char *barcode){
+  wchar_t *buff;
+  buff = charToWChar(barcode);
+  return ifptr->put_Barcode(buff);
+}
+
+int put_Height(TED::Fptr::IFptr *ifptr, int height){
+  return ifptr->put_Height(height);
+}
+
+int put_BarcodeVersion(TED::Fptr::IFptr *ifptr, int version){
+  return ifptr->put_BarcodeVersion(version);
+}
+
+int put_BarcodePrintType(TED::Fptr::IFptr *ifptr, int type){
+  return ifptr->put_BarcodePrintType(type);
+}
+
+int put_PrintBarcodeText(TED::Fptr::IFptr *ifptr, int printBarcodeText){
+  return ifptr->put_PrintBarcodeText(printBarcodeText);
+}
+
+int put_BarcodeControlCode(TED::Fptr::IFptr *ifptr, int code){
+  return ifptr->put_BarcodeControlCode(code);
+}
+
+int put_Scale(TED::Fptr::IFptr *ifptr, double put_Scale){
+  return ifptr->put_Scale(put_Scale);
+}
+
+int put_BarcodeCorrection(TED::Fptr::IFptr *ifptr, int correction){
+  return ifptr->put_BarcodeCorrection(correction);
+}
+
+int put_BarcodeColumns(TED::Fptr::IFptr *ifptr, int columns){
+  return ifptr->put_BarcodeColumns(columns);
+}
+
+int put_BarcodeRows(TED::Fptr::IFptr *ifptr, int rows){
+  return ifptr->put_BarcodeRows(rows);
+}
+
+int put_BarcodeProportions(TED::Fptr::IFptr *ifptr, int proportions){
+  return ifptr->put_BarcodeProportions(proportions);
+}
+
+int put_BarcodeUseProportions(TED::Fptr::IFptr *ifptr, int useProportions){
+  return ifptr->put_BarcodeUseProportions(useProportions);
+}
+
+int put_BarcodePackingMode(TED::Fptr::IFptr *ifptr, int packingMode){
+  return ifptr->put_BarcodePackingMode(packingMode);
+}
+
+int put_BarcodePixelProportions(TED::Fptr::IFptr *ifptr, int pixelProportions){
+  return ifptr->put_BarcodePixelProportions(pixelProportions);
+}
+
+int PrintBarcode(TED::Fptr::IFptr *ifptr){
+  return ifptr->PrintBarcode();
+}
+
+int put_DiscountType(TED::Fptr::IFptr *ifptr, int type){
+  return ifptr->put_DiscountType(type);
+}
+
+int put_Destination(TED::Fptr::IFptr *ifptr, int destination){
+  return ifptr->put_Destination(destination);
+}
+
+int Discount(TED::Fptr::IFptr *ifptr){
+  return ifptr->Discount();
+}
+
+int Charge(TED::Fptr::IFptr *ifptr){
+  return ifptr->Charge();
 }
