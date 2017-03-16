@@ -1,16 +1,9 @@
-# kkm
+# Kkm
 
-Работает только под  linux
+Работает только под Linux.
+Для работы с гемом создан Dockerfile.
+Сборка: `docker build --no-cache -t kkm .`
+Запуск: `docker run -i -t --rm -v "$(pwd)":/app -w /app kkm`
 
-Установка Qt
-```
-sudo apt-get install qt5-default
-```
-Создание so:
-```
-cd ./cpp_so/build
-rm *
-qmake ../kkm_interface.pro
-make
-cd ../..
-```
+
+Для работы с устройством Ккм необходимо создать экземпляр `Kkm::DeviceInterface`

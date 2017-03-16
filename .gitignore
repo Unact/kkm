@@ -2,10 +2,10 @@
 .project
 *.log
 *.pid
+lib/kkm/*.bundle
+lib/kkm/*.so
 tmp/
 .settings/**/*
 .env
 .bundle/
-.byebug_history
-
-
+Makefile
