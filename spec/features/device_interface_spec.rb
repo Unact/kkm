@@ -2,8 +2,13 @@ require 'helpers/spec_helper'
 
 RSpec.describe Kkm::DeviceInterface do
   before :all do
-    device = YAML.load_file(File.open('./spec/device/kkm.yaml'))
-    @test_device_interface = Kkm::DeviceInterface.new device
+    device_settings = YAML.load_file(File.open('./spec/device_settings/kkm.yaml'))
+    @test_device_interface = Kkm::DeviceInterface.new device_settings
+    @test_device_interface.turn_on
+  end
+
+  after :all do
+    @test_device_interface.turn_off
   end
 
   before :each do
@@ -25,10 +30,10 @@ RSpec.describe Kkm::DeviceInterface do
       {:name => 'Test Goods 1', :quantity => 10, :price => 12, :tax => 10},
       {:name => 'Test Goods 2', :quantity => 20, :price => 20, :tax => 18}
     ]
-    payment = {:sum => 520, :type => 1}
+    payment_summ = 520
 
     expect {
-      @test_device_interface.print_goods_check(goods, payment)
+      @test_device_interface.print_goods_check goods, payment_summ
     }.to_not raise_error(Kkm::Errors::PaymentError)
     expect(
       @test_device_interface.get_change

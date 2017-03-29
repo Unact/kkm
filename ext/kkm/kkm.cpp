@@ -1,5 +1,6 @@
 #include "string"
 #include "ruby.h"
+#include <ruby/encoding.h>
 #include "lib/include/ifptr.h"
 #include "lib/include/dto_errors.h"
 #include "lib/include/dto_const.h"
@@ -61,6 +62,8 @@ extern "C" void check_error(VALUE self) {
   char* c_result_error = new char[BUFFER_MAX_SIZE];
   char* c_bad_param_error = new char[BUFFER_MAX_SIZE];
   int error_result;
+  rb_encoding* rb_utf8 = rb_enc_find("UTF-8");
+
 
   ifptr->get_ResultCode(&result_code);
 
@@ -69,16 +72,17 @@ extern "C" void check_error(VALUE self) {
     wchar_to_char(wc_result_error, c_result_error);
 
     if (error_result <= 0) {
-      rb_raise(DeviceDriverError, "Ошибка при получения ошибки выполнения");
+      rb_enc_raise(rb_utf8, DeviceDriverError, "Ошибка при получения ошибки выполнения");
     }
     if (result_code == EC_INVALID_PARAM) {
       error_result = ifptr->get_BadParamDescription(wc_bad_param_error, BUFFER_MAX_SIZE);
       wchar_to_char(wc_bad_param_error, c_bad_param_error);
 
       if (error_result <= 0) {
-        rb_raise(DeviceDriverError, "Ошибка при получения ошибки параметров выполнения");
+        rb_enc_raise(rb_utf8, DeviceDriverError, "Ошибка при получения ошибки параметров выполнения");
       }
-      rb_raise(
+      rb_enc_raise(
+        rb_utf8,
         DeviceDriverError,
         "Ошибка выполнения: %s %s",
         c_result_error,
@@ -86,7 +90,8 @@ extern "C" void check_error(VALUE self) {
       );
     }
 
-    rb_raise(
+    rb_enc_raise(
+      rb_utf8,
       DeviceDriverError,
       "Ошибка выполнения: %s",
       c_result_error
@@ -126,6 +131,36 @@ extern "C" VALUE method_new_document(VALUE self){
   if (get_ifptr(self)->NewDocument() < 0)
     check_error(self);
   return Qnil;
+}
+
+extern "C" VALUE method_fiscalization(VALUE self){
+  if (get_ifptr(self)->Fiscalization() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_put_inn(VALUE self, VALUE rb_string){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  rb_string_to_wchar(rb_string, wc_string);
+
+  if (get_ifptr(self)->put_INN(wc_string) < 0)
+    check_error(self);
+
+  delete[] wc_string;
+  return Qnil;
+}
+
+extern "C" VALUE method_get_inn(VALUE self){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string;
+
+  if (get_ifptr(self)->get_INN(wc_string, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string = wchar_to_rb_string(wc_string);
+
+  delete[] wc_string;
+  return rb_string;
 }
 
 extern "C" VALUE method_put_mode(VALUE self, VALUE number){
@@ -397,8 +432,15 @@ extern "C" VALUE method_get_type_close(VALUE self){
   return rb_number;
 }
 
-extern "C" VALUE method_put_test_mode(VALUE self, VALUE number){
-  if (get_ifptr(self)->put_TypeClose(NUM2INT(number)) < 0)
+extern "C" VALUE method_put_test_mode(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_TypeClose(number) < 0)
     check_error(self);
   return Qnil;
 }
@@ -416,14 +458,39 @@ extern "C" VALUE method_get_test_mode(VALUE self){
   return rb_boolean;
 }
 
+extern "C" VALUE method_get_fiscal(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_Fiscal(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
 extern "C" VALUE method_payment(VALUE self){
   if (get_ifptr(self)->Payment() < 0)
     check_error(self);
   return Qnil;
 }
 
+extern "C" VALUE method_get_status(VALUE self){
+  if (get_ifptr(self)->GetStatus() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_partial_cut(VALUE self){
   if (get_ifptr(self)->PartialCut() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_register(VALUE self){
+  if (get_ifptr(self)->GetRegister() < 0)
     check_error(self);
   return Qnil;
 }
@@ -508,6 +575,32 @@ extern "C" VALUE method_get_caption(VALUE self) {
   return rb_string;
 }
 
+extern "C" VALUE method_put_device_enabled(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_DeviceEnabled(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_device_enabled(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_DeviceEnabled(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
 extern "C" VALUE method_put_device_settings(VALUE self, VALUE rb_string){
   wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
   rb_string_to_wchar(rb_string, wc_string);
@@ -533,24 +626,19 @@ extern "C" VALUE method_get_device_settings(VALUE self) {
 }
 
 // Для работы с C данными
-extern "C" void device_free(TED::Fptr::IFptr *ifptr) {
+extern "C" void free_device_driver(TED::Fptr::IFptr *ifptr) {
   ReleaseFptrInterface(&ifptr);
 }
 
 // Для работы с C данными
-extern "C" VALUE device_alloc(VALUE self) {
-	return Data_Wrap_Struct(self, NULL, device_free, CreateFptrInterface(DTO_IFPTR_VER1));
+extern "C" VALUE alloc_device_driver(VALUE self) {
+	return Data_Wrap_Struct(self, NULL, free_device_driver, CreateFptrInterface(DTO_IFPTR_VER1));
 }
 
 extern "C" VALUE method_initialize(VALUE self, VALUE settings) {
 	TED::Fptr::IFptr *ifptr = get_ifptr(self);
 
   method_put_device_settings(self, settings);
-
-  if (ifptr->put_DeviceEnabled(1) < 0)
-    check_error(self);
-  if(ifptr->GetStatus() < 0)
-    check_error(self);
 
 	return self;
 }
@@ -566,25 +654,31 @@ extern "C" void Init_kkm() {
   DeviceDriver = rb_define_class_under(Kkm, "DeviceDriver", rb_cObject);
   DeviceDriverError = rb_define_class_under(Errors, "DeviceDriverError", rb_eStandardError);
 
-	rb_define_alloc_func(DeviceDriver, device_alloc);
+	rb_define_alloc_func(DeviceDriver, alloc_device_driver);
 	rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
   rb_define_method(DeviceDriver, "beep", (ruby_method*) &method_beep, 0);
   rb_define_method(DeviceDriver, "cancel_check", (ruby_method*) &method_cancel_check, 0);
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
+  rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
   rb_define_method(DeviceDriver, "get_caption", (ruby_method*) &method_get_caption, 0);
   rb_define_method(DeviceDriver, "get_change", (ruby_method*) &method_get_change, 0);
   rb_define_method(DeviceDriver, "get_check_type", (ruby_method*) &method_get_check_type, 0);
   rb_define_method(DeviceDriver, "get_current_mode", (ruby_method*) &method_get_current_mode, 0);
   rb_define_method(DeviceDriver, "get_current_status", (ruby_method*) &method_get_current_status, 0);
+  rb_define_method(DeviceDriver, "get_device_enabled", (ruby_method*) &method_get_device_enabled, 0);
   rb_define_method(DeviceDriver, "get_device_settings", (ruby_method*) &method_get_device_settings, 0);
   rb_define_method(DeviceDriver, "get_discount_type", (ruby_method*) &method_get_discount_type, 0);
-  rb_define_method(DeviceDriver, "get_remainder", (ruby_method*) &method_get_remainder, 0);
+  rb_define_method(DeviceDriver, "get_fiscal", (ruby_method*) &method_get_fiscal, 0);
+  rb_define_method(DeviceDriver, "get_inn", (ruby_method*) &method_get_inn, 0);
   rb_define_method(DeviceDriver, "get_mode", (ruby_method*) &method_get_mode, 0);
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
   rb_define_method(DeviceDriver, "get_price", (ruby_method*) &method_get_price, 0);
   rb_define_method(DeviceDriver, "get_quantity", (ruby_method*) &method_get_quantity, 0);
+  rb_define_method(DeviceDriver, "get_register", (ruby_method*) &method_get_register, 0);
+  rb_define_method(DeviceDriver, "get_remainder", (ruby_method*) &method_get_remainder, 0);
   rb_define_method(DeviceDriver, "get_report_type", (ruby_method*) &method_get_report_type, 0);
+  rb_define_method(DeviceDriver, "get_status", (ruby_method*) &method_get_status, 0);
   rb_define_method(DeviceDriver, "get_summ", (ruby_method*) &method_get_summ, 0);
   rb_define_method(DeviceDriver, "get_tax_number", (ruby_method*) &method_get_tax_number, 0);
   rb_define_method(DeviceDriver, "get_test_mode", (ruby_method*) &method_get_test_mode, 0);
@@ -602,8 +696,10 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_alignment", (ruby_method*) &method_put_alignment, 1);
   rb_define_method(DeviceDriver, "put_caption", (ruby_method*) &method_put_caption, 1);
   rb_define_method(DeviceDriver, "put_check_type", (ruby_method*) &method_put_check_type, 1);
+  rb_define_method(DeviceDriver, "put_device_enabled", (ruby_method*) &method_put_device_enabled, 1);
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
   rb_define_method(DeviceDriver, "put_discount_type", (ruby_method*) &method_put_discount_type, 1);
+  rb_define_method(DeviceDriver, "put_inn", (ruby_method*) &method_put_inn, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
   rb_define_method(DeviceDriver, "put_price", (ruby_method*) &method_put_price, 1);
