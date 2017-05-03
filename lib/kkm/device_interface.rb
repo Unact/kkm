@@ -53,8 +53,11 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
 
   # Передавать товар в формате :quantity, :name, :price, :tax
   # По умолчанию платеж Нал
-  def print_goods_check goods, summ, type = PaymentType::CASH
+  def print_goods_check goods, summ, type = PaymentType::CASH, fiscal_props = []
     open_check_sell
+    fiscal_props.each do |fiscal_prop|
+      setup_fiscal_property fiscal_prop
+    end
     goods.each do |goods_item|
       register_goods goods_item
     end
@@ -71,6 +74,26 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     put_text_wrap wrap
     put_alignment alignment
     print_string
+  end
+
+  # Установить фискальный параметр в ККМ
+  # Передавать параметр в формате :number, :value, :type, :print
+  # По умолчанию :type = FiscalPropertyType::STRING
+  # По умолчанию :print = true
+  def setup_fiscal_property property
+    put_fiscal_property_type property[:type] || FiscalPropertyType::STRING
+    put_fiscal_property_print property.has_key?(:print) ? property[:print] : true
+    put_fiscal_property_number property[:number]
+    put_fiscal_property_value property[:value]
+    write_fiscal_property
+  end
+
+  # Считать фискальный параметр из ККМ
+  def read_kkm_fiscal_property number, type = FiscalPropertyType::STRING
+    put_fiscal_property_number number
+    put_fiscal_property_type type
+    read_fiscal_property
+    get_fiscal_property_value
   end
 
   def turn_on

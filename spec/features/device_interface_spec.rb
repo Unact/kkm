@@ -5,6 +5,18 @@ RSpec.describe Kkm::DeviceInterface do
     device_settings = YAML.load_file(File.open('./spec/device_settings/kkm.yaml'))
     @test_device_interface = Kkm::DeviceInterface.new device_settings
     @test_device_interface.turn_on
+    @test_goods = [
+      {:name => 'Test Goods 1', :quantity => 10, :price => 12, :tax => 10},
+      {:name => 'Test Goods 2', :quantity => 20, :price => 20, :tax => 18}
+    ]
+    @test_fiscal_props = [
+      {
+        :number => Kkm::Constants::FiscalProperty::CASHIER,
+        :value => "Тестовый",
+        :type => Kkm::Constants::FiscalPropertyType::STRING
+      }
+    ]
+    @test_payment_summ = 520
   end
 
   after :all do
@@ -26,14 +38,8 @@ RSpec.describe Kkm::DeviceInterface do
   end
 
   it 'should print correct cheque' do
-    goods = [
-      {:name => 'Test Goods 1', :quantity => 10, :price => 12, :tax => 10},
-      {:name => 'Test Goods 2', :quantity => 20, :price => 20, :tax => 18}
-    ]
-    payment_summ = 520
-
     expect {
-      @test_device_interface.print_goods_check goods, payment_summ
+      @test_device_interface.print_goods_check @test_goods, @test_payment_summ
     }.to_not raise_error(Kkm::Errors::PaymentError)
     expect(
       @test_device_interface.get_change
@@ -47,6 +53,17 @@ RSpec.describe Kkm::DeviceInterface do
     expect(
       @test_device_interface.get_check_type
     ).to eq(Kkm::Constants::ChequeType::CHEQUE_SELL)
+  end
+
+  it 'should print cashier in cheque' do
+    expect {
+      @test_device_interface.print_goods_check(
+        @test_goods,
+        @test_payment_summ,
+        Kkm::Constants::PaymentType::CASH,
+        @test_fiscal_props
+      )
+    }.to_not raise_error(Kkm::Errors::PaymentError)
   end
 
   it 'should set correct mode' do
