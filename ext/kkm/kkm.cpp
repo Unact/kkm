@@ -232,6 +232,44 @@ extern "C" VALUE method_get_check_type(VALUE self){
   return rb_number;
 }
 
+extern "C" VALUE method_put_doc_number(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_DocNumber(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_doc_number(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_DocNumber(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_check_number(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_CheckNumber(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_check_number(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_CheckNumber(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
 extern "C" VALUE method_open_check(VALUE self){
   if (get_ifptr(self)->OpenCheck() < 0)
     check_error(self);
@@ -440,7 +478,7 @@ extern "C" VALUE method_put_test_mode(VALUE self, VALUE rb_boolean){
     number = 0;
   }
 
-  if (get_ifptr(self)->put_TypeClose(number) < 0)
+  if (get_ifptr(self)->put_TestMode(number) < 0)
     check_error(self);
   return Qnil;
 }
@@ -449,7 +487,7 @@ extern "C" VALUE method_get_test_mode(VALUE self){
   int* number = new int;
   VALUE rb_boolean;
 
-  if (get_ifptr(self)->get_TypeClose(number) < 0)
+  if (get_ifptr(self)->get_TestMode(number) < 0)
     check_error(self);
 
   rb_boolean = *number == 1 ? Qtrue : Qfalse;
@@ -493,6 +531,19 @@ extern "C" VALUE method_get_register(VALUE self){
   if (get_ifptr(self)->GetRegister() < 0)
     check_error(self);
   return Qnil;
+}
+
+extern "C" VALUE method_get_has_not_sended_docs(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_HasNotSendedDocs(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
 }
 
 extern "C" VALUE method_full_cut(VALUE self){
@@ -551,6 +602,137 @@ extern "C" VALUE method_get_change(VALUE self){
   return rb_dbl;
 }
 
+extern "C" VALUE method_put_caption_purpose(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_CaptionPurpose(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_caption_purpose(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_CaptionPurpose(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_set_caption(VALUE self){
+  if (get_ifptr(self)->SetCaption() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_current_caption(VALUE self){
+  if (get_ifptr(self)->GetCaption() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_write_fiscal_property(VALUE self){
+  if (get_ifptr(self)->WriteFiscalProperty() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_read_fiscal_property(VALUE self){
+  if (get_ifptr(self)->ReadFiscalProperty() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_put_fiscal_property_number(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_FiscalPropertyNumber(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_fiscal_property_number(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_FiscalPropertyNumber(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_fiscal_property_value(VALUE self, VALUE rb_string){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  rb_string_to_wchar(rb_string, wc_string);
+
+  if (get_ifptr(self)->put_FiscalPropertyValue(wc_string) < 0)
+    check_error(self);
+
+  delete[] wc_string;
+  return Qnil;
+}
+
+extern "C" VALUE method_get_fiscal_property_value(VALUE self) {
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string;
+
+  if (get_ifptr(self)->get_FiscalPropertyValue(wc_string, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string = wchar_to_rb_string(wc_string);
+
+  delete[] wc_string;
+  return rb_string;
+}
+
+extern "C" VALUE method_put_fiscal_property_type(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_FiscalPropertyType(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_fiscal_property_type(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_FiscalPropertyType(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_fiscal_property_print(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FiscalPropertyPrint(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_fiscal_property_print(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FiscalPropertyPrint(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
 extern "C" VALUE method_put_caption(VALUE self, VALUE rb_string){
   wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
   rb_string_to_wchar(rb_string, wc_string);
@@ -573,6 +755,32 @@ extern "C" VALUE method_get_caption(VALUE self) {
 
   delete[] wc_string;
   return rb_string;
+}
+
+extern "C" VALUE method_put_print_check(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_PrintCheck(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_print_check(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_PrintCheck(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
 }
 
 extern "C" VALUE method_put_device_enabled(VALUE self, VALUE rb_boolean){
@@ -661,19 +869,29 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
   rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
+  rb_define_method(DeviceDriver, "get_caption_purpose", (ruby_method*) &method_get_caption_purpose, 0);
   rb_define_method(DeviceDriver, "get_caption", (ruby_method*) &method_get_caption, 0);
   rb_define_method(DeviceDriver, "get_change", (ruby_method*) &method_get_change, 0);
+  rb_define_method(DeviceDriver, "get_check_number", (ruby_method*) &method_get_check_number, 0);
   rb_define_method(DeviceDriver, "get_check_type", (ruby_method*) &method_get_check_type, 0);
   rb_define_method(DeviceDriver, "get_current_mode", (ruby_method*) &method_get_current_mode, 0);
   rb_define_method(DeviceDriver, "get_current_status", (ruby_method*) &method_get_current_status, 0);
+  rb_define_method(DeviceDriver, "get_current_caption", (ruby_method*) &method_get_current_caption, 0);
   rb_define_method(DeviceDriver, "get_device_enabled", (ruby_method*) &method_get_device_enabled, 0);
   rb_define_method(DeviceDriver, "get_device_settings", (ruby_method*) &method_get_device_settings, 0);
+  rb_define_method(DeviceDriver, "get_doc_number", (ruby_method*) &method_get_doc_number, 0);
   rb_define_method(DeviceDriver, "get_discount_type", (ruby_method*) &method_get_discount_type, 0);
   rb_define_method(DeviceDriver, "get_fiscal", (ruby_method*) &method_get_fiscal, 0);
+  rb_define_method(DeviceDriver, "get_fiscal_property_number", (ruby_method*) &method_get_fiscal_property_number, 0);
+  rb_define_method(DeviceDriver, "get_fiscal_property_print", (ruby_method*) &method_get_fiscal_property_print, 0);
+  rb_define_method(DeviceDriver, "get_fiscal_property_type", (ruby_method*) &method_get_fiscal_property_type, 0);
+  rb_define_method(DeviceDriver, "get_fiscal_property_value", (ruby_method*) &method_get_fiscal_property_value, 0);
+  rb_define_method(DeviceDriver, "get_has_not_sended_docs", (ruby_method*) &method_get_has_not_sended_docs, 0);
   rb_define_method(DeviceDriver, "get_inn", (ruby_method*) &method_get_inn, 0);
   rb_define_method(DeviceDriver, "get_mode", (ruby_method*) &method_get_mode, 0);
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
   rb_define_method(DeviceDriver, "get_price", (ruby_method*) &method_get_price, 0);
+  rb_define_method(DeviceDriver, "get_print_check", (ruby_method*) &method_get_print_check, 0);
   rb_define_method(DeviceDriver, "get_quantity", (ruby_method*) &method_get_quantity, 0);
   rb_define_method(DeviceDriver, "get_register", (ruby_method*) &method_get_register, 0);
   rb_define_method(DeviceDriver, "get_remainder", (ruby_method*) &method_get_remainder, 0);
@@ -695,14 +913,22 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "print_string", (ruby_method*) &method_print_string, 0);
   rb_define_method(DeviceDriver, "put_alignment", (ruby_method*) &method_put_alignment, 1);
   rb_define_method(DeviceDriver, "put_caption", (ruby_method*) &method_put_caption, 1);
+  rb_define_method(DeviceDriver, "put_caption_purpose", (ruby_method*) &method_put_caption_purpose, 1);
+  rb_define_method(DeviceDriver, "put_check_number", (ruby_method*) &method_put_check_number, 1);
   rb_define_method(DeviceDriver, "put_check_type", (ruby_method*) &method_put_check_type, 1);
   rb_define_method(DeviceDriver, "put_device_enabled", (ruby_method*) &method_put_device_enabled, 1);
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
+  rb_define_method(DeviceDriver, "put_doc_number", (ruby_method*) &method_put_doc_number, 1);
   rb_define_method(DeviceDriver, "put_discount_type", (ruby_method*) &method_put_discount_type, 1);
+  rb_define_method(DeviceDriver, "put_fiscal_property_number", (ruby_method*) &method_put_fiscal_property_number, 1);
+  rb_define_method(DeviceDriver, "put_fiscal_property_print", (ruby_method*) &method_put_fiscal_property_print, 1);
+  rb_define_method(DeviceDriver, "put_fiscal_property_type", (ruby_method*) &method_put_fiscal_property_type, 1);
+  rb_define_method(DeviceDriver, "put_fiscal_property_value", (ruby_method*) &method_put_fiscal_property_value, 1);
   rb_define_method(DeviceDriver, "put_inn", (ruby_method*) &method_put_inn, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
   rb_define_method(DeviceDriver, "put_price", (ruby_method*) &method_put_price, 1);
+  rb_define_method(DeviceDriver, "put_print_check", (ruby_method*) &method_put_print_check, 1);
   rb_define_method(DeviceDriver, "put_quantity", (ruby_method*) &method_put_quantity, 1);
   rb_define_method(DeviceDriver, "put_report_type", (ruby_method*) &method_put_report_type, 1);
   rb_define_method(DeviceDriver, "put_summ", (ruby_method*) &method_put_summ, 1);
@@ -711,7 +937,10 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_text_wrap", (ruby_method*) &method_put_text_wrap, 1);
   rb_define_method(DeviceDriver, "put_type_close", (ruby_method*) &method_put_type_close, 1);
   rb_define_method(DeviceDriver, "registration", (ruby_method*) &method_registration, 0);
+  rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);
   rb_define_method(DeviceDriver, "sound", (ruby_method*) &method_sound, 0);
   rb_define_method(DeviceDriver, "set_mode", (ruby_method*) &method_set_mode, 0);
+  rb_define_method(DeviceDriver, "set_caption", (ruby_method*) &method_set_caption, 0);
+  rb_define_method(DeviceDriver, "write_fiscal_property", (ruby_method*) &method_write_fiscal_property, 0);
 }
