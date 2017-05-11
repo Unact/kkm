@@ -66,6 +66,19 @@ RSpec.describe Kkm::DeviceInterface do
     }.to_not raise_error(Kkm::Errors::PaymentError)
   end
 
+  it 'should get correct check info' do
+    @test_device_interface.print_goods_check(
+      @test_goods,
+      @test_payment_summ,
+      Kkm::Constants::PaymentType::CASH,
+      @test_fiscal_props
+    )
+    last_check_info = @test_device_interface.last_check_info
+    
+    expect(last_check_info[:sum]).to eq(@test_payment_summ)
+    expect(last_check_info[:datetime].to_date).to eq(Date.today)
+  end
+
   it 'should set correct mode' do
     @test_device_interface.setup_mode Kkm::Constants::Mode::MODE_REPORT_NO_CLEAR
     expect(

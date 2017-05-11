@@ -3,11 +3,11 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
 
   def initialize settings
     if settings.is_a? Hash
-      settings_xml = Builder::XmlMarkup.new(:indent => 2)
+      settings_xml = Builder::XmlMarkup.new(indent: 2)
       settings_xml.instruct!
       settings_xml.settings{
         settings.each do |key, val|
-          settings_xml.value(val, :name => key)
+          settings_xml.value(val, name: key)
         end
       }
     else
@@ -29,9 +29,10 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     report
   end
 
-  def open_check_sell
+  def open_check_sell print_check
     setup_mode Mode::MODE_REGISTRATION
     put_check_type ChequeType::CHEQUE_SELL
+    put_print_check print_check
     open_check
   end
 
@@ -53,8 +54,9 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
 
   # Передавать товар в формате :quantity, :name, :price, :tax
   # По умолчанию платеж Нал
-  def print_goods_check goods, summ, type = PaymentType::CASH, fiscal_props = []
-    open_check_sell
+  def print_goods_check goods, summ, type = PaymentType::CASH, fiscal_props = [], print_check
+    open_check_sell print_check
+
     fiscal_props.each do |fiscal_prop|
       setup_fiscal_property fiscal_prop
     end
@@ -103,5 +105,59 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
 
   def turn_off
     put_device_enabled false
+  end
+
+  def last_check_sum
+    get_register_by_number RegisterNumber::LAST_CHECK_INFO
+    get_summ
+  end
+
+  def last_check_doc_number
+    get_register_by_number RegisterNumber::LAST_CHECK_INFO
+    get_doc_number
+  end
+
+  def last_check_type
+    get_register_by_number RegisterNumber::LAST_CHECK_INFO
+    get_check_type
+  end
+
+  def last_check_fiscal_doc_number
+    get_register_by_number RegisterNumber::LAST_CHECK_INFO
+    get_value.to_i
+  end
+
+  def last_check_datetime
+    get_register_by_number RegisterNumber::LAST_CHECK_INFO
+    get_time
+  end
+
+  def last_check_info
+    {
+      sum: last_check_sum,
+      fiscal_doc_number: last_check_fiscal_doc_number,
+      doc_number: last_check_doc_number,
+      check_type: last_check_type,
+      datetime: last_check_datetime,
+      fiscal_storage_number: fiscal_storage_number
+    }
+  end
+
+  # В соответствии с документацией
+  def last_check_web_params
+    "t=#{last_check_datetime.strftime("%Y%m%dT%H%M%S")}&s=#{last_check_sum}" +
+    "&fn=#{fiscal_storage_number}&i=#{last_check_doc_number}" +
+    "&fp=#{last_check_fiscal_doc_number}&n=#{last_check_type}"
+  end
+
+  def fiscal_storage_number
+    get_register_by_number RegisterNumber::FISCAL_STORAGE_NUMBER
+    get_serial_number
+  end
+
+  private
+  def get_register_by_number number
+    put_register_number number
+    get_register
   end
 end

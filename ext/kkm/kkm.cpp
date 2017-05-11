@@ -115,6 +115,86 @@ extern "C" VALUE method_sound(VALUE self){
   return Qnil;
 }
 
+extern "C" VALUE method_set_time(VALUE self){
+  if (get_ifptr(self)->SetTime() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_set_date(VALUE self){
+  if (get_ifptr(self)->SetDate() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_put_date(VALUE self, VALUE date){
+  int year = NUM2INT(rb_funcall(date, rb_intern("year"), 0));
+  int month = NUM2INT(rb_funcall(date, rb_intern("month"), 0));
+  int day = NUM2INT(rb_funcall(date, rb_intern("day"), 0));
+
+  if (get_ifptr(self)->put_Date(day, month, year) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_date(VALUE self){
+  int* year = new int;
+  int* month = new int;
+  int* day = new int;
+  VALUE rb_date;
+
+  if (get_ifptr(self)->get_Date(day, month, year) < 0)
+    check_error(self);
+
+  rb_date = rb_funcall(rb_cTime, rb_intern("new"), 3, INT2NUM(*year), INT2NUM(*month), INT2NUM(*day));
+
+  delete year;
+  delete month;
+  delete day;
+
+  return rb_funcall(rb_date, rb_intern("to_date"), 0);;
+}
+
+extern "C" VALUE method_put_time(VALUE self, VALUE rb_time){
+  int hours = NUM2INT(rb_funcall(rb_time, rb_intern("hour"), 0));
+  int minutes = NUM2INT(rb_funcall(rb_time, rb_intern("min"), 0));
+  int seconds = NUM2INT(rb_funcall(rb_time, rb_intern("sec"), 0));
+
+  if (get_ifptr(self)->put_Time(hours, minutes, seconds) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_time(VALUE self){
+  int* hours = new int;
+  int* minutes = new int;
+  int* seconds = new int;
+  VALUE rb_date;
+  VALUE rb_time;
+
+  if (get_ifptr(self)->get_Time(hours, minutes, seconds) < 0)
+    check_error(self);
+
+  rb_date = method_get_date(self);
+  rb_time = rb_funcall(
+    rb_cTime,
+    rb_intern("new"),
+    6,
+    rb_funcall(rb_date, rb_intern("year"), 0),
+    rb_funcall(rb_date, rb_intern("month"), 0),
+    rb_funcall(rb_date, rb_intern("day"), 0),
+    INT2NUM(*hours),
+    INT2NUM(*minutes),
+    INT2NUM(*seconds)
+  );
+
+  delete hours;
+  delete minutes;
+  delete seconds;
+
+  return rb_time;
+}
+
 extern "C" VALUE method_get_current_status(VALUE self){
   if (get_ifptr(self)->GetCurrentStatus() < 0)
     check_error(self);
@@ -211,6 +291,25 @@ extern "C" VALUE method_report(VALUE self){
   if (get_ifptr(self)->Report() < 0)
     check_error(self);
   return Qnil;
+}
+
+extern "C" VALUE method_put_value(VALUE self, VALUE dbl){
+  if (get_ifptr(self)->put_Value(NUM2DBL(dbl)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_value(VALUE self){
+  double* dbl = new double;
+  VALUE rb_dbl;
+
+  if (get_ifptr(self)->get_Value(dbl) < 0)
+    check_error(self);
+
+  rb_dbl = rb_float_new(*dbl);
+
+  delete dbl;
+  return rb_dbl;
 }
 
 extern "C" VALUE method_put_check_type(VALUE self, VALUE number){
@@ -525,6 +624,49 @@ extern "C" VALUE method_partial_cut(VALUE self){
   if (get_ifptr(self)->PartialCut() < 0)
     check_error(self);
   return Qnil;
+}
+
+extern "C" VALUE method_put_serial_number(VALUE self, VALUE rb_string){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  rb_string_to_wchar(rb_string, wc_string);
+
+  if (get_ifptr(self)->put_SerialNumber(wc_string) < 0)
+    check_error(self);
+
+  delete[] wc_string;
+  return Qnil;
+}
+
+extern "C" VALUE method_get_serial_number(VALUE self) {
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string;
+
+  if (get_ifptr(self)->get_SerialNumber(wc_string, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string = wchar_to_rb_string(wc_string);
+
+  delete[] wc_string;
+  return rb_string;
+}
+
+extern "C" VALUE method_put_register_number(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_RegisterNumber(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_register_number(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_RegisterNumber(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
 }
 
 extern "C" VALUE method_get_register(VALUE self){
@@ -877,6 +1019,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_current_mode", (ruby_method*) &method_get_current_mode, 0);
   rb_define_method(DeviceDriver, "get_current_status", (ruby_method*) &method_get_current_status, 0);
   rb_define_method(DeviceDriver, "get_current_caption", (ruby_method*) &method_get_current_caption, 0);
+  rb_define_method(DeviceDriver, "get_date", (ruby_method*) &method_get_date, 0);
   rb_define_method(DeviceDriver, "get_device_enabled", (ruby_method*) &method_get_device_enabled, 0);
   rb_define_method(DeviceDriver, "get_device_settings", (ruby_method*) &method_get_device_settings, 0);
   rb_define_method(DeviceDriver, "get_doc_number", (ruby_method*) &method_get_doc_number, 0);
@@ -894,14 +1037,18 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_print_check", (ruby_method*) &method_get_print_check, 0);
   rb_define_method(DeviceDriver, "get_quantity", (ruby_method*) &method_get_quantity, 0);
   rb_define_method(DeviceDriver, "get_register", (ruby_method*) &method_get_register, 0);
+  rb_define_method(DeviceDriver, "get_register_number", (ruby_method*) &method_get_register_number, 0);
   rb_define_method(DeviceDriver, "get_remainder", (ruby_method*) &method_get_remainder, 0);
   rb_define_method(DeviceDriver, "get_report_type", (ruby_method*) &method_get_report_type, 0);
   rb_define_method(DeviceDriver, "get_status", (ruby_method*) &method_get_status, 0);
+  rb_define_method(DeviceDriver, "get_serial_number", (ruby_method*) &method_get_serial_number, 0);
   rb_define_method(DeviceDriver, "get_summ", (ruby_method*) &method_get_summ, 0);
   rb_define_method(DeviceDriver, "get_tax_number", (ruby_method*) &method_get_tax_number, 0);
   rb_define_method(DeviceDriver, "get_test_mode", (ruby_method*) &method_get_test_mode, 0);
   rb_define_method(DeviceDriver, "get_text_wrap", (ruby_method*) &method_get_text_wrap, 0);
+  rb_define_method(DeviceDriver, "get_time", (ruby_method*) &method_get_time, 0);
   rb_define_method(DeviceDriver, "get_type_close", (ruby_method*) &method_get_type_close, 0);
+  rb_define_method(DeviceDriver, "get_value", (ruby_method*) &method_get_value, 0);
   rb_define_method(DeviceDriver, "open_check", (ruby_method*) &method_open_check, 0);
   rb_define_method(DeviceDriver, "partial_cut", (ruby_method*) &method_partial_cut, 0);
   rb_define_method(DeviceDriver, "full_cut", (ruby_method*) &method_full_cut, 0);
@@ -916,6 +1063,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_caption_purpose", (ruby_method*) &method_put_caption_purpose, 1);
   rb_define_method(DeviceDriver, "put_check_number", (ruby_method*) &method_put_check_number, 1);
   rb_define_method(DeviceDriver, "put_check_type", (ruby_method*) &method_put_check_type, 1);
+  rb_define_method(DeviceDriver, "put_date", (ruby_method*) &method_put_date, 1);
   rb_define_method(DeviceDriver, "put_device_enabled", (ruby_method*) &method_put_device_enabled, 1);
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
   rb_define_method(DeviceDriver, "put_doc_number", (ruby_method*) &method_put_doc_number, 1);
@@ -930,17 +1078,23 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_price", (ruby_method*) &method_put_price, 1);
   rb_define_method(DeviceDriver, "put_print_check", (ruby_method*) &method_put_print_check, 1);
   rb_define_method(DeviceDriver, "put_quantity", (ruby_method*) &method_put_quantity, 1);
+  rb_define_method(DeviceDriver, "put_register_number", (ruby_method*) &method_put_register_number, 1);
   rb_define_method(DeviceDriver, "put_report_type", (ruby_method*) &method_put_report_type, 1);
+  rb_define_method(DeviceDriver, "put_serial_number", (ruby_method*) &method_put_serial_number, 1);
   rb_define_method(DeviceDriver, "put_summ", (ruby_method*) &method_put_summ, 1);
   rb_define_method(DeviceDriver, "put_tax_number", (ruby_method*) &method_put_tax_number, 1);
   rb_define_method(DeviceDriver, "put_test_mode", (ruby_method*) &method_put_test_mode, 1);
   rb_define_method(DeviceDriver, "put_text_wrap", (ruby_method*) &method_put_text_wrap, 1);
+  rb_define_method(DeviceDriver, "put_time", (ruby_method*) &method_put_time, 1);
   rb_define_method(DeviceDriver, "put_type_close", (ruby_method*) &method_put_type_close, 1);
+  rb_define_method(DeviceDriver, "put_value", (ruby_method*) &method_put_value, 1);
   rb_define_method(DeviceDriver, "registration", (ruby_method*) &method_registration, 0);
   rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);
   rb_define_method(DeviceDriver, "sound", (ruby_method*) &method_sound, 0);
+  rb_define_method(DeviceDriver, "set_date", (ruby_method*) &method_set_date, 0);
   rb_define_method(DeviceDriver, "set_mode", (ruby_method*) &method_set_mode, 0);
+  rb_define_method(DeviceDriver, "set_time", (ruby_method*) &method_set_time, 0);
   rb_define_method(DeviceDriver, "set_caption", (ruby_method*) &method_set_caption, 0);
   rb_define_method(DeviceDriver, "write_fiscal_property", (ruby_method*) &method_write_fiscal_property, 0);
 }
