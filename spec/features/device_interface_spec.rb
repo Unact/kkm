@@ -6,8 +6,8 @@ RSpec.describe Kkm::DeviceInterface do
     @test_device_interface = Kkm::DeviceInterface.new device_settings
     @test_device_interface.turn_on
     @test_goods = [
-      {:name => 'Test Goods 1', :quantity => 10, :price => 12, :tax => 10},
-      {:name => 'Test Goods 2', :quantity => 20, :price => 20, :tax => 18}
+      {:name => 'Test Goods 1', :quantity => 10, :price => 12, :tax => :'10'},
+      {:name => 'Test Goods 2', :quantity => 20, :price => 20, :tax => :'18'}
     ]
     @test_fiscal_props = [
       {
@@ -74,7 +74,7 @@ RSpec.describe Kkm::DeviceInterface do
       @test_fiscal_props
     )
     last_check_info = @test_device_interface.last_check_info
-    
+
     expect(last_check_info[:sum]).to eq(@test_payment_summ)
     expect(last_check_info[:datetime].to_date).to eq(Date.today)
   end

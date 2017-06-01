@@ -8,15 +8,15 @@ module Kkm::Constants::TaxNumber
 
   def self.tax_number_by_tax tax
     case tax
-    when 0
+    when :'0'
       TAX_0
-    when 10
+    when :'10'
       TAX_10
-    when 18
+    when :'18'
       TAX_18
-    when 110
+    when :'10/110'
       TAX_10_100
-    when 118
+    when :'18/118'
       TAX_18_118
     else
       TAX_NONE
