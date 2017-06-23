@@ -1,20 +1,27 @@
+require 'nokogiri'
 class Kkm::DeviceInterface < Kkm::DeviceDriver
   include Kkm::Constants
 
+  attr_accessor :settings_xml, :settings_hash
+
   def initialize settings
+    @settings_hash = {}
     if settings.is_a? Hash
-      settings_xml = Builder::XmlMarkup.new(indent: 2)
-      settings_xml.instruct!
-      settings_xml.settings{
-        settings.each do |key, val|
-          settings_xml.value(val, name: key)
-        end
-      }
+      @settings_hash = settings
+      settings_xml = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+        xml.settings {
+          settings.each{ |key, val| xml.value val, name: key }
+        }
+      end
+      @settings_xml = settings_xml.to_xml
     else
-      settings_xml = settings
+      @settings_xml = settings
+      Nokogiri::XML.parse(@settings_xml).xpath("//settings//value").each do |val|
+        @settings_hash[val.attributes["name"].value] = val.text
+      end
     end
 
-    super settings_xml
+    super @settings_xml
   end
 
   def pay_for_goods summ, type
@@ -68,7 +75,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   rescue => e
     # Если возникли ошибки, то аннулируем чек
     new_document
-    raise Kkm::Errors::PaymentError, e
+    raise e
   end
 
   def print_text text, alignment = Alignment::ALIGNMENT_CENTER, wrap = TextWrap::TEXT_WRAP_WORD

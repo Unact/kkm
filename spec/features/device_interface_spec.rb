@@ -40,7 +40,7 @@ RSpec.describe Kkm::DeviceInterface do
   it 'should print correct cheque' do
     expect {
       @test_device_interface.print_goods_check @test_goods, @test_payment_summ
-    }.to_not raise_error(Kkm::Errors::PaymentError)
+    }.to_not raise_error(Kkm::Errors::DeviceDriverError)
     expect(
       @test_device_interface.get_change
     ).to eq(0)
@@ -63,7 +63,7 @@ RSpec.describe Kkm::DeviceInterface do
         Kkm::Constants::PaymentType::CASH,
         @test_fiscal_props
       )
-    }.to_not raise_error(Kkm::Errors::PaymentError)
+    }.to_not raise_error(Kkm::Errors::DeviceDriverError)
   end
 
   it 'should get correct check info' do

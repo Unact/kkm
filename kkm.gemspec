@@ -14,10 +14,10 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*", "ext/**/*.{cpp,rb}", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "builder"
+  s.add_dependency "nokogiri"
 
   s.add_development_dependency "rake-compiler"
-  s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "rspec"
 
   s.extensions = %w[ext/kkm/extconf.rb]
 end

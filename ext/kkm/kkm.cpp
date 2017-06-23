@@ -24,9 +24,7 @@ int BUFFER_MAX_SIZE = 2000;
 
 // Для преобразовывания ruby строк в wchar_t
 extern "C" void rb_string_to_wchar(VALUE rb_string, wchar_t* wc_string_to_write){
-  char* c_string = StringValueCStr(rb_string);
-
-  mbstowcs(wc_string_to_write, c_string, BUFFER_MAX_SIZE);
+  mbstowcs(wc_string_to_write, StringValueCStr(rb_string), BUFFER_MAX_SIZE);
 }
 
 // Для преобразовывания char строк в wchar_t
@@ -59,46 +57,76 @@ extern "C" void check_error(VALUE self) {
   int result_code = EC_OK;
   wchar_t* wc_result_error = new wchar_t[BUFFER_MAX_SIZE];
   wchar_t* wc_bad_param_error = new wchar_t[BUFFER_MAX_SIZE];
+  wchar_t* wc_ip_address = new wchar_t[BUFFER_MAX_SIZE];
+  wchar_t* wc_device_name = new wchar_t[BUFFER_MAX_SIZE];
+  char* c_ip_address = new char[BUFFER_MAX_SIZE];
+  char* c_device_name = new char[BUFFER_MAX_SIZE];
   char* c_result_error = new char[BUFFER_MAX_SIZE];
   char* c_bad_param_error = new char[BUFFER_MAX_SIZE];
   int error_result;
   rb_encoding* rb_utf8 = rb_enc_find("UTF-8");
 
-
+  ifptr->get_DeviceSingleSetting(L"IPAddress", wc_ip_address, BUFFER_MAX_SIZE);
+  ifptr->get_DeviceSingleSetting(L"DeviceName", wc_device_name, BUFFER_MAX_SIZE);
+  wchar_to_char(wc_ip_address, c_ip_address);
+  wchar_to_char(wc_device_name, c_device_name);
   ifptr->get_ResultCode(&result_code);
 
   if (result_code < 0) {
     error_result = ifptr->get_ResultDescription(wc_result_error, BUFFER_MAX_SIZE);
     wchar_to_char(wc_result_error, c_result_error);
-
     if (error_result <= 0) {
-      rb_enc_raise(rb_utf8, DeviceDriverError, "Ошибка при получения ошибки выполнения");
+      rb_enc_raise(
+        rb_utf8,
+        DeviceDriverError,
+        "Ошибка при получения ошибки выполнения\nIPAddress: %s\nDeviceName: %s",
+        c_ip_address,
+        c_device_name
+      );
     }
     if (result_code == EC_INVALID_PARAM) {
       error_result = ifptr->get_BadParamDescription(wc_bad_param_error, BUFFER_MAX_SIZE);
       wchar_to_char(wc_bad_param_error, c_bad_param_error);
 
       if (error_result <= 0) {
-        rb_enc_raise(rb_utf8, DeviceDriverError, "Ошибка при получения ошибки параметров выполнения");
+        rb_enc_raise(
+          rb_utf8,
+          DeviceDriverError,
+          "Ошибка при получения ошибки параметров выполнения\nIPAddress: %s\nDeviceName: %s",
+          c_ip_address,
+          c_device_name
+        );
       }
       rb_enc_raise(
         rb_utf8,
         DeviceDriverError,
-        "Ошибка выполнения: %s %s",
+        "Ошибка выполнения: %s %s\nIPAddress: %s\nDeviceName: %s",
         c_result_error,
-        c_bad_param_error
+        c_bad_param_error,
+        c_ip_address,
+        c_device_name
       );
     }
 
     rb_enc_raise(
       rb_utf8,
       DeviceDriverError,
-      "Ошибка выполнения: %s",
-      c_result_error
+      "Ошибка выполнения: %s\nIPAddress: %s\nDeviceName: %s",
+      c_result_error,
+      c_ip_address,
+      c_device_name
     );
   }
-}
 
+  delete [] wc_result_error;
+  delete [] wc_bad_param_error;
+  delete [] wc_ip_address;
+  delete [] wc_device_name;
+  delete [] c_result_error;
+  delete [] c_bad_param_error;
+  delete [] c_ip_address;
+  delete [] c_device_name;
+}
 // *************************
 // НАЧАЛО ДЕКЛАРАЦИИ МЕТОДОВ
 // *************************

@@ -4,7 +4,7 @@ class Kkm::Device
   end
 
   # Если возникает ошибка, ККМ обязательно надо выключить
-  def work(&block)
+  def work &block
       @device_driver.turn_on
       yield @device_driver
       @device_driver.turn_off
