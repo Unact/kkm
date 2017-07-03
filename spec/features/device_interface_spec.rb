@@ -39,7 +39,7 @@ RSpec.describe Kkm::DeviceInterface do
 
   it 'should print correct cheque' do
     expect {
-      @test_device_interface.print_goods_check @test_goods, @test_payment_summ
+      @test_device_interface.print_cheque_sell @test_goods, @test_payment_summ
     }.to_not raise_error(Kkm::Errors::DeviceDriverError)
     expect(
       @test_device_interface.get_change
@@ -57,7 +57,7 @@ RSpec.describe Kkm::DeviceInterface do
 
   it 'should print cashier in cheque' do
     expect {
-      @test_device_interface.print_goods_check(
+      @test_device_interface.print_cheque_sell(
         @test_goods,
         @test_payment_summ,
         Kkm::Constants::PaymentType::CASH,
@@ -67,7 +67,7 @@ RSpec.describe Kkm::DeviceInterface do
   end
 
   it 'should get correct check info' do
-    @test_device_interface.print_goods_check(
+    @test_device_interface.print_cheque_sell(
       @test_goods,
       @test_payment_summ,
       Kkm::Constants::PaymentType::CASH,

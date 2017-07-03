@@ -497,6 +497,13 @@ extern "C" VALUE method_registration(VALUE self){
   return Qnil;
 }
 
+extern "C" VALUE method_return_registration(VALUE self){
+  // Кто же додумался метод назвать ключевым словом...
+  if (get_ifptr(self)->Return() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_put_name(VALUE self, VALUE rb_string){
   wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
   rb_string_to_wchar(rb_string, wc_string);
@@ -1116,6 +1123,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_time", (ruby_method*) &method_put_time, 1);
   rb_define_method(DeviceDriver, "put_type_close", (ruby_method*) &method_put_type_close, 1);
   rb_define_method(DeviceDriver, "put_value", (ruby_method*) &method_put_value, 1);
+  rb_define_method(DeviceDriver, "return_registration", (ruby_method*) &method_return_registration, 0);
   rb_define_method(DeviceDriver, "registration", (ruby_method*) &method_registration, 0);
   rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);

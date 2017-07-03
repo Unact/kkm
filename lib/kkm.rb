@@ -13,7 +13,6 @@ require 'kkm/constants/fiscal_property_type'
 require 'kkm/device_interface'
 require 'kkm/device'
 require 'kkm/version'
-require 'builder'
 require 'yaml'
 
 module Kkm
