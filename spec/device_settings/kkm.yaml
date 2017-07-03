@@ -5,7 +5,7 @@ AutoEnableBluetooth: 1
 BaudRate: 9600
 Bits: 8
 ConnectionType: 1
-DeviceName: Device
+DeviceName: TestKKM
 IPAddress: 192.168.101.64
 IPPort: 5555
 Model: 63

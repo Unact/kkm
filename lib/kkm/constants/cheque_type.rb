@@ -10,4 +10,12 @@ module Kkm::Constants::ChequeType
   CHEQUE_SELL_RETURN_CORRECTION   = 8  # Чек коррекции возврата прихода
   CHEQUE_BUY_CORRECTION           = 9  # Чек коррекции расхода
   CHEQUE_BUY_RETURN_CORRECTION    = 10 # Чек коррекции возврата расхода
+
+  def self.find_type_by_value value
+    constants.find{|constant| const_get(constant) == value}
+  end
+
+  def self.cheque_type_name value
+    find_type_by_value(value).downcase.to_s
+  end
 end
