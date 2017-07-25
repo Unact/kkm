@@ -199,7 +199,6 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     get_serial_number
   end
 
-  private
   def get_register_by_number number
     put_register_number number
     get_register
