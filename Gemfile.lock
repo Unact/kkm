@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kkm (0.0.8)
+    kkm (0.0.10)
       nokogiri
 
 GEM

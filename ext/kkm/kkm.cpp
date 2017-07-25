@@ -11,7 +11,6 @@ typedef VALUE (ruby_method)(...);
 
 // C(Qnil) == Ruby(nil)
 VALUE Kkm = Qnil;
-VALUE Errors = Qnil;
 VALUE DeviceDriver = Qnil;
 VALUE DeviceDriverError = Qnil;
 
@@ -223,6 +222,45 @@ extern "C" VALUE method_get_time(VALUE self){
   return rb_time;
 }
 
+extern "C" VALUE method_get_ofd_error(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_OFDError(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_get_network_error(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_NetworkError(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_get_fn_error(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_FNError(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
 extern "C" VALUE method_get_current_status(VALUE self){
   if (get_ifptr(self)->GetCurrentStatus() < 0)
     check_error(self);
@@ -413,6 +451,25 @@ extern "C" VALUE method_close_check(VALUE self){
   if (get_ifptr(self)->CloseCheck() < 0)
     check_error(self);
   return Qnil;
+}
+
+extern "C" VALUE method_put_count(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_Count(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_count(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_Count(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
 }
 
 extern "C" VALUE method_put_discount_type(VALUE self, VALUE number){
@@ -1035,9 +1092,8 @@ extern "C" VALUE method_initialize(VALUE self, VALUE settings) {
 // Метод который объявляет весь модуль
 extern "C" void Init_kkm() {
 	Kkm = rb_define_module("Kkm");
-  Errors = rb_define_module_under(Kkm, "Errors");
   DeviceDriver = rb_define_class_under(Kkm, "DeviceDriver", rb_cObject);
-  DeviceDriverError = rb_define_class_under(Errors, "DeviceDriverError", rb_eStandardError);
+  DeviceDriverError = rb_define_class_under(Kkm, "DeviceDriverError", rb_eStandardError);
 
 	rb_define_alloc_func(DeviceDriver, alloc_device_driver);
 	rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
@@ -1046,11 +1102,12 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
   rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
-  rb_define_method(DeviceDriver, "get_caption_purpose", (ruby_method*) &method_get_caption_purpose, 0);
   rb_define_method(DeviceDriver, "get_caption", (ruby_method*) &method_get_caption, 0);
+  rb_define_method(DeviceDriver, "get_caption_purpose", (ruby_method*) &method_get_caption_purpose, 0);
   rb_define_method(DeviceDriver, "get_change", (ruby_method*) &method_get_change, 0);
   rb_define_method(DeviceDriver, "get_check_number", (ruby_method*) &method_get_check_number, 0);
   rb_define_method(DeviceDriver, "get_check_type", (ruby_method*) &method_get_check_type, 0);
+  rb_define_method(DeviceDriver, "get_count", (ruby_method*) &method_get_count, 0);
   rb_define_method(DeviceDriver, "get_current_mode", (ruby_method*) &method_get_current_mode, 0);
   rb_define_method(DeviceDriver, "get_current_status", (ruby_method*) &method_get_current_status, 0);
   rb_define_method(DeviceDriver, "get_current_caption", (ruby_method*) &method_get_current_caption, 0);
@@ -1064,10 +1121,13 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_fiscal_property_print", (ruby_method*) &method_get_fiscal_property_print, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_type", (ruby_method*) &method_get_fiscal_property_type, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_value", (ruby_method*) &method_get_fiscal_property_value, 0);
+  rb_define_method(DeviceDriver, "get_fn_error", (ruby_method*) &method_get_fn_error, 0);
   rb_define_method(DeviceDriver, "get_has_not_sended_docs", (ruby_method*) &method_get_has_not_sended_docs, 0);
   rb_define_method(DeviceDriver, "get_inn", (ruby_method*) &method_get_inn, 0);
   rb_define_method(DeviceDriver, "get_mode", (ruby_method*) &method_get_mode, 0);
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
+  rb_define_method(DeviceDriver, "get_network_error", (ruby_method*) &method_get_network_error, 0);
+  rb_define_method(DeviceDriver, "get_ofd_error", (ruby_method*) &method_get_ofd_error, 0);
   rb_define_method(DeviceDriver, "get_price", (ruby_method*) &method_get_price, 0);
   rb_define_method(DeviceDriver, "get_print_check", (ruby_method*) &method_get_print_check, 0);
   rb_define_method(DeviceDriver, "get_quantity", (ruby_method*) &method_get_quantity, 0);
@@ -1098,6 +1158,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_caption_purpose", (ruby_method*) &method_put_caption_purpose, 1);
   rb_define_method(DeviceDriver, "put_check_number", (ruby_method*) &method_put_check_number, 1);
   rb_define_method(DeviceDriver, "put_check_type", (ruby_method*) &method_put_check_type, 1);
+  rb_define_method(DeviceDriver, "put_count", (ruby_method*) &method_put_count, 1);
   rb_define_method(DeviceDriver, "put_date", (ruby_method*) &method_put_date, 1);
   rb_define_method(DeviceDriver, "put_device_enabled", (ruby_method*) &method_put_device_enabled, 1);
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
