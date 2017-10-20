@@ -30,9 +30,9 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     payment
   end
 
-  def report_z
-    setup_mode Mode::MODE_REPORT_CLEAR
-    put_report_type ReportType::REPORT_Z
+  def print_report report_type, mode = Mode::MODE_REPORT_CLEAR
+    setup_mode mode
+    put_report_type report_type
     report
   end
 

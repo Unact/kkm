@@ -1,4 +1,4 @@
-require 'helpers/spec_helper'
+require 'support/spec_helper'
 
 RSpec.describe Kkm::Device do
   before :all do
