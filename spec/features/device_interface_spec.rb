@@ -1,4 +1,4 @@
-require 'helpers/spec_helper'
+require 'support/spec_helper'
 
 RSpec.describe Kkm::DeviceInterface do
   before :all do
@@ -6,16 +6,14 @@ RSpec.describe Kkm::DeviceInterface do
     @test_device_interface = Kkm::DeviceInterface.new device_settings
     @test_device_interface.turn_on
     @test_goods = [
-      {:name => 'Test Goods 1', :quantity => 10, :price => 12, :tax => :'10'},
-      {:name => 'Test Goods 2', :quantity => 20, :price => 20, :tax => :'18'}
+      {name: 'Test Goods 1', quantity: 10, price: 12, tax: :'10'},
+      {name: 'Test Goods 2', quantity: 20, price: 20, tax: :'18'}
     ]
-    @test_fiscal_props = [
-      {
-        :number => Kkm::Constants::FiscalProperty::CASHIER,
-        :value => "Тестовый",
-        :type => Kkm::Constants::FiscalPropertyType::STRING
-      }
-    ]
+    @test_fiscal_props = [{
+      number: Kkm::Constants::FiscalProperty::CASHIER,
+      value: "Тестовый",
+      type: Kkm::Constants::FiscalPropertyType::STRING
+    }]
     @test_payment_summ = 520
   end
 
@@ -28,19 +26,19 @@ RSpec.describe Kkm::DeviceInterface do
   end
 
   it 'beep should be heard' do
-    expect { @test_device_interface.beep }.to_not raise_error(Kkm::Errors::DeviceDriverError)
+    expect { @test_device_interface.beep }.to_not raise_error(Kkm::DeviceDriverError)
   end
 
   it 'should print text' do
     expect {
       @test_device_interface.print_text "Test text"
-    }.to_not raise_error(Kkm::Errors::DeviceDriverError)
+    }.to_not raise_error(Kkm::DeviceDriverError)
   end
 
   it 'should print correct cheque' do
     expect {
       @test_device_interface.print_cheque_sell @test_goods, @test_payment_summ
-    }.to_not raise_error(Kkm::Errors::DeviceDriverError)
+    }.to_not raise_error(Kkm::DeviceDriverError)
     expect(
       @test_device_interface.get_change
     ).to eq(0)
@@ -63,7 +61,7 @@ RSpec.describe Kkm::DeviceInterface do
         Kkm::Constants::PaymentType::CASH,
         @test_fiscal_props
       )
-    }.to_not raise_error(Kkm::Errors::DeviceDriverError)
+    }.to_not raise_error(Kkm::DeviceDriverError)
   end
 
   it 'should get correct check info' do
@@ -86,15 +84,25 @@ RSpec.describe Kkm::DeviceInterface do
     ).to eq(Kkm::Constants::Mode::MODE_REPORT_NO_CLEAR)
   end
 
-  it 'should print ReportZ' do
-    @test_device_interface.report_z
+  context '#print_report' do
+    it 'should print correct report' do
+      @test_device_interface.print_report Kkm::Constants::ReportType::REPORT_Z
 
-    expect(
-      @test_device_interface.get_mode
-    ).to eq(Kkm::Constants::Mode::MODE_REPORT_CLEAR)
-    expect(
-      @test_device_interface.get_report_type
-    ).to eq(Kkm::Constants::ReportType::REPORT_Z)
+      expect(
+        @test_device_interface.get_report_type
+      ).to eq(Kkm::Constants::ReportType::REPORT_Z)
+    end
+
+    it 'should use correct mode' do
+      @test_device_interface.print_report Kkm::Constants::ReportType::REPORT_X, Kkm::Constants::Mode::MODE_REPORT_NO_CLEAR
+
+      expect(
+        @test_device_interface.get_mode
+      ).to eq(Kkm::Constants::Mode::MODE_REPORT_NO_CLEAR)
+      expect(
+        @test_device_interface.get_report_type
+      ).to eq(Kkm::Constants::ReportType::REPORT_X)
+    end
   end
 
 end
