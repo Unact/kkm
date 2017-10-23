@@ -13,7 +13,7 @@ namespace TED
 namespace Fptr
 {
 
-#define DTO_IFPTR_VER1      11
+#define DTO_IFPTR_VER1      14
 
 class IFptr;
 
@@ -50,17 +50,25 @@ enum Model
     ModelATOL11F = 67,          /*!< АТОЛ 11Ф                                 */
     ModelATOL02F = 68,          /*!< АТОЛ 02Ф                                 */
     ModelATOL77F = 69,          /*!< АТОЛ 77Ф                                 */
-    ModelSM02 = 71,             /*!< АТОЛ СМ-02 ПТК / ЕНВД                    */
+    ModelSM02 = 71,             /*!< СМ-02 ПТК / ЕНВД                         */
     ModelATOL90F = 72,          /*!< АТОЛ 90Ф                                 */
     ModelFPrint30K = 73,        /*!< Принтер документов FPrint-30 для ЕНВД    */
-    ModelEVOTORST2F = 74,       /*!< АТОЛ СТ2Ф                                */
+    ModelEVOTORST2F = 74,       /*!< ЭВОТОР СТ2Ф                              */
     ModelATOL60F = 75,          /*!< АТОЛ 60Ф                                 */
     ModelKaznacheyFA = 76,      /*!< Казначей ФА                              */
     ModelATOL42FS = 77,         /*!< АТОЛ 42ФС                                */
     ModelATOL15F = 78,          /*!< АТОЛ 15Ф                                 */
+    ModelEVOTORST3F = 79,       /*!< ЭВОТОР СТ3Ф                              */
+    ModelATOL50F = 80,          /*!< АТОЛ 50Ф                                 */
+    ModelATOL20F = 81,          /*!< АТОЛ 20Ф                                 */
+    ModelATOL91F = 82,          /*!< АТОЛ 91Ф                                 */
     ModelShtrihFRK = 25,        /*!< ШТРИХ-ФР-К                               */
     ModelShtrihLightFRK = 113,  /*!< ШТРИХ-LIGHT-ФР-К                         */
     ModelShtrihMPTK = 150,      /*!< ШТРИХ-М-ПТК                              */
+    ModelShtrihLight01F = 130,  /*!< ШТРИХ-ЛАЙТ-01Ф / ШТРИХ-ЛАЙТ-02Ф          */
+    ModelShtrihM01F = 131,      /*!< ШТРИХ-М-01Ф / ШТРИХ-М-02Ф                */
+    ModelShtrihFR01F = 132,     /*!< ШТРИХ-ФР-01Ф                             */
+    ModelShtrihMini01F = 133,   /*!< ШТРИХ-МИНИ-01Ф                           */
     ModelPiritFR01K = 114,      /*!< ПИРИТ ФР01К                              */
     ModelSpark801T = 123,       /*!< СПАРК-801т                               */
     ModelPiritK = 128           /*!< Pirit K                                  */
@@ -243,6 +251,13 @@ enum ReportType
     ReportPrintInfo = 43,           /*!< Печать информации о ККТ              */
     ReportTestDevice = 44,          /*!< Тестирование ККТ                     */
     ReportOfdConnectionDiagnostic = 45, /*!< Диагностика соединения с ОФД     */
+    ReportLastDocument = 46,        /*!< Получение последнего чека
+                                            в электронном виде                */
+    ReportSessionTotalCounters = 47, /*!< Счетчики итогов смены               */
+    ReportFNTotalCounters = 48,      /*!< Счетчики итогов ФН                  */
+    ReportNotSentDocumentsCounters = 49, /*!< Счетчики по непереданным ФД     */
+    ReportPrintDocumentsFromJournalByNumbers = 50, /*!< ЭЖ по диапазону документов */
+    ReportPrintDocumentsFromJournalBySessions = 51, /*!< ЭЖ по диапазону смен    */
 };
 
 //! Типы скидок
@@ -262,9 +277,11 @@ enum CashMoveDirection
 //! Типы полей таблиц ККТ
 enum FieldType
 {
-    FieldInteger = 0,           /*!< Целое число                              */
-    FieldString,                /*!< Строка                                   */
-    FieldBuffer                 /*!< Массив байтов                            */
+    FieldInteger = 0,           /*!< Целое число (BCD)                        */
+    FieldString,                /*!< Строка (тип 1)                           */
+    FieldBuffer,                /*!< Массив байтов                            */
+    FieldIntegerBin,            /*!< Целое число (BIN)                        */
+    FieldStringEx               /*!< Строка (тип 2)                           */
 };
 
 //! Типы источников дампов ПО
@@ -333,7 +350,8 @@ enum Font
     Font12x16,                  /*!< 12x16                                    */
     Font12x10,                  /*!< 12x10                                    */
     Font12x10_Bold,             /*!< 12x10 жирный                             */
-    Font10x14                   /*!< 10x14                                    */
+    Font10x14,                  /*!< 10x14                                    */
+    Font9x10                    /*!< 9x10                                     */
 };
 
 //! Высота шрифта
@@ -382,6 +400,14 @@ enum ModemMode
     ModemModeAsync = 2,         /*!< Асинхронное ожидание данных от модема    */
 };
 
+//! Режим работы с WiFi
+enum WiFiMode
+{
+    WiFiModeOff = 0,
+    WiFiModeSync = 1,          /*!< Данные Wi-Fi  по запросу                  */
+    WiFiModeAsync = 2,         /*!< Асинхронное ожидание данных от Wi-Fi      */
+};
+
 //! Режим работы со сканером
 enum ScannerMode
 {
@@ -411,6 +437,24 @@ enum ModemConnectionType
     ModemConnectionUdp,         /*!< UDP                                      */
 };
 
+//! Состояние WiFi
+enum WiFiState
+{
+    WiFiStateOff = 0,               /*!< Выключен                             */
+    WiFiStateConnectingToAP = 1,    /*!< Подключается к точке доступа         */
+    WiFiStateConnectedToAP = 2,     /*!< Подключен к точке доступа            */
+    WiFiStateConnecting = 3,        /*!< Подключается к серверу               */
+    WiFiStateConnected = 4,         /*!< Подключен к серверу                  */
+    WiFiStateDisconnecting = 5,     /*!< Отключается                          */
+};
+
+//! Способ соединения WiFi
+enum WiFiConnectionType
+{
+    WiFiConnectionTcp = 1,      /*!< TCP/IP                                   */
+    WiFiConnectionUdp,          /*!< UDP                                      */
+};
+
 //! Тип реквизита
 enum FiscalPropertyType
 {
@@ -419,7 +463,7 @@ enum FiscalPropertyType
     FiscalPropertyTypeInt16,        /*!< 2-байтовое целое                     */
     FiscalPropertyTypeInt32,        /*!< 4-байтовое целое                     */
     FiscalPropertyTypeUnixTime,     /*!< Unix-время                           */
-    FiscalPropertyTypeASCII         /*!< Строка                               */
+    FiscalPropertyTypeString        /*!< Строка                               */
 };
 
 //! Размерность регистра
@@ -429,6 +473,33 @@ enum CounterDimension
     CounterDimension9BCD            /*!< 9 BCD                                */
 };
 
+//! Режим работы с налогом
+enum TaxMode
+{
+    TaxOnPosition = 0,              /*!< Налог на позицию                     */
+    TaxOnUnit                       /*!< Налог на единицу                     */
+};
+
+//! Налоговые ставки
+enum TaxNumber
+{
+    TaxVATByDepartment = 0,         /*!< Из таблицы отделов                   */
+    TaxVAT0,                        /*!< НДС 0%                               */
+    TaxVAT10,                       /*!< НДС 10\%                             */
+    TaxVAT18,                       /*!< НДС 18\%                             */
+    TaxVATNo,                       /*!< Без НДС                              */
+    TaxVAT110,                      /*!< НДС 10/110                           */
+    TaxVAT118,                      /*!< НДС 18/118                           */
+};
+
+//! Версии ФФД
+enum FFDVersion
+{
+    FFD_NONE = 0,                   /*! ККТ старого порядка                   */
+    FFD_1_0 = 100,                  /*! ФФД 1.0                               */
+    FFD_1_05 = 105,                 /*! ФФД 1.05                              */
+    FFD_1_1 = 110,                  /*! ФФД 1.1                               */
+};
 
 }
 
@@ -466,7 +537,7 @@ namespace Fptr
 class IFptr : public IDTOBase
 {
 public:
-    friend void::ReleaseFptrInterface(TED::Fptr::IFptr * *);
+    friend DTOSHARED_EXPORT void DTOSHARED_CCA ::ReleaseFptrInterface(TED::Fptr::IFptr * *);
     typedef void (*ReleaseFunction)(IFptr**);
 
     //! Возвращает указатель на функцию удаления интерфейса.
@@ -819,10 +890,9 @@ public:
        <table>
         <caption>Свойства</caption>
         <tr><th>Название<th>Описание<th>Доступ
-        <tr><th colspan=3>Входные свойства
-        <tr><td>INN                     <td>ИНН                                     <td>get_INN()
+        <tr><th colspan=3>Выходные свойства
         <tr><td>SummPointPosition       <td>Позиция десятичной точки в суммах       <td>get_SummPointPosition()
-        <tr><td>CheckState              <td>Состояние чека (TED::Fptr::ChequeType)  <td>put_Duration()
+        <tr><td>CheckState              <td>Состояние чека (TED::Fptr::ChequeType)  <td>get_CheckState()
         <tr><td>CheckNumber             <td>Номер чека                              <td>get_CheckNumber()
         <tr><td>DocNumber               <td>Номер документа                         <td>get_DocNumber()
         <tr><td>CharLineLength          <td>Ширина активной станции в символах      <td>get_CharLineLength()
@@ -850,6 +920,7 @@ public:
         <tr><td>AdvancedMode            <td>Подрежим                                <td>get_AdvancedMode()
         <tr><td>SlotNumber              <td>Номер/тип порта                         <td>get_SlotNumber()
         <tr><td>Summ                    <td>Сумма чека                              <td>get_Summ()
+        <tr><td>FNFiscal                <td>Флаг фискализации ФН                    <td>get_FNFiscal()
         <tr><td>OutOfPaper              <td>Флаг отсутствия бумаги                  <td>get_OutOfPaper()
         <tr><td>PrinterConnectionFailed <td>Флаг отсутствия связи с принтером       <td>get_PrinterConnectionFailed()
         <tr><td>PrinterMechanismError   <td>Флаг ошибки печатающего устройства      <td>get_PrinterMechanismError()
@@ -909,6 +980,9 @@ public:
         <tr><th colspan=3>Входные свойства
         <tr><td>Time        <td>Время           <td>put_Time()
        </table>
+
+       \deprecated Устаревшая команда. В новых интеграциях рекомендуется использовать \ref SetDateTime()
+
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -922,6 +996,9 @@ public:
         <tr><th colspan=3>Входные свойства
         <tr><td>Date        <td>Дата            <td>put_Date()
        </table>
+
+       \deprecated Устаревшая команда. В новых интеграциях рекомендуется использовать \ref SetDateTime()
+
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -1173,6 +1250,7 @@ public:
         <tr><td>BarcodeEncodingMode     <td>Режим кодировки ШК (TED::Fptr::BarcodeQREncodingMode) <td>put_BarcodeEncodingMode()
         <tr><td>PrintBarcodeText        <td>Флаг печати данных ШК                           <td>put_PrintBarcodeText()
         <tr><td>Height                  <td>Высота ШК                                       <td>put_Height()
+        <tr><td>BarcodeOverlay          <td>Флаг печати ШК поверх текста                    <td>put_BarcodeOverlay
        </table>
        \retval -1 Ошибка
        \retval 0 Успех
@@ -1424,7 +1502,7 @@ public:
        </table>
 
        Для печати электронного чека необходимо:
-       - выставить флаг PrintCheck в значение 1 (true)
+       - выставить флаг PrintCheck в значение 0 (true)
        - после выполнения операции открытия чека сразу назначить реквизит 1008 (адрес покупателя)
        \code{.cpp}
         fptr->put_CheckType(TED::Fptr::ChequeSell);
@@ -1432,7 +1510,7 @@ public:
         fptr->OpenCheck();
 
         fptr->put_FiscalPropertyNumber(1008);
-        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeASCII);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
         fptr->put_FiscalPropertyValue(L"user@mail.ru");
         fptr->WriteFiscalProperty();
 
@@ -1524,7 +1602,9 @@ public:
         <tr><td>FNError             <td>Код ошибки ФН                       <td>get_FNError()
         <tr><td>Date                <td>Дата                                <td>get_Date()
         <tr><td>Time                <td>Время                               <td>get_Time()
-        <tr><td>FNState             <td>Состояние ФН                        <td>get_FNState()
+        <tr><td>ENVDMode            <td>Режим ЕНВД                          <td>get_ENVDMode()
+        <tr><td>ENVDEnabled         <td>Разрешение режима ЕНВД              <td>get_ENVDEnabled()
+        <tr><td>TaxNumeration       <td>Режим работы с налоговыми ставками  <td>get_TaxNumeration()
        </table>
        <br>
 
@@ -1621,8 +1701,9 @@ public:
 
         <tr><td>38  <td><td><td><td><td><td><td><td><td>+<td><td><td>Состояние источника питания (\a PowerSupplyState)
         <br>Напряжение источника питания (\a PowerSupplyValue)
+        <br>Процент заряда аккумулятора (\a BatteryCharge)
 
-        <tr><td>39  <td><td><td><td><td><td><td><td><td><td><td><td>Исполнение (\a Value)
+        <tr><td>39  <td><td><td><td><td><td><td><td><td><td><td><td>Температура ТПМ (\a Value)
 
         <tr><td>40  <td>+<td><td><td><td><td><td><td><td><td><td><td>Необнуляемая сумма (\a Summ)
 
@@ -1661,6 +1742,30 @@ public:
 
         <tr><td>53  <td><td><td><td><td><td><td><td><td><td><td><td>Номер чека в ФН за смену (\a CheckNumber)
         <br>Номер смены в ФН (\a Session)
+
+        <tr><td>54  <td><td><td><td><td><td><td><td><td><td><td><td>Версия ФФД ККТ (\a DeviceFfdVersion)
+        <br>Версия ФФД ФН (\a FNFfdVersion)
+        <br>Версия ФФД (\a FfdVersion)
+        <br>Дата документа ФФД (\a Date)
+
+        <tr><td>55  <td><td><td><td><td><td><td><td><td><td><td><td>Код команды, на которой произошла ошибка (\a CommandCode)
+        <br>Код ошибки (\a ErrorCode)
+        <br>Данные ошибки (\a ErrorData)
+
+        <tr><td>56  <td>+<td>+<td><td><td><td><td><td><td><td><td><td>Необнуляемая сумма по типам оплат (\a Summ)
+
+        <tr><td>57  <td><td><td><td><td><td><td><td><td><td><td><td>Дата и время отправки последнего документа в ОФД (\a Date, \a Time)
+
+        <tr><td>58  <td><td><td><td><td><td><td><td><td><td><td><td>Общий счетчик кол-ва расчетных документов с момента общего гашения (\a Count)
+        <br>Количество ФД за смену (\a DocNumber)
+
+        <tr><td>59  <td><td><td><td><td><td><td><td><td><td><td><td> Режим ЕНВД (\a ENVDMode)
+        <br>Разрешение режима ЕНВД (\a ENVDEnabled)
+        <br>Режим работы с налоговыми ставками (\a TaxNumeration)
+
+        <tr><td>60  <td>+<td><td><td><td>+<td><td><td><td><td><td><td> Сумма налога за смену (\a Summ)
+
+        <tr><td>61  <td><td><td><td><td>+<td><td><td><td><td><td><td> Сумма налога на чек (\a Summ)
 
         <tr><td><th>CheckType<th>TypeClose<th>OperationType<th>CounterDimension<th>TaxNumber<th>DiscountNumber<th>CounterType<th>StepCounterType<th>PowerSupplyType<th>Department<th>Count<td>
        </table>
@@ -1920,19 +2025,25 @@ public:
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
        </table>
 
-       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами:
+       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами.
        <table>
         <caption>Свойства</caption>
         <tr><th>Название<th>Описание<th>Доступ
-        <tr><th colspan=3>Входные свойства
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
-        <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
+        <tr><td>PositionQuantityType    <td>Тип печатаемого количества  <td>put_PositionQuantityType()
+        <tr><td>UseOnlyTaxNumber <td>Использовать только ставку налога <td>put_UseOnlyTaxNumber()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
+
+       При закрытом чеке открывает чек продажи / прихода.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -1955,7 +2066,8 @@ public:
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
+
+       Первая операция открывает чек аннулирования продажи.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -1977,19 +2089,25 @@ public:
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
        </table>
 
-       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами:
+       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами.
        <table>
         <caption>Свойства</caption>
         <tr><th>Название<th>Описание<th>Доступ
-        <tr><th colspan=3>Входные свойства
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
         <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
-        <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
+        <tr><td>PositionQuantityType    <td>Тип печатаемого количества  <td>put_PositionQuantityType()
+        <tr><td>UseOnlyTaxNumber <td>Использовать только ставку налога <td>put_UseOnlyTaxNumber()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
+
+       При закрытом чеке открывает чек возврата продажи / прихода.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -2010,19 +2128,9 @@ public:
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
        </table>
 
-       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами:
-       <table>
-        <caption>Свойства</caption>
-        <tr><th>Название<th>Описание<th>Доступ
-        <tr><th colspan=3>Входные свойства
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
-        <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
-       </table>
+       При работе с ФЗ-54-совместимыми ККТ, команда запрещена.
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -2043,19 +2151,25 @@ public:
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
        </table>
 
-       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами:
+       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами.
        <table>
         <caption>Свойства</caption>
         <tr><th>Название<th>Описание<th>Доступ
-        <tr><th colspan=3>Входные свойства
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
-        <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
+        <tr><td>PositionQuantityType    <td>Тип печатаемого количества  <td>put_PositionQuantityType()
+        <tr><td>UseOnlyTaxNumber <td>Использовать только ставку налога <td>put_UseOnlyTaxNumber()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
+
+       При закрытом чеке открывает чек покупки / расхода.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -2076,19 +2190,25 @@ public:
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
        </table>
 
-       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами:
+       При работе с ФЗ-54-совместимыми ККТ, команда регистрации расширена дополнительными параметрами.
        <table>
         <caption>Свойства</caption>
         <tr><th>Название<th>Описание<th>Доступ
-        <tr><th colspan=3>Входные свойства
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
-        <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
+        <tr><td>PositionQuantityType    <td>Тип печатаемого количества  <td>put_PositionQuantityType()
+        <tr><td>UseOnlyTaxNumber <td>Использовать только ставку налога <td>put_UseOnlyTaxNumber()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
+
+       При закрытом чеке открывает чек возврата покупки / расхода.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -2110,7 +2230,8 @@ public:
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
-       Первая операция открывает чек соответствующего типа.
+
+       Первая операция открывает чек аннулирования покупки.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -2170,7 +2291,8 @@ public:
         <tr><td>Session         <td>Начальная смена диапазона           <td>put_Session()
         <tr><td>SessionEnd      <td>Конечная смена диапазона            <td>put_SessionEnd()
         <tr><td>EKLZKPKNumber   <td>Номер КПК                           <td>put_EKLZKPKNumber()
-        <tr><td>DocNumber       <td>Номер документа                     <td>put_DocNumber()
+        <tr><td>DocNumber       <td>Начальный номер документа           <td>put_DocNumber()
+        <tr><td>DocNumberEnd    <td>Конечный номер документа            <td>put_DocNumberEnd()
         <tr><td>ClearFlag       <td>Флаг очистки журнала                <td>put_ClearFlag()
        </table>
 
@@ -2210,6 +2332,11 @@ public:
         <tr><td>TED::Fptr::ReportTestDevice                    <td>Тестирование ККТ<td><td>
         <tr><td>TED::Fptr::ReportPrintInfo                     <td>Печать информации о ККТ<td><td>
         <tr><td>TED::Fptr::ReportOfdConnectionDiagnostic       <td>Диагностика соединения с ОФД<td><td>
+        <tr><td>TED::Fptr::ReportSessionTotalCounters          <td>Счетчики итогов смены<td><td>
+        <tr><td>TED::Fptr::ReportFNTotalCounters               <td>Счетчики итогов ФН<td><td>
+        <tr><td>TED::Fptr::ReportNotSentDocumentsCounters      <td>Счетчики по непереданным ФД<td><td>
+        <tr><td>TED::Fptr::ReportPrintDocumentsFromJournalByNumbers     <td>ЭЖ по диапазону документов<td>\a DocNumber, \a DocNumberEnd<td>
+        <tr><td>TED::Fptr::ReportPrintDocumentsFromJournalBySessions    <td>ЭЖ по диапазону смен<td>\a Session, \a SessionEnd<td>
        </table>
 
        \retval -1 Ошибка
@@ -2353,16 +2480,12 @@ public:
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
         <tr><td>Summ            <td>Сумма налога                        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налога                        <td>put_TaxNumber()
+        <tr><td>TaxNumber       <td>Номер налога                        <td>put_TaxNumber() (TED::Fptr::TaxNumber)
         <tr><td>Destination     <td>Назначение налога (TED::Fptr::DestinationType) <td>put_Destination()
         <tr><td>TestMode        <td>Выполнить в тестовом режиме         <td>put_TestMode()
        </table>
        \retval -1 Ошибка
        \retval 0 Успех
-       \sa put_Destination()
-       \sa put_TaxNumber()
-       \sa put_Summ()
-       \sa put_TestMode()
      */
     virtual int DTOSHARED_CCA SummTax() = 0;
 
@@ -2373,7 +2496,7 @@ public:
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
         <tr><td>Summ            <td>Сумма налога                        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налога                        <td>put_TaxNumber()
+        <tr><td>TaxNumber       <td>Номер налога                        <td>put_TaxNumber() (TED::Fptr::TaxNumber)
         <tr><td>TestMode        <td>Выполнить в тестовом режиме         <td>put_TestMode()
        </table>
        \retval -1 Ошибка
@@ -2981,6 +3104,12 @@ public:
         <tr><td>TED::Fptr::ReportRom                <td>ПО ККТ<td><td>\a Caption
         <tr><td>TED::Fptr::ReportRomUnit            <td>ПО модуля ККТ<td>\a UnitType<td>\a Caption
         <tr><td>TED::Fptr::ReportJournalData        <td>Данные ЭЖ<td><td>\a Caption
+        <tr><td>TED::Fptr::ReportLastDocument       <td>Последний документ<td><td>\a Caption
+            <br>\a FontDblWidth
+            <br>\a ReceiptFont
+            <br>\a ReceiptFontHeight
+            <br>\a ReceiptLinespacing
+            <br>\a ReceiptBrightness
        </table>
 
        Работает из режима программирования (TED::Fptr::ModeProgramming).
@@ -4312,7 +4441,7 @@ public:
         <caption>Свойства</caption>
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
-        <tr><td>CommandQuery    <td>Данные      <td>put_CommandQuery()
+        <tr><td>CommandBuffer   <td>Данные      <td>put_CommandBuffer()
         <tr><td>SlotNumber      <td>Номер порта <td>put_SlotNumber()
        </table>
        \retval -1 Ошибка
@@ -4723,7 +4852,7 @@ public:
     /*!
        Используется для связи дПС и дККТ в случае работы с модемом FPrintPay-01.
        С помощью данного дескриптора будет осуществляться управление модемом.
-       \param value Дескриптор пинпада
+       \param value Дескриптор модема
        \retval -1 Ошибка
        \retval 0 Успех
        \sa TED::PayCard::IPayCard::put_ModemDevice
@@ -5057,6 +5186,7 @@ public:
         <tr><td>SummPointPosition   <td>Позиция десятичной точки в суммах   <td>get_SummPointPosition()
         <tr><td>SlotNumber          <td>Номер/тип порта                     <td>get_SlotNumber()
         <tr><td>Summ                <td>Сумма чека                          <td>get_Summ()
+        <tr><td>FNFiscal            <td>Флаг фискализации ФН                <td>get_FNFiscal()
        </table>
        \retval -1 Ошибка
        \retval 0 Успех
@@ -5254,6 +5384,7 @@ public:
         <tr><td>FiscalPropertyType      <td>Тип реквизита           <td>put_FiscalPropertyType()
         <tr><td>FiscalPropertyValue     <td>Значение реквизита      <td>put_FiscalPropertyValue()
         <tr><td>FiscalPropertyPrint     <td>Флаг печати реквизита   <td>put_FiscalPropertyPrint()
+        <tr><td>FiscalPropertyUser      <td>Флаг пользовательского реквизита   <td>put_FiscalPropertyUser()
        </table>
        \retval -1 Ошибка
        \retval 0 Успех
@@ -5437,19 +5568,24 @@ public:
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
         <tr><td>Name            <td>Наименование товара             <td>put_Name()
-        <tr><td>Alignment       <td>Выравнивание наименования товара<td>put_Alignment()
-        <tr><td>TextWrap        <td>Перенос наименования товара     <td>put_TextWrap()
         <tr><td>Price           <td>Цена товара                     <td>put_Price()
         <tr><td>Quantity        <td>Количество товара               <td>put_Quantity()
         <tr><td>Department      <td>Секция                          <td>put_Department()
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
         <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
+
+       При закрытом чеке открывает чек коррекции прихода.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -5462,20 +5598,27 @@ public:
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
         <tr><td>Name            <td>Наименование товара             <td>put_Name()
-        <tr><td>Alignment       <td>Выравнивание наименования товара<td>put_Alignment()
-        <tr><td>TextWrap        <td>Перенос наименования товара     <td>put_TextWrap()
         <tr><td>Price           <td>Цена товара                     <td>put_Price()
         <tr><td>Quantity        <td>Количество товара               <td>put_Quantity()
         <tr><td>Department      <td>Секция                          <td>put_Department()
-        <tr><td>EnableCheckSumm <td>Проверять наличность            <td>put_EnableCheckSumm()
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
         <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
+
+       При закрытом чеке открывает чек коррекции возврата прихода.
+
+       \warning Более не актуален.
+
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -5488,19 +5631,24 @@ public:
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
         <tr><td>Name            <td>Наименование товара             <td>put_Name()
-        <tr><td>Alignment       <td>Выравнивание наименования товара<td>put_Alignment()
-        <tr><td>TextWrap        <td>Перенос наименования товара     <td>put_TextWrap()
         <tr><td>Price           <td>Цена товара                     <td>put_Price()
         <tr><td>Quantity        <td>Количество товара               <td>put_Quantity()
         <tr><td>Department      <td>Секция                          <td>put_Department()
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
         <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
+
+       При закрытом чеке открывает чек коррекции расхода.
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -5513,20 +5661,27 @@ public:
         <tr><th>Название<th>Описание<th>Доступ
         <tr><th colspan=3>Входные свойства
         <tr><td>Name            <td>Наименование товара             <td>put_Name()
-        <tr><td>Alignment       <td>Выравнивание наименования товара<td>put_Alignment()
-        <tr><td>TextWrap        <td>Перенос наименования товара     <td>put_TextWrap()
         <tr><td>Price           <td>Цена товара                     <td>put_Price()
         <tr><td>Quantity        <td>Количество товара               <td>put_Quantity()
         <tr><td>Department      <td>Секция                          <td>put_Department()
-        <tr><td>EnableCheckSumm <td>Проверять наличность            <td>put_EnableCheckSumm()
         <tr><td>TestMode        <td>Выполнить в тестовом режиме     <td>put_TestMode()
-        <tr><td>DiscountType    <td>Тип скидки/надбавки             <td>put_DiscountType()
-        <tr><td>Summ            <td>Значение скидки/надбавки        <td>put_Summ()
-        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber()
         <tr><td>Classifier      <td>Классификатор товара            <td>put_Classifier()
+        <tr><td>PositionSum     <td>Полная сумма позиции            <td>put_PositionSum()
+        <tr><td>TaxNumber       <td>Номер налоговой ставки          <td>put_TaxNumber() (TED::Fptr::TaxNumber)
+        <tr><td>TaxSum          <td>Сумма налога                    <td>put_TaxSum()
+        <tr><td>TaxMode         <td>Режим работы с налогом          <td>put_TaxMode() (TED::Fptr::TaxMode)
+        <tr><td>PositionType    <td>Признак предмета расчета        <td>put_PositionType()
+        <tr><td>PositionPaymentType <td>Признак способа расчета     <td>put_PositionPaymentType()
+        <tr><td>Summ            <td>Информационная скидка / надбавка<td>put_Summ()
+        <tr><td>PrintCheck      <td>Печатать чек                    <td>put_PrintCheck()
        </table>
 
        Работает из режима регистрации (TED::Fptr::ModeRegistration).
+
+       При закрытом чеке открывает чек коррекции возврата расхода.
+
+       \warning Более не актуален.
+
        \retval -1 Ошибка
        \retval 0 Успех
      */
@@ -5577,6 +5732,685 @@ public:
        \retval 0 Успех
      */
     virtual int DTOSHARED_CCA GetUnitVersion() = 0;
+    //! Возвращает сумму налога.
+    /*!
+       \param value Сумма налога
+       \retval 0 Успех
+       \sa put_TaxSum()
+     */
+    virtual int DTOSHARED_CCA get_TaxSum(double *value) = 0;
+
+    //! Устанавливает сумму налога.
+    /*!
+       \param value Сумма налога
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_TaxSum()
+     */
+    virtual int DTOSHARED_CCA put_TaxSum(double value) = 0;
+
+    //! Возвращает режим работы налога.
+    /*!
+       \param value Режим работы налога
+       \retval 0 Успех
+       \sa put_TaxMode()
+     */
+    virtual int DTOSHARED_CCA get_TaxMode(int *value) = 0;
+
+    //! Устанавливает режим работы налога.
+    /*!
+       \param value Режим работы налога
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_TaxMode()
+     */
+    virtual int DTOSHARED_CCA put_TaxMode(int value) = 0;
+
+    //! Возвращает предмет расчета.
+    /*!
+       \param value Предмет расчета
+       \retval 0 Успех
+       \sa put_PositionType()
+     */
+    virtual int DTOSHARED_CCA get_PositionType(int *value) = 0;
+
+    //! Устанавливает предмет расчета.
+    /*!
+       \param value Предмет расчета
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_PositionType()
+     */
+    virtual int DTOSHARED_CCA put_PositionType(int value) = 0;
+
+    //! Возвращает способ расчета.
+    /*!
+       \param value Способ расчета
+       \retval 0 Успех
+       \sa put_PositionPaymentType()
+     */
+    virtual int DTOSHARED_CCA get_PositionPaymentType(int *value) = 0;
+
+    //! Устанавливает способ расчета.
+    /*!
+       \param value Способ расчета
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_PositionPaymentType()
+     */
+    virtual int DTOSHARED_CCA put_PositionPaymentType(int value) = 0;
+
+    //! Добавляет произвольный реквизит к позиции / буферу.
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>FiscalPropertyNumber    <td>Номер рекзивита         <td>put_FiscalPropertyNumber()
+        <tr><td>FiscalPropertyType      <td>Тип реквизита           <td>put_FiscalPropertyType()
+        <tr><td>FiscalPropertyValue     <td>Значение реквизита      <td>put_FiscalPropertyValue()
+        <tr><td>FiscalPropertyPrint     <td>Флаг печати реквизита   <td>put_FiscalPropertyPrint()
+        <tr><td>FiscalPropertyUser      <td>Флаг пользовательского реквизита   <td>put_FiscalPropertyUser()
+       </table>
+
+       \warning Метод меняет свое поведение после вызова \ref BeginFormFiscalProperty().
+        Подробнее в описании метода \ref BeginFormFiscalProperty().
+
+       Данный метод необходимо вызывать перед непосредственной регистрацией позиции.
+
+       Список реквизитов автоматически очищается после удачной регистрации позиции.
+
+       Примерный алгоритм использования данного метода:
+       \code{.cpp}
+        fptr->put_FiscalPropertyNumber(1197);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"кг");
+        fptr->AddFiscalProperty();
+
+        fptr->put_Name(L"Мороженое");
+        ...
+        fptr->Registration();
+       \endcode
+
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA AddFiscalProperty() = 0;
+
+    //! Сбрасывает список произвольных реквизитов позиции.
+    /*!
+       Данный метод необходимо вызывать перед непосредственной регистрацией позиции.
+
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA ResetFiscalProperties() = 0;
+
+    //! Возвращает версию формата фискальных данных.
+    /*!
+       \param value Версия
+       \retval 0 Успех
+       \sa FFDVersion
+     */
+    virtual int DTOSHARED_CCA get_FfdVersion(int *value) = 0;
+
+    //! Возвращает версию формата фискальных данных ККТ.
+    /*!
+       \param value Версия
+       \retval 0 Успех
+       \sa FFDVersion
+     */
+    virtual int DTOSHARED_CCA get_DeviceFfdVersion(int *value) = 0;
+
+    //! Возвращает версию формата фискальных данных ФН.
+    /*!
+       \param value Версия
+       \retval 0 Успех
+       \sa FFDVersion
+     */
+    virtual int DTOSHARED_CCA get_FNFfdVersion(int *value) = 0;
+
+    //! Возвращает код команды.
+    /*!
+       \param value Код команды
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_CommandCode(int *value) = 0;
+
+    //! Возвращает код ошибки.
+    /*!
+       \param value Код ошибки
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_ErrorCode(int *value) = 0;
+
+    //! Возвращает данные ошибки.
+    /*!
+       \param bfr Буфер для строки
+       \param bfrSize Размер буфера
+       \return Требуемый размер буфера
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_ErrorData(wchar_t *bfr, int bfrSize) = 0;
+
+    //! Устанавливает сумму позиции.
+    /*!
+       \param value Сумма
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA put_PositionSum(double value) = 0;
+
+    //! Возвращает сумму позиции.
+    /*!
+       \param value Сумма
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_PositionSum(double *value) = 0;
+
+    //! Устанавливает флаг пользовательского реквизита.
+    /*!
+       \param value Флаг (1 (true) - пользовательский, 0 (false) - реквизит ФН)
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_FiscalPropertyUser()
+     */
+    virtual int DTOSHARED_CCA put_FiscalPropertyUser(int value) = 0;
+
+    //! Возвращает флаг печати реквизита.
+    /*!
+       \param value Флаг (1 (true) - пользовательский, 0 (false) - реквизит ФН)
+       \retval 0 Успех
+       \sa put_FiscalPropertyUser()
+     */
+    virtual int DTOSHARED_CCA get_FiscalPropertyUser(int *value) = 0;
+
+    //! Устанавливает режим опроса Wi-Fi.
+    /*!
+       \param value Режим опроса
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_WiFiMode()
+       \sa TED::Fptr::WiFiMode
+     */
+    virtual int DTOSHARED_CCA put_WiFiMode(int value) = 0;
+
+    //! Возвращает режим опроса Wi-Fi.
+    /*!
+       \param value Режим опроса
+       \retval 0 Успех
+       \sa put_WiFiMode()
+       \sa TED::Fptr::WiFiMode
+     */
+    virtual int DTOSHARED_CCA get_WiFiMode(int *value) = 0;
+
+    //! Записывает данные в порт Wi-Fi.
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>CommandBuffer   <td>Данные      <td>put_CommandBuffer()
+       </table>
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA WriteWiFi() = 0;
+
+    //! Считывает данные из порта Wi-Fi.
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>ReadSize    <td>Данные      <td>put_ReadSize()
+        <tr><th colspan=3>Выходные свойства
+        <tr><td>AnswerBuffer    <td>Данные      <td>put_AnswerBuffer()
+       </table>
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA ReadWiFi() = 0;
+
+    //! Возвращает дескриптор WiFi.
+    /*!
+       Используется для связи дПС и дККТ в случае работы с Wi-Fi АТОЛ 60Ф.
+       С помощью данного дескриптора будет осуществляться управление Wi-Fi.
+       \param value Дескриптор Wi-Fi
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa TED::PayCard::IPayCard::put_WiFiDevice
+     */
+    virtual int DTOSHARED_CCA get_WiFiDevice(void **value) = 0;
+
+    //! Включает питание Wi-Fi.
+    /*!
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa PowerOffWiFi()
+     */
+    virtual int DTOSHARED_CCA PowerOnWiFi() = 0;
+
+    //! Выключает питание Wi-Fi.
+    /*!
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa PowerOnWiFi()
+     */
+    virtual int DTOSHARED_CCA PowerOffWiFi() = 0;
+
+
+    //! Устанавливает тип соединения по Wi-Fi.
+    /*!
+       \param value Тип соединения
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_WiFiConnectionType()
+     */
+    virtual int DTOSHARED_CCA put_WiFiConnectionType(int value) = 0;
+
+    //! Возвращает тип соединения по Wi-Fi.
+    /*!
+       \param value Тип соединения
+       \retval 0 Успех
+       \sa put_WiFiConnectionType()
+     */
+    virtual int DTOSHARED_CCA get_WiFiConnectionType(int *value) = 0;
+
+    //! Устанавливает IP-адрес для соединения по Wi-Fi.
+    /*!
+       \param value Адрес
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_WiFiAddress()
+     */
+    virtual int DTOSHARED_CCA put_WiFiAddress(const wchar_t *value) = 0;
+
+    //! Возвращает IP-адрес для соединения по Wi-Fi.
+    /*!
+       \param bfr Буфер для адреса
+       \param bfrSize Размер буфера
+       \return Требуемый размер буфера
+       \sa get_WiFiAddress()
+     */
+    virtual int DTOSHARED_CCA get_WiFiAddress(wchar_t *bfr, int bfrSize) = 0;
+
+    //! Устанавливает IP-порт для соединения по Wi-Fi.
+    /*!
+       \param value Порт
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_WiFiPort()
+     */
+    virtual int DTOSHARED_CCA put_WiFiPort(int value) = 0;
+
+    //! Возвращает IP-порт для соединения по Wi-Fi.
+    /*!
+       \param value Порт
+       \retval 0 Успех
+       \sa put_WiFiPort()
+     */
+    virtual int DTOSHARED_CCA get_WiFiPort(int *value) = 0;
+
+    //! Запрашивает состояние Wi-Fi.
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Выходные свойства
+        <tr><td>ModemStatus     <td>Состояние соединения                <td>get_WiFiStatus()
+        <tr><td>ReadSize        <td>Размер доступных для чтения данных  <td>get_ReadSize()
+        <tr><td>WriteSize       <td>Размер данных, ожидающих отправки   <td>get_WriteSize()
+       </table>
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA GetWiFiStatus() = 0;
+
+    //! Возвращает состояние Wi-Fi.
+    /*!
+       \param value Состояние
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_WiFiStatus(int *value) = 0;
+
+    //! Открывает соединение по Wi-Fi.
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>WiFiMode           <td>Режим работы с Wi-Fi        <td>put_WiFiMode()
+        <tr><td>WiFiAddress        <td>IP-адрес для соединения     <td>put_WiFiAddress()
+        <tr><td>WiFiPort           <td>IP-порт для соединения      <td>put_WiFiPort()
+        <tr><td>WiFiConnectionType <td>Способ соединения по Wi-Fi  <td>put_WiFiConnectionType()
+       </table>
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa CloseModem()
+     */
+    virtual int DTOSHARED_CCA OpenWiFi() = 0;
+
+    //! Закрывает соединение по Wi-Fi.
+    /*!
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa OpenModem()
+     */
+    virtual int DTOSHARED_CCA CloseWiFi() = 0;
+
+    //! Возвращает статус фискализации ФН.
+    /*!
+       \param value Статус фискализации
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_FNFiscal(int *value) = 0;
+
+    //! Возвращает состояние режима ЕНВД.
+    /*!
+       \param value Состояние режима ЕНВД
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_ENVDMode(int *value) = 0;
+
+    //! Начинает формирование тела тега ФН.
+    /*!
+       Переводит драйвер в режим формирования составного тега ФН.
+       Метод \ref AddFiscalProperty() меняет свое поведение и служит для записи тегов в память драйвера.
+       После выхода из режима формирования составного тега (\ref EndFormFiscalProperty())
+        можно передать полученный тег в ККТ (\ref WriteFiscalProperty()) или добавить его к позиции (\ref AddFiscalProperty()).
+       В этом случае типом записываемого тега всегда должен быть TED::Fptr::FiscalPropertyTypeRaw.
+
+       Пример формирования и записи тега 1223 (Данные агента)
+       \code{.cpp}
+        fptr->BeginFormFiscalProperty(); // Вход в режим формирования составного тега
+
+        fptr->put_FiscalPropertyNumber(1005);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"ул. Свободы, 13");
+        fptr->AddFiscalProperty(); // Добавление адреса оператора перевода (тег 1005)
+
+        fptr->put_FiscalPropertyNumber(1016);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"123456789047");
+        fptr->AddFiscalProperty(); // Добавление ИНН оператора перевода (1016)
+
+        fptr->put_FiscalPropertyNumber(1026);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"Оператор 1");
+        fptr->AddFiscalProperty(); // Добавление наименования оператора перевода (тег 1026)
+
+        fptr->put_FiscalPropertyNumber(1044);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"Оплата");
+        fptr->AddFiscalProperty(); // Добавление операции платежного агента (тег 1044)
+
+        fptr->put_FiscalPropertyNumber(1073);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"+79121234567");
+        fptr->AddFiscalProperty(); // Добавление телефона платежного агента (тег 1073)
+
+        fptr->put_FiscalPropertyNumber(1073);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"+79121234590");
+        fptr->AddFiscalProperty(); // Добавление еще одного телефона телефона платежного агента (тег 1073)
+
+        fptr->put_FiscalPropertyNumber(1074);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"+79121234568");
+        fptr->AddFiscalProperty(); // Добавление телефона оператора по приему платежей (тег 1074)
+
+        fptr->put_FiscalPropertyNumber(1075);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"+79121234569");
+        fptr->AddFiscalProperty(); // Добавление телефона оператора перевода (тег 1075)
+
+        fptr->EndFormFiscalProperty(); // Выход из режима формирования составного тега
+
+        // Получение тела тега 1223
+        wchar_t tag1223[1024] = {0};
+        fptr->get_FiscalPropertyValue(&tag1223[0], sizeof(tag1223) / sizeof(tag1223[0]));
+
+        ...
+
+        // Добавление тега позиции
+        fptr->put_FiscalPropertyNumber(1223);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeRaw);
+        fptr->put_FiscalPropertyValue(&tag1223[0]);
+        fptr->AddFiscalProperty();
+        ...
+        fptr->Registration();
+       \endcode
+
+
+       Пример формирования и записи тега 1174 (Основание для коррекции)
+       \code{.cpp}
+        fptr->BeginFormFiscalProperty(); // Вход в режим формирования составного тега
+
+        fptr->put_FiscalPropertyNumber(1177);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"Описание коррекции");
+        fptr->AddFiscalProperty(); // Добавление описания коррекции (тег 1177)
+
+        fptr->put_FiscalPropertyNumber(1178);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeUnixTime);
+        fptr->put_FiscalPropertyValue(L"1494506624");
+        fptr->AddFiscalProperty(); // Добавление даты документа основания для коррекции (тег 1178)
+
+        fptr->put_FiscalPropertyNumber(1179);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeString);
+        fptr->put_FiscalPropertyValue(L"123");
+        fptr->AddFiscalProperty(); // Добавление номера документа основания для коррекции (тег 1179)
+
+        fptr->EndFormFiscalProperty(); // Выход из режима формирования составного тега
+
+        // Получение тела тега 1174
+        wchar_t tag1174[1024] = {0};
+        fptr->get_FiscalPropertyValue(&tag1174[0], sizeof(tag1174) / sizeof(tag1174[0]));
+
+        ...
+
+        // Добавление тега чека
+        fptr->put_FiscalPropertyNumber(1174);
+        fptr->put_FiscalPropertyType(TED::Fptr::FiscalPropertyTypeRaw);
+        fptr->put_FiscalPropertyValue(&tag1174[0]);
+        fptr->WriteFiscalProperty();
+       \endcode
+
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA BeginFormFiscalProperty() = 0;
+
+    //! Завершает формирование тела тега ФН.
+    /*!
+       Подробнее см. \ref BeginFormFiscalProperty().
+
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Выходные свойства
+        <tr><td>FiscalPropertyValue     <td>Тело тега       <td>get_FiscalPropertyValue()
+       </table>
+
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA EndFormFiscalProperty() = 0;
+
+    //! Устанавливает уровень логирования.
+    /*!
+       \param value Уровень логирования
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_LogLvl()
+     */
+    virtual int DTOSHARED_CCA put_LogLvl(int value) = 0;
+
+    //! Возвращает уровень логирования.
+    /*!
+       \param value Уровень логирования
+       \retval 0 Успех
+       \sa put_LogLvl()
+     */
+    virtual int DTOSHARED_CCA get_LogLvl(int *value) = 0;
+
+    //! Применяет уровень логирования.
+    /*!
+      <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>LogLvl      <td>Уровень логирования     <td>put_LogLvl()
+       </table>
+
+       \warning Изменение уровня логирования применяется ко всем экземплярам драйвера в текущем процессе.
+
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA SetLogLvl() = 0;
+
+    //! Сбрасывает уровень логирования.
+    /*!
+       Сбрасывает уровень логирования до того, с каким был запущен драйвер
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA ResetLogLvl() = 0;
+
+    //! Устанавливает сообщение для лога.
+    /*!
+       \param value Сообщение
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA put_LogMessage(const wchar_t *value) = 0;
+
+    //! Записывает сообщение в лог
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>LogMessage      <td>Сообщение   <td>put_LogMessage()
+       </table>
+
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA WriteLog() = 0;
+
+    //! Возвращает флаг разрешения использования режима ЕНВД.
+    /*!
+       \param value Флаг
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_ENVDEnabled(int *value) = 0;
+
+    //! Возвращает тип нумерации налоговых ставок.
+    /*!
+       \warning Информационные данные. Драйвер сам определяет нумерацию налогов.
+
+       \param value Тип нумерации налоговых ставок
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_TaxNumeration(int *value) = 0;
+
+    //! Устанавливает конечный номер документа.
+    /*!
+       \param value Конечный номер документа
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_DocNumberEnd()
+     */
+    virtual int DTOSHARED_CCA put_DocNumberEnd(int value) = 0;
+
+    //! Возвращает конечный номер документа.
+    /*!
+       \param value Конечный номер документа
+       \retval 0 Успех
+       \sa put_DocNumberEnd()
+     */
+    virtual int DTOSHARED_CCA get_DocNumberEnd(int *value) = 0;
+
+    //! Устанавливает флаг печати ШК поверх текста.
+    /*!
+       \param value Флаг
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_BarcodeOverlay()
+     */
+    virtual int DTOSHARED_CCA put_BarcodeOverlay(int value) = 0;
+
+    //! Возвращает флаг печати ШК поверх текста.
+    /*!
+       \param value Флаг
+       \retval 0 Успех
+       \sa put_BarcodeOverlay()
+     */
+    virtual int DTOSHARED_CCA get_BarcodeOverlay(int *value) = 0;
+
+    //! Устанавливает тип печати кол-ва позиции.
+    /*!
+       \param value 0 - весовой, 1 - штучный
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_PositionQuantityType()
+     */
+    virtual int DTOSHARED_CCA put_PositionQuantityType(int value) = 0;
+
+    //! Возвращает флаг тип печати кол-ва позиции.
+    /*!
+       \param value 0 - весовой, 1 - штучный
+       \retval 0 Успех
+       \sa put_PositionQuantityType()
+     */
+    virtual int DTOSHARED_CCA get_PositionQuantityType(int *value) = 0;
+
+    //! Продолжает прерванную печать последнего документа
+    /*!
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA ContinuePrint() = 0;
+
+    //! Устанавливает дату и время в ККТ.
+    /*!
+       <table>
+        <caption>Свойства</caption>
+        <tr><th>Название<th>Описание<th>Доступ
+        <tr><th colspan=3>Входные свойства
+        <tr><td>Date        <td>Дата            <td>put_Date()
+        <tr><td>Time        <td>Время           <td>put_Time()
+       </table>
+       \retval -1 Ошибка
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA SetDateTime() = 0;
+
+    //! Возвращает значение заряда аккумулятора в процентах.
+    /*!
+       \param value Процент заряда аккумулятора
+       \retval 0 Успех
+     */
+    virtual int DTOSHARED_CCA get_BatteryCharge(int *value) = 0;
+
+    //! Устанавливает флаг передачи только ставки налога.
+    /*!
+       Используется для отключения передачи суммы налога на позицию в ФН.
+
+       \param value 0 - не расчитывать, 1 - расчитывать
+       \retval -1 Ошибка
+       \retval 0 Успех
+       \sa get_UseOnlyTaxNumber()
+     */
+    virtual int DTOSHARED_CCA put_UseOnlyTaxNumber(int value) = 0;
+
+   //! Возвращает флаг передачи только ставки налога.
+   /*!
+       Используется для отключения передачи суммы налога на позицию в ФН.
+
+      \param value 0 - не расчитывать, 1 - расчитывать
+      \retval 0 Успех
+      \sa put_UseOnlyTaxNumber()
+    */
+   virtual int DTOSHARED_CCA get_UseOnlyTaxNumber(int *value) = 0;
 
 protected:
     IFptr()

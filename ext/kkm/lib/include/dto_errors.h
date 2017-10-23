@@ -147,7 +147,7 @@
 #define EC_3820                     ERROR_BASE_FPTR - 20
 //! Открыт чек возврата - операция невозможна
 #define EC_3821                     ERROR_BASE_FPTR - 21
-//! Смена привысила 24 часа
+//! Смена превысила 24 часа
 #define EC_3822                     ERROR_BASE_FPTR - 22
 //! Скидка запрещена в таблице
 #define EC_3823                     ERROR_BASE_FPTR - 23
@@ -185,7 +185,7 @@
 #define EC_3841                     ERROR_BASE_FPTR - 41
 //! ККТ заблокирована и ждет ввода пароля налогового инспектора
 #define EC_3842                     ERROR_BASE_FPTR - 42
-//! Заводской номер уже задан
+//! Заводской номер / MAC-адрес уже задан
 #define EC_3843                     ERROR_BASE_FPTR - 43
 //! Исчерпан лимит перерегистраций
 #define EC_3844                     ERROR_BASE_FPTR - 44
@@ -207,7 +207,7 @@
 #define EC_3853                     ERROR_BASE_FPTR - 53
 //! Режим не активизирован
 #define EC_3854                     ERROR_BASE_FPTR - 54
-//! Нет указанного чека в КЛ
+//! Нет указанного чека в КЛ/ЭЖ
 #define EC_3855                     ERROR_BASE_FPTR - 55
 //! Некорректный код или номер кода защиты
 #define EC_3857                     ERROR_BASE_FPTR - 57
@@ -219,7 +219,7 @@
 #define EC_3862                     ERROR_BASE_FPTR - 62
 //! Скидка/надбавка на предыдущую операцию невозможна
 #define EC_3863                     ERROR_BASE_FPTR - 63
-//! Открыт чек аннулирования - операция не возможна
+//! Открыт чек аннулирования - операция невозможна
 #define EC_3864                     ERROR_BASE_FPTR - 64
 //! Открыт чек продажи - операция невозможна
 #define EC_3865                     ERROR_BASE_FPTR - 65
@@ -259,7 +259,7 @@
 #define EC_3892                     ERROR_BASE_FPTR - 92
 //! Требуется подтверждение ввода даты
 #define EC_3893                     ERROR_BASE_FPTR - 93
-//! Отчет с гашением прерван
+//! Отчет с гашением прерван. Устраните неисправность и повторите печать отчета
 #define EC_3894                     ERROR_BASE_FPTR - 94
 //! Неверная длина
 #define EC_3895                     ERROR_BASE_FPTR - 95
@@ -319,7 +319,9 @@
 #define EC_3922                     ERROR_BASE_FPTR - 122
 //! Невозможно закрыть архив ЭКЛЗ/ФН
 #define EC_3923                     ERROR_BASE_FPTR - 123
+//! Необходимо провести профилактические работы
 #define EC_3924                     ERROR_BASE_FPTR - 124
+//! Неверный номер ЭКЛЗ/ФН
 #define EC_3925                     ERROR_BASE_FPTR - 125
 //! Предыдущая операция не завершена
 #define EC_3926                     ERROR_BASE_FPTR - 126
@@ -371,7 +373,7 @@
 #define EC_3949                     ERROR_BASE_FPTR - 149
 //! Сторно по коду невозможно
 #define EC_3950                     ERROR_BASE_FPTR - 150
-//! Невозможнен повтор последней операции
+//! Невозможен повтор последней операции
 #define EC_3951                     ERROR_BASE_FPTR - 151
 //! Неверный код товара
 #define EC_3952                     ERROR_BASE_FPTR - 152
@@ -381,7 +383,7 @@
 #define EC_3954                     ERROR_BASE_FPTR - 154
 //! Товар не найден
 #define EC_3955                     ERROR_BASE_FPTR - 155
-//! Весовой штрихкод с кол-вом !=1.000
+//! Весовой штрихкод с кол-вом != 1.000
 #define EC_3956                     ERROR_BASE_FPTR - 156
 //! Переполнение буфера чека
 #define EC_3957                     ERROR_BASE_FPTR - 157
@@ -409,7 +411,7 @@
 #define EC_3968                     ERROR_BASE_FPTR - 168
 //! Сумма налога больше суммы регистраций по чеку и/или итога
 #define EC_3969                     ERROR_BASE_FPTR - 169
-//! Начисление налона на последнюю операцию невозможно
+//! Начисление налога на последнюю операцию невозможно
 #define EC_3970                     ERROR_BASE_FPTR - 170
 //! Операция невозможна, недостаточно питания
 #define EC_3971                     ERROR_BASE_FPTR - 171
@@ -432,8 +434,45 @@
 #define EC_3981                     ERROR_BASE_FPTR - 181
 //! Несовпадение контрольной суммы накопителя фискальной памяти
 #define EC_3994                     ERROR_BASE_FPTR - 194
+//! Исчерпан ресурс ожидания передачи сообщения в ФН
+#define EC_3995                     ERROR_BASE_FPTR - 195
+//! Продолжительность смены ФН более 24 часов
+#define EC_3996                     ERROR_BASE_FPTR - 196
+//! Неверная разница во времени между двумя операциями ФН
+#define EC_3997                     ERROR_BASE_FPTR - 197
 //! Ошибка SD
 #define EC_4012                     ERROR_BASE_FPTR - 212
+
+//! Недопустимое кол-во регистраций
+#define EC_4020                     ERROR_BASE_FPTR - 220
+//! Некорректная СНО
+#define EC_4021                     ERROR_BASE_FPTR - 221
+//! Недопустимый номер ставки налога
+#define EC_4022                     ERROR_BASE_FPTR - 222
+//! Недопустимый тип кода товара
+#define EC_4023                     ERROR_BASE_FPTR - 223
+//! Недопустима регистрация подакцизного товара
+#define EC_4024                     ERROR_BASE_FPTR - 224
+//! Ошибка программирования реквизита
+#define EC_4025                     ERROR_BASE_FPTR - 225
+//! Невозможно начислить скидку
+#define EC_4026                     ERROR_BASE_FPTR - 226
+//! Отчет о регистрации ККТ прерван. Устраните неисправность и повторите печать отчета
+#define EC_4027                     ERROR_BASE_FPTR - 227
+//! Отчет о закрытии ФН. Устраните неисправность и повторите печать отчета
+#define EC_4028                     ERROR_BASE_FPTR - 228
+//! Открытие смены прервано. Устраните неисправность и повторите открытие смены
+#define EC_4029                     ERROR_BASE_FPTR - 229
+//! Отчет о состоянии расчетов прерван. Устраните неисправность и повторите печать отчета
+#define EC_4030                     ERROR_BASE_FPTR - 230
+//! Закрытие чека прервано. Устраните неисправность
+#define EC_4031                     ERROR_BASE_FPTR - 231
+//! Получение документа из ФН прервано
+#define EC_4032                     ERROR_BASE_FPTR - 232
+
+//! Ошибка работы с ЭЖ
+#define EC_4033                     ERROR_BASE_FPTR - 233
+
 //! Буфер пуст
 #define EC_4101                     ERROR_BASE_FPTR - 301
 //! Ошибка GSM-модуля
@@ -901,6 +940,12 @@
 //! Ошибка чтения слипа Сбербанка
 #define EC_SBERBANK_PILOT_CHEQUE_ERROR                  EC_PAYCARD_EXECUTION_BASE - 202
 
+// Ошибки UCS
+//! Ошибка "EFTPOS устройству требуется инкасация"
+#define EC_UCS_COLLECTION_REQUIRED_ERROR                EC_PAYCARD_EXECUTION_BASE - 301
+//! Ошибка "В EFTPOS устройстве закончилась бумага"
+#define EC_UCS_OUT_OF_PEPER_ERROR                       EC_PAYCARD_EXECUTION_BASE - 302
+
 //! База ошибок ПС
 #define EC_PAYCARD_AC_ERROR                             ERROR_BASE_PAYCARD_COMMON //-10000
 
@@ -918,6 +963,27 @@
 #define EC_GAZPROMBANK_RESPONSE_ERROR                   EC_PAYCARD_AC_ERROR - 40
 //! Ошибка выполнения запроса ICMP
 #define EC_ICMP_RESPONSE_ERROR                          EC_PAYCARD_AC_ERROR - 50
+
+//! Ошибка библиотеки EFTPOS: потеряна связь
+#define EC_UCS_LOST_CONNECTION_ERROR                    EC_PAYCARD_AC_ERROR - 301
+//! Ошибка библиотеки EFTPOS: нулевой указатель на управляющий объект
+#define EC_UCS_NULLPTR_ERROR                            EC_PAYCARD_AC_ERROR - 302
+//! Ошибка библиотеки EFTPOS: неизвестный код ошибки
+#define EC_UCS_UNKNOWN_ERROR                            EC_PAYCARD_AC_ERROR - 303
+//! Ошибка библиотеки EFTPOS: недопустимая команда
+#define EC_UCS_INVALID_COMMAND_ERROR                    EC_PAYCARD_AC_ERROR - 304
+//! Ошибка библиотеки EFTPOS: неразрешенная комбинация параметров
+#define EC_UCS_UNRESOLVED_PARAMETERS_ERROR              EC_PAYCARD_AC_ERROR - 305
+//! Ошибка библиотеки EFTPOS: незавершенная сессия с предыдущим TID
+#define EC_UCS_INCOMPLETE_SESSION_ERROR                 EC_PAYCARD_AC_ERROR - 306
+//! Ошибка библиотеки EFTPOS: сбой создания необходимых коммуникаций
+#define EC_UCS_CREATE_COMMUNICATION_ERROR               EC_PAYCARD_AC_ERROR - 307
+//! Ошибка библиотеки EFTPOS: параллельный вызов
+#define EC_UCS_PARALLEL_CALL_ERROR                      EC_PAYCARD_AC_ERROR - 308
+//! Ошибка библиотеки EFTPOS: сбой запуска
+#define EC_UCS_START_FAILED_ERROR                       EC_PAYCARD_AC_ERROR - 309
+//! Ошибка EFTPOS: Не поллучен пакет 6-0
+#define EC_UCS_NO_PACK_60                               EC_PAYCARD_AC_ERROR - 310
 
 //! @}
 
@@ -972,6 +1038,8 @@
 #define EC_CANT_FIND_SBERBANK_TTK           ERROR_BASE_LIBRARY - 22
 //! Не удалось найти библиотеку ОФД
 #define EC_CANT_FIND_OFD                    ERROR_BASE_LIBRARY - 23
+//! Не удалось найти библиотеку UCS
+#define EC_CANT_FIND_UCS                    ERROR_BASE_LIBRARY - 24
 //! Не удалось произвести инициализацию библиотеки
 #define EC_CANT_INIT_LIBRARY                ERROR_BASE_LIBRARY - 100
 //! @}

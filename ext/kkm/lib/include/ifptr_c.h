@@ -534,6 +534,79 @@ DTOSHARED_EXPORT int DTOSHARED_CCA get_PrintCheck(void *ptr, int *value);
 DTOSHARED_EXPORT int DTOSHARED_CCA get_FNState(void *ptr, int *value);
 DTOSHARED_EXPORT int DTOSHARED_CCA GetUnitVersion(void *ptr);
 
+DTOSHARED_EXPORT int DTOSHARED_CCA get_TaxSum(void *ptr, double *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_TaxSum(void *ptr, double value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_TaxMode(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_TaxMode(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_PositionType(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_PositionType(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_PositionPaymentType(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_PositionPaymentType(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA AddFiscalProperty(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA ResetFiscalProperties(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_FfdVersion(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_DeviceFfdVersion(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_FNFfdVersion(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_CommandCode(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_ErrorCode(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_ErrorData(void *ptr, wchar_t *bfr, int bfrSize);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_PositionSum(void *ptr, double value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_PositionSum(void *ptr, double *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_FiscalPropertyUser(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_FiscalPropertyUser(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_WiFiMode(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_WiFiMode(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA WriteWiFi(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA ReadWiFi(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_WiFiDevice(void *ptr, void **cls);
+DTOSHARED_EXPORT int DTOSHARED_CCA PowerOnWiFi(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA PowerOffWiFi(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_WiFiConnectionType(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_WiFiConnectionType(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_WiFiAddress(void *ptr, const wchar_t *bfr);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_WiFiAddress(void *ptr, wchar_t *bfr, int bfrSize);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_WiFiPort(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_WiFiPort(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA GetWiFiStatus(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_WiFiStatus(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA OpenWiFi(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA CloseWiFi(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_FNFiscal(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_ENVDMode(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA BeginFormFiscalProperty(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA EndFormFiscalProperty(void *ptr);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_LogLvl(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_LogLvl(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA SetLogLvl(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA ResetLogLvl(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA put_LogMessage(void *ptr, const wchar_t *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA WriteLog(void *ptr);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA get_ENVDEnabled(void *ptr, int *value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_TaxNumeration(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_DocNumberEnd(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_DocNumberEnd(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_BarcodeOverlay(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_BarcodeOverlay(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_PositionQuantityType(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_PositionQuantityType(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA ContinuePrint(void *ptr);
+DTOSHARED_EXPORT int DTOSHARED_CCA SetDateTime(void *ptr);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA get_BatteryCharge(void *ptr, int *value);
+
+DTOSHARED_EXPORT int DTOSHARED_CCA put_UseOnlyTaxNumber(void *ptr, int value);
+DTOSHARED_EXPORT int DTOSHARED_CCA get_UseOnlyTaxNumber(void *ptr, int *value);
+
 }
 
 #endif // FPTR_INTERFACE_C_H

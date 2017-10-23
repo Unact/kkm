@@ -62,6 +62,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     put_tax_number TaxNumber.tax_number_by_tax(goods[:tax])
     put_quantity goods[:quantity]
     put_price goods[:price]
+    put_position_sum goods[:price] * goods[:quantity]
     put_text_wrap TextWrap::TEXT_WRAP_WORD
     put_name goods[:name]
   end
