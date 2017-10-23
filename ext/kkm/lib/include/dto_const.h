@@ -25,6 +25,7 @@
 //! \name Общие ключи
 //! @{
 #define S_MODEL                 L"Model"            /*!< Модель устройства    */
+#define S_PROTOCOL              L"Protocol"         /*!< Протокол работы      */
 #define S_PORT                  L"Port"             /*!< Порт устройства      */
 #define S_BAUDRATE              L"BaudRate"         /*!< Скорость порта       */
 #define S_BITS                  L"Bits"             /*!< Биты                 */
@@ -36,7 +37,6 @@
                                                          библиотек            */
 #define S_IPADDRESS             L"IPAddress"        /*!< IP-адрес устройства  */
 #define S_MACADDRESS            L"MACAddress"       /*!< MAC-адрес устройства */
-#define S_CHANNEL               L"Channel"          /*!< Номер канала         */
 #define S_IPPORT                L"IPPort"           /*!< Порт устройства      */
 #define S_RECONNECTTIMEOUT      L"ReconnectTo"      /*!< Таймаут реконекта    */
 #define S_RETRYCOUNT            L"RetryCount"       /*!< Кол-во попыток связи */
@@ -46,6 +46,8 @@
                                                             кол-вах           */
 #define S_SUMMPOINT             L"SummPoint"        /*!< Десятичная точка в
                                                             суммах            */
+#define S_MODEL_FZ54            L"Model54"          /*!< Модель устройства
+                                                            (только ФЗ-54)    */
 #define S_EXISTED_SERIAL_PORTS  L"ExistedSerial"    /*!< Существующие порты   */
 #define S_EXISTED_TTY           L"ExistedTty"       /*!< Существующие tty     */
 #define S_DEVICENAME            L"DeviceName"       /*!< Название устройства  */
@@ -70,6 +72,7 @@
 #define SV_PORT_BLUETOOTH       L"BLUETOOTH"    /*!< Bluetooth                */
 #define SV_PORT_USB             L"USB"          /*!< USB порт                 */
 #define SV_PORT_FAKE            L"FAKE"         /*!< Тестовый порт            */
+#define SV_PORT_PROTO           L"PROTO"        /*!< Протокол                 */
 //! @}
 
 
@@ -120,6 +123,7 @@
 #define S_ACCESSPASSWORD        L"AccessPassword"   /*!< Пароль доступа       */
 #define S_USERPASSWORD          L"UserPassword"     /*!< Пароль пользователя  */
 #define S_OFD_PORT              L"OfdPort"          /*!< Канал обмена с ОФД   */
+#define S_USE_JOURNAL           L"UseJournal"       /*!< Хранить чеки в БД    */
 //! @}
 
 //! \name Ключи свойств драйвера УВ
@@ -160,7 +164,6 @@
 
 //! \name Ключи свойств драйвера ПС
 //! @{
-#define S_PROTOCOL              L"Protocol"         /*!< Тип платежной системы*/
 #define S_PATHAC                L"PathAC"           /*!< Каталог обмена с АС  */
 #define S_PATHDB                L"PathDB"           /*!< Путь к локальной БД  */
 #define S_TIMEOUT               L"Timeout"          /*!< Таймаут ответа от АС */

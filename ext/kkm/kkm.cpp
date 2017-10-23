@@ -623,6 +623,25 @@ extern "C" VALUE method_get_quantity(VALUE self){
   return rb_dbl;
 }
 
+extern "C" VALUE method_put_position_sum(VALUE self, VALUE dbl){
+  if (get_ifptr(self)->put_PositionSum(NUM2DBL(dbl)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_position_sum(VALUE self){
+  double* dbl = new double;
+  VALUE rb_dbl;
+
+  if (get_ifptr(self)->get_PositionSum(dbl) < 0)
+    check_error(self);
+
+  rb_dbl = rb_float_new(*dbl);
+
+  delete dbl;
+  return rb_dbl;
+}
+
 extern "C" VALUE method_put_summ(VALUE self, VALUE dbl){
   if (get_ifptr(self)->put_Summ(NUM2DBL(dbl)) < 0)
     check_error(self);
@@ -1128,6 +1147,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
   rb_define_method(DeviceDriver, "get_network_error", (ruby_method*) &method_get_network_error, 0);
   rb_define_method(DeviceDriver, "get_ofd_error", (ruby_method*) &method_get_ofd_error, 0);
+  rb_define_method(DeviceDriver, "get_position_sum", (ruby_method*) &method_get_position_sum, 0);
   rb_define_method(DeviceDriver, "get_price", (ruby_method*) &method_get_price, 0);
   rb_define_method(DeviceDriver, "get_print_check", (ruby_method*) &method_get_print_check, 0);
   rb_define_method(DeviceDriver, "get_quantity", (ruby_method*) &method_get_quantity, 0);
@@ -1171,6 +1191,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_inn", (ruby_method*) &method_put_inn, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
+  rb_define_method(DeviceDriver, "put_position_sum", (ruby_method*) &method_put_position_sum, 1);
   rb_define_method(DeviceDriver, "put_price", (ruby_method*) &method_put_price, 1);
   rb_define_method(DeviceDriver, "put_print_check", (ruby_method*) &method_put_print_check, 1);
   rb_define_method(DeviceDriver, "put_quantity", (ruby_method*) &method_put_quantity, 1);
