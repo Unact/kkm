@@ -1,5 +1,8 @@
 require 'kkm/kkm'
 require 'kkm/constants'
+require 'kkm/constants/position_type'
+require 'kkm/constants/position_payment_type'
+require 'kkm/constants/ffd_version'
 require 'kkm/constants/cheque_type'
 require 'kkm/constants/mode'
 require 'kkm/constants/report_type'

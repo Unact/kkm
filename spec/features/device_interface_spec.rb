@@ -14,7 +14,10 @@ RSpec.describe Kkm::DeviceInterface do
       value: "Тестовый",
       type: Kkm::Constants::FiscalPropertyType::STRING
     }]
-    @test_payment_summ = 520
+    @test_payments = [{
+      sum: 520,
+      type: Kkm::Constants::PaymentType::CASH
+    }]
   end
 
   after :all do
@@ -37,7 +40,7 @@ RSpec.describe Kkm::DeviceInterface do
 
   it 'should print correct cheque' do
     expect {
-      @test_device_interface.print_cheque_sell @test_goods, @test_payment_summ
+      @test_device_interface.print_cheque_sell @test_goods, @test_payments
     }.to_not raise_error(Kkm::DeviceDriverError)
     expect(
       @test_device_interface.get_change
@@ -57,8 +60,7 @@ RSpec.describe Kkm::DeviceInterface do
     expect {
       @test_device_interface.print_cheque_sell(
         @test_goods,
-        @test_payment_summ,
-        Kkm::Constants::PaymentType::CASH,
+        @test_payments,
         @test_fiscal_props
       )
     }.to_not raise_error(Kkm::DeviceDriverError)
@@ -67,13 +69,12 @@ RSpec.describe Kkm::DeviceInterface do
   it 'should get correct check info' do
     @test_device_interface.print_cheque_sell(
       @test_goods,
-      @test_payment_summ,
-      Kkm::Constants::PaymentType::CASH,
+      @test_payments,
       @test_fiscal_props
     )
     last_check_info = @test_device_interface.last_check_info
 
-    expect(last_check_info[:sum]).to eq(@test_payment_summ)
+    expect(last_check_info[:sum]).to eq(@test_payments.first[:sum])
     expect(last_check_info[:datetime].to_date).to eq(Date.today)
   end
 

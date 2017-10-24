@@ -24,9 +24,11 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     super @settings_xml
   end
 
-  def pay_for_goods summ, type
-    put_summ summ
-    put_type_close type
+  # Передавать платеж в формате :sum, :type
+  # По умолчанию платеж Нал
+  def pay_for_goods pay
+    put_summ pay[:sum]
+    put_type_close pay[:type] || PaymentType::CASH
     payment
   end
 
@@ -57,12 +59,14 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     set_mode
   end
 
-  # Передавать товар в формате :quantity, :name, :price, :tax
+  # Передавать товар в формате :quantity, :name, :price, :tax, :position_type, :position_payment_type
   def setup_goods_info goods
     put_tax_number TaxNumber.tax_number_by_tax(goods[:tax])
     put_quantity goods[:quantity]
     put_price goods[:price]
     put_position_sum goods[:price] * goods[:quantity]
+    put_position_type goods[:position_type] || PositionType::GOODS
+    put_position_payment_type goods[:position_payment_type] || PositionPaymentType::FULL_PAYMENT
     put_text_wrap TextWrap::TEXT_WRAP_WORD
     put_name goods[:name]
   end
@@ -77,16 +81,11 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     return_registration
   end
 
-  # Передавать товар в формате :quantity, :name, :price, :tax
-  # По умолчанию платеж Нал
-  def print_cheque_sell goods, summ, type = PaymentType::CASH, fiscal_props = [], print_cheque = false
+  def print_cheque_sell goods, payments = [], fiscal_props = [], print_cheque = false
     open_sell_cheque print_cheque
-
-    setup_fiscal_properties fiscal_props
-    goods.each do |goods_item|
-      register_goods goods_item
-    end
-    pay_for_goods summ, type
+    fiscal_props.each{|fiscal_prop| setup_fiscal_property(fiscal_prop)}
+    goods.each{|goods_item| register_goods(goods_item)}
+    payments.each{|pay| pay_for_goods(pay)}
     close_check
   rescue => e
     # Если возникли ошибки, то аннулируем чек
@@ -94,26 +93,16 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     raise e
   end
 
-  # Передавать товар в формате :quantity, :name, :price, :tax
-  # По умолчанию платеж Нал
-  def print_cheque_sell_return goods, summ, type = PaymentType::CASH, fiscal_props = [], print_cheque = false
+  def print_cheque_sell_return goods, payments = [], fiscal_props = [], print_cheque = false
     open_sell_return_cheque print_cheque
-    setup_fiscal_properties fiscal_props
-    goods.each do |goods_item|
-      return_goods goods_item
-    end
-    pay_for_goods summ, type
+    fiscal_props.each{|fiscal_prop| setup_fiscal_property(fiscal_prop)}
+    goods.each{|goods_item| return_goods(goods_item)}
+    payments.each{|pay| pay_for_goods(pay)}
     close_check
   rescue => e
     # Если возникли ошибки, то аннулируем чек
     new_document
     raise e
-  end
-
-  def setup_fiscal_properties fiscal_props = []
-    fiscal_props.each do |fiscal_prop|
-      setup_fiscal_property fiscal_prop
-    end
   end
 
   def print_text text, alignment = Alignment::ALIGNMENT_CENTER, wrap = TextWrap::TEXT_WRAP_WORD
