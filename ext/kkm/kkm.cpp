@@ -784,6 +784,32 @@ extern "C" VALUE method_get_test_mode(VALUE self){
   return rb_boolean;
 }
 
+extern "C" VALUE method_put_enable_check_summ(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_EnableCheckSumm(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_enable_check_summ(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_EnableCheckSumm(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
 extern "C" VALUE method_get_fiscal(VALUE self){
   int* number = new int;
   VALUE rb_boolean;
@@ -1214,6 +1240,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_device_settings", (ruby_method*) &method_get_device_settings, 0);
   rb_define_method(DeviceDriver, "get_doc_number", (ruby_method*) &method_get_doc_number, 0);
   rb_define_method(DeviceDriver, "get_discount_type", (ruby_method*) &method_get_discount_type, 0);
+  rb_define_method(DeviceDriver, "get_enable_check_summ", (ruby_method*) &method_get_enable_check_summ, 0);
   rb_define_method(DeviceDriver, "get_ffd_version", (ruby_method*) &method_get_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_fiscal", (ruby_method*) &method_get_fiscal, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_number", (ruby_method*) &method_get_fiscal_property_number, 0);
@@ -1267,6 +1294,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
   rb_define_method(DeviceDriver, "put_doc_number", (ruby_method*) &method_put_doc_number, 1);
   rb_define_method(DeviceDriver, "put_discount_type", (ruby_method*) &method_put_discount_type, 1);
+  rb_define_method(DeviceDriver, "put_enable_check_summ", (ruby_method*) &method_put_enable_check_summ, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_number", (ruby_method*) &method_put_fiscal_property_number, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_print", (ruby_method*) &method_put_fiscal_property_print, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_type", (ruby_method*) &method_put_fiscal_property_type, 1);
