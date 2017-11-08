@@ -261,6 +261,45 @@ extern "C" VALUE method_get_fn_error(VALUE self){
   return rb_number;
 }
 
+extern "C" VALUE method_get_fn_ffd_version(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_FNFfdVersion(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_get_device_ffd_version(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_DeviceFfdVersion(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_get_ffd_version(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_FfdVersion(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
 extern "C" VALUE method_get_current_status(VALUE self){
   if (get_ifptr(self)->GetCurrentStatus() < 0)
     check_error(self);
@@ -272,6 +311,7 @@ extern "C" VALUE method_get_current_mode(VALUE self){
     check_error(self);
   return Qnil;
 }
+
 
 extern "C" VALUE method_new_document(VALUE self){
   if (get_ifptr(self)->NewDocument() < 0)
@@ -389,6 +429,44 @@ extern "C" VALUE method_get_check_type(VALUE self){
   VALUE rb_number;
 
   if (get_ifptr(self)->get_CheckType(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_position_type(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_PositionType(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_position_type(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_PositionType(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_position_payment_type(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_PositionPaymentType(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_position_payment_type(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_PositionPaymentType(number) < 0)
     check_error(self);
 
   rb_number = INT2NUM(*number);
@@ -698,6 +776,32 @@ extern "C" VALUE method_get_test_mode(VALUE self){
   VALUE rb_boolean;
 
   if (get_ifptr(self)->get_TestMode(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_enable_check_summ(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_EnableCheckSumm(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_enable_check_summ(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_EnableCheckSumm(number) < 0)
     check_error(self);
 
   rb_boolean = *number == 1 ? Qtrue : Qfalse;
@@ -1132,14 +1236,18 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_current_caption", (ruby_method*) &method_get_current_caption, 0);
   rb_define_method(DeviceDriver, "get_date", (ruby_method*) &method_get_date, 0);
   rb_define_method(DeviceDriver, "get_device_enabled", (ruby_method*) &method_get_device_enabled, 0);
+  rb_define_method(DeviceDriver, "get_device_ffd_version", (ruby_method*) &method_get_device_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_device_settings", (ruby_method*) &method_get_device_settings, 0);
   rb_define_method(DeviceDriver, "get_doc_number", (ruby_method*) &method_get_doc_number, 0);
   rb_define_method(DeviceDriver, "get_discount_type", (ruby_method*) &method_get_discount_type, 0);
+  rb_define_method(DeviceDriver, "get_enable_check_summ", (ruby_method*) &method_get_enable_check_summ, 0);
+  rb_define_method(DeviceDriver, "get_ffd_version", (ruby_method*) &method_get_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_fiscal", (ruby_method*) &method_get_fiscal, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_number", (ruby_method*) &method_get_fiscal_property_number, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_print", (ruby_method*) &method_get_fiscal_property_print, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_type", (ruby_method*) &method_get_fiscal_property_type, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_value", (ruby_method*) &method_get_fiscal_property_value, 0);
+  rb_define_method(DeviceDriver, "get_fn_ffd_version", (ruby_method*) &method_get_fn_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_fn_error", (ruby_method*) &method_get_fn_error, 0);
   rb_define_method(DeviceDriver, "get_has_not_sended_docs", (ruby_method*) &method_get_has_not_sended_docs, 0);
   rb_define_method(DeviceDriver, "get_inn", (ruby_method*) &method_get_inn, 0);
@@ -1147,6 +1255,8 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
   rb_define_method(DeviceDriver, "get_network_error", (ruby_method*) &method_get_network_error, 0);
   rb_define_method(DeviceDriver, "get_ofd_error", (ruby_method*) &method_get_ofd_error, 0);
+  rb_define_method(DeviceDriver, "get_position_payment_type", (ruby_method*) &method_get_position_payment_type, 0);
+  rb_define_method(DeviceDriver, "get_position_type", (ruby_method*) &method_get_position_type, 0);
   rb_define_method(DeviceDriver, "get_position_sum", (ruby_method*) &method_get_position_sum, 0);
   rb_define_method(DeviceDriver, "get_price", (ruby_method*) &method_get_price, 0);
   rb_define_method(DeviceDriver, "get_print_check", (ruby_method*) &method_get_print_check, 0);
@@ -1184,6 +1294,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
   rb_define_method(DeviceDriver, "put_doc_number", (ruby_method*) &method_put_doc_number, 1);
   rb_define_method(DeviceDriver, "put_discount_type", (ruby_method*) &method_put_discount_type, 1);
+  rb_define_method(DeviceDriver, "put_enable_check_summ", (ruby_method*) &method_put_enable_check_summ, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_number", (ruby_method*) &method_put_fiscal_property_number, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_print", (ruby_method*) &method_put_fiscal_property_print, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_type", (ruby_method*) &method_put_fiscal_property_type, 1);
@@ -1191,6 +1302,8 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_inn", (ruby_method*) &method_put_inn, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
+  rb_define_method(DeviceDriver, "put_position_payment_type", (ruby_method*) &method_put_position_payment_type, 1);
+  rb_define_method(DeviceDriver, "put_position_type", (ruby_method*) &method_put_position_type, 1);
   rb_define_method(DeviceDriver, "put_position_sum", (ruby_method*) &method_put_position_sum, 1);
   rb_define_method(DeviceDriver, "put_price", (ruby_method*) &method_put_price, 1);
   rb_define_method(DeviceDriver, "put_print_check", (ruby_method*) &method_put_print_check, 1);
