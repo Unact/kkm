@@ -99,11 +99,17 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     raise e
   end
 
-  def print_text text, alignment = Alignment::ALIGNMENT_CENTER, wrap = TextWrap::TEXT_WRAP_WORD
+  def print_text text = "", alignment = Alignment::ALIGNMENT_CENTER, wrap = TextWrap::TEXT_WRAP_WORD
     put_caption text
     put_text_wrap wrap
     put_alignment alignment
     print_string
+  end
+
+  def print_slip &block
+    yield self
+    (0..CHEQUE_CUT_LINES).each{ print_text }
+    partial_cut
   end
 
   # Установить фискальный параметр в ККМ
@@ -158,6 +164,13 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   def last_check_datetime
     get_register_by_number RegisterNumber::LAST_CHECK_INFO
     get_time
+  end
+
+  def payment_register payment_type = PaymentType::CASH, check_type = ChequeType::CHEQUE_SELL
+    put_check_type check_type
+    put_type_close payment_type
+    get_register_by_number RegisterNumber::PAYMENT_SUM
+    get_summ
   end
 
   def last_check_info
