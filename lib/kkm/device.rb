@@ -5,11 +5,11 @@ class Kkm::Device
 
   # Если возникает ошибка, ККМ обязательно надо выключить
   def work &block
-      @device_driver.turn_on
-      yield @device_driver
-      @device_driver.turn_off
-    rescue => error
-      @device_driver.turn_off
-      raise error.message
+    @device_driver.turn_on
+    yield @device_driver
+  rescue => error
+    raise error.message
+  ensure
+    @device_driver.turn_off
   end
 end
