@@ -7,7 +7,7 @@ module Kkm::Constants::TaxNumber
   TAX_18_118  = 6   # НДС 18/118
 
   def self.tax_number_by_tax tax
-    case tax
+    case tax.to_sym
     when :'0'
       TAX_0
     when :'10'
