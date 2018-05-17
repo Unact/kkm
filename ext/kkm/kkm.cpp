@@ -1140,6 +1140,19 @@ extern "C" VALUE method_get_print_check(VALUE self){
   return rb_boolean;
 }
 
+extern "C" VALUE method_get_session_opened(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_SessionOpened(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
 extern "C" VALUE method_put_device_enabled(VALUE self, VALUE rb_boolean){
   int number;
   if (rb_boolean == Qtrue){
@@ -1267,6 +1280,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_report_type", (ruby_method*) &method_get_report_type, 0);
   rb_define_method(DeviceDriver, "get_status", (ruby_method*) &method_get_status, 0);
   rb_define_method(DeviceDriver, "get_serial_number", (ruby_method*) &method_get_serial_number, 0);
+  rb_define_method(DeviceDriver, "get_session_opened", (ruby_method*) &method_get_session_opened, 0);
   rb_define_method(DeviceDriver, "get_summ", (ruby_method*) &method_get_summ, 0);
   rb_define_method(DeviceDriver, "get_tax_number", (ruby_method*) &method_get_tax_number, 0);
   rb_define_method(DeviceDriver, "get_test_mode", (ruby_method*) &method_get_test_mode, 0);
