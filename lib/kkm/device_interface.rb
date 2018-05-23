@@ -38,8 +38,9 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     report
   end
 
-  def open_cheque_by_type cheque_type, print_cheque = false
+  def open_cheque_by_type cheque_type, fiscal_props = [], print_cheque = false
     setup_mode Mode::MODE_REGISTRATION
+    setup_cashier fiscal_props
     put_check_type cheque_type
     put_print_check print_cheque
     open_check
@@ -76,7 +77,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   def print_cheque_sell goods, payments = [], fiscal_props = [], print_cheque = false
-    open_cheque_by_type ChequeType::CHEQUE_SELL, print_cheque
+    open_cheque_by_type ChequeType::CHEQUE_SELL, fiscal_props, print_cheque
     fiscal_props.each{|fiscal_prop| setup_fiscal_property(fiscal_prop)}
     goods.each{|goods_item| register_goods(goods_item)}
     payments.each{|pay| pay_for_goods(pay)}
@@ -88,7 +89,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   def print_cheque_sell_return goods, payments = [], fiscal_props = [], print_cheque = false
-    open_cheque_by_type ChequeType::CHEQUE_SELL_RETURN, print_cheque
+    open_cheque_by_type ChequeType::CHEQUE_SELL_RETURN, fiscal_props, print_cheque
     fiscal_props.each{|fiscal_prop| setup_fiscal_property(fiscal_prop)}
     goods.each{|goods_item| return_goods(goods_item)}
     payments.each{|pay| pay_for_goods(pay)}
@@ -110,6 +111,16 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     yield self
     (0..CHEQUE_CUT_LINES).each{ print_text }
     partial_cut
+  end
+
+  def close_day fiscal_props = []
+    setup_cashier fiscal_props
+    print_report(Kkm::Constants::ReportType::REPORT_Z)
+  end
+
+  def setup_cashier fiscal_props
+    cashier_fiscal_prop = fiscal_props.find{|prop| prop[:number] == Kkm::Constants::FiscalProperty::CASHIER}
+    setup_fiscal_property(cashier_fiscal_prop) if cashier_fiscal_prop
   end
 
   # Установить фискальный параметр в ККМ
