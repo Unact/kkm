@@ -18,7 +18,7 @@
 
 ## Работа с гемом
 
-Для работы с устройством ККМ необходимо создать экземпляр [`Kkm::Device`](`https://github.com/Unact/kkm/blob/master/lib/kkm/device.rb`)  
+Для работы с устройством ККМ необходимо создать экземпляр [`Kkm::Device`](https://github.com/Unact/kkm/blob/master/lib/kkm/device.rb)  
 При этом будет автоматически включен ККМ и по завершению выключен  
 В результате выполнения ККМ(по настройкам соединения в `./spec/device/kkm.yaml`) должен издать звук и распечатать текст "OMG"
 
@@ -31,7 +31,7 @@
   end
 ```
 
-Если нужен контроль над включением/выключением ККМ, то необходимо создать экземпляр [`Kkm::DeviceInterface`](`https://github.com/Unact/kkm/blob/master/lib/kkm/device_interface.rb`)  
+Если нужен контроль над включением/выключением ККМ, то необходимо создать экземпляр [`Kkm::DeviceInterface`](https://github.com/Unact/kkm/blob/master/lib/kkm/device_interface.rb)  
 Результат должен быть таким же, как и пример выше
 
 ```ruby
@@ -45,6 +45,6 @@
 
 ## Доработка гема
 
-Все новые методы(методы которые состоят из нескольких методов АТОЛ), следует реализовывать на ruby, в классе [`Kkm::DeviceInterface`](`https://github.com/Unact/kkm/blob/master/lib/kkm/device_interface.rb`)
+Все новые методы(методы которые состоят из нескольких методов АТОЛ), следует реализовывать на ruby, в классе [`Kkm::DeviceInterface`](https://github.com/Unact/kkm/blob/master/lib/kkm/device_interface.rb)
 
 Все доработки методов из [`ifptr.h`](https://github.com/Unact/kkm/blob/master/ext/kkm/lib/include/ifptr.h) стоит производить в основном `.cpp` файле гема
