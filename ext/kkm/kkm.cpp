@@ -45,7 +45,7 @@ extern "C" VALUE wchar_to_rb_string(wchar_t* wc_string){
 
 extern "C" TED::Fptr::IFptr* get_ifptr(VALUE self){
   TED::Fptr::IFptr *ifptr;
-	Data_Get_Struct(self, TED::Fptr::IFptr, ifptr);
+  Data_Get_Struct(self, TED::Fptr::IFptr, ifptr);
 
   return ifptr;
 }
@@ -1210,15 +1210,15 @@ extern "C" void free_device_driver(TED::Fptr::IFptr *ifptr) {
 
 // Для работы с C данными
 extern "C" VALUE alloc_device_driver(VALUE self) {
-	return Data_Wrap_Struct(self, NULL, free_device_driver, CreateFptrInterface(DTO_IFPTR_VER1));
+  return Data_Wrap_Struct(self, NULL, free_device_driver, CreateFptrInterface(DTO_IFPTR_VER1));
 }
 
 extern "C" VALUE method_initialize(VALUE self, VALUE settings) {
-	TED::Fptr::IFptr *ifptr = get_ifptr(self);
+  TED::Fptr::IFptr *ifptr = get_ifptr(self);
 
   method_put_device_settings(self, settings);
 
-	return self;
+  return self;
 }
 
 // ************************
@@ -1227,12 +1227,12 @@ extern "C" VALUE method_initialize(VALUE self, VALUE settings) {
 
 // Метод который объявляет весь модуль
 extern "C" void Init_kkm() {
-	Kkm = rb_define_module("Kkm");
+  Kkm = rb_define_module("Kkm");
   DeviceDriver = rb_define_class_under(Kkm, "DeviceDriver", rb_cObject);
   DeviceDriverError = rb_define_class_under(Kkm, "DeviceDriverError", rb_eStandardError);
 
-	rb_define_alloc_func(DeviceDriver, alloc_device_driver);
-	rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
+  rb_define_alloc_func(DeviceDriver, alloc_device_driver);
+  rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
   rb_define_method(DeviceDriver, "beep", (ruby_method*) &method_beep, 0);
   rb_define_method(DeviceDriver, "cancel_check", (ruby_method*) &method_cancel_check, 0);
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
