@@ -607,6 +607,333 @@ extern "C" VALUE method_get_text_wrap(VALUE self){
   return rb_number;
 }
 
+extern "C" VALUE method_put_print_purpose(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_PrintPurpose(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_print_purpose(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_PrintPurpose(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_receipt_font(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_ReceiptFont(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_receipt_font(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_ReceiptFont(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_receipt_font_height(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_ReceiptFontHeight(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_receipt_font_height(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_ReceiptFontHeight(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_receipt_linespacing(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_ReceiptLinespacing(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_receipt_linespacing(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_ReceiptLinespacing(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_receipt_brightness(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_ReceiptBrightness(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_receipt_brightness(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_ReceiptBrightness(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_journal_font(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_JournalFont(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_journal_font(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_JournalFont(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_journal_font_height(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_JournalFontHeight(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_journal_font_height(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_JournalFontHeight(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_journal_linespacing(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_JournalLinespacing(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_journal_linespacing(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_JournalLinespacing(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_journal_brightness(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_JournalBrightness(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_journal_brightness(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_JournalBrightness(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_font_negative(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FontNegative(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_font_negative(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FontNegative(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_font_underline(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FontUnderline(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_font_underline(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FontUnderline(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_font_bold(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FontBold(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_font_bold(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FontBold(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_font_dbl_width(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FontDblWidth(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_font_dbl_width(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FontDblWidth(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_font_dbl_height(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FontDblHeight(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_font_dbl_height(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FontDblHeight(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_font_italic(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FontItalic(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_font_italic(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FontItalic(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
 extern "C" VALUE method_put_alignment(VALUE self, VALUE number){
   if (get_ifptr(self)->put_Alignment(NUM2INT(number)) < 0)
     check_error(self);
@@ -1255,6 +1582,12 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_discount_type", (ruby_method*) &method_get_discount_type, 0);
   rb_define_method(DeviceDriver, "get_enable_check_summ", (ruby_method*) &method_get_enable_check_summ, 0);
   rb_define_method(DeviceDriver, "get_ffd_version", (ruby_method*) &method_get_ffd_version, 0);
+  rb_define_method(DeviceDriver, "get_font_negative", (ruby_method*) &method_get_font_negative, 0);
+  rb_define_method(DeviceDriver, "get_font_underline", (ruby_method*) &method_get_font_underline, 0);
+  rb_define_method(DeviceDriver, "get_font_bold", (ruby_method*) &method_get_font_bold, 0);
+  rb_define_method(DeviceDriver, "get_font_dbl_width", (ruby_method*) &method_get_font_dbl_width, 0);
+  rb_define_method(DeviceDriver, "get_font_dbl_height", (ruby_method*) &method_get_font_dbl_height, 0);
+  rb_define_method(DeviceDriver, "get_font_italic", (ruby_method*) &method_get_font_italic, 0);
   rb_define_method(DeviceDriver, "get_fiscal", (ruby_method*) &method_get_fiscal, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_number", (ruby_method*) &method_get_fiscal_property_number, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_print", (ruby_method*) &method_get_fiscal_property_print, 0);
@@ -1262,6 +1595,10 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_fiscal_property_value", (ruby_method*) &method_get_fiscal_property_value, 0);
   rb_define_method(DeviceDriver, "get_fn_ffd_version", (ruby_method*) &method_get_fn_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_fn_error", (ruby_method*) &method_get_fn_error, 0);
+  rb_define_method(DeviceDriver, "get_journal_font", (ruby_method*) &method_get_journal_font, 0);
+  rb_define_method(DeviceDriver, "get_journal_font_height", (ruby_method*) &method_get_journal_font_height, 0);
+  rb_define_method(DeviceDriver, "get_journal_linespacing", (ruby_method*) &method_get_journal_linespacing, 0);
+  rb_define_method(DeviceDriver, "get_journal_brightness", (ruby_method*) &method_get_journal_brightness, 0);
   rb_define_method(DeviceDriver, "get_has_not_sended_docs", (ruby_method*) &method_get_has_not_sended_docs, 0);
   rb_define_method(DeviceDriver, "get_inn", (ruby_method*) &method_get_inn, 0);
   rb_define_method(DeviceDriver, "get_mode", (ruby_method*) &method_get_mode, 0);
@@ -1273,7 +1610,12 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_position_sum", (ruby_method*) &method_get_position_sum, 0);
   rb_define_method(DeviceDriver, "get_price", (ruby_method*) &method_get_price, 0);
   rb_define_method(DeviceDriver, "get_print_check", (ruby_method*) &method_get_print_check, 0);
+  rb_define_method(DeviceDriver, "get_print_purpose", (ruby_method*) &method_get_print_purpose, 0);
   rb_define_method(DeviceDriver, "get_quantity", (ruby_method*) &method_get_quantity, 0);
+  rb_define_method(DeviceDriver, "get_receipt_font", (ruby_method*) &method_get_receipt_font, 0);
+  rb_define_method(DeviceDriver, "get_receipt_font_height", (ruby_method*) &method_get_receipt_font_height, 0);
+  rb_define_method(DeviceDriver, "get_receipt_linespacing", (ruby_method*) &method_get_receipt_linespacing, 0);
+  rb_define_method(DeviceDriver, "get_receipt_brightness", (ruby_method*) &method_get_receipt_brightness, 0);
   rb_define_method(DeviceDriver, "get_register", (ruby_method*) &method_get_register, 0);
   rb_define_method(DeviceDriver, "get_register_number", (ruby_method*) &method_get_register_number, 0);
   rb_define_method(DeviceDriver, "get_remainder", (ruby_method*) &method_get_remainder, 0);
@@ -1309,10 +1651,20 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_doc_number", (ruby_method*) &method_put_doc_number, 1);
   rb_define_method(DeviceDriver, "put_discount_type", (ruby_method*) &method_put_discount_type, 1);
   rb_define_method(DeviceDriver, "put_enable_check_summ", (ruby_method*) &method_put_enable_check_summ, 1);
+  rb_define_method(DeviceDriver, "put_font_negative", (ruby_method*) &method_put_font_negative, 1);
+  rb_define_method(DeviceDriver, "put_font_underline", (ruby_method*) &method_put_font_underline, 1);
+  rb_define_method(DeviceDriver, "put_font_bold", (ruby_method*) &method_put_font_bold, 1);
+  rb_define_method(DeviceDriver, "put_font_dbl_width", (ruby_method*) &method_put_font_dbl_width, 1);
+  rb_define_method(DeviceDriver, "put_font_dbl_height", (ruby_method*) &method_put_font_dbl_height, 1);
+  rb_define_method(DeviceDriver, "put_font_italic", (ruby_method*) &method_put_font_italic, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_number", (ruby_method*) &method_put_fiscal_property_number, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_print", (ruby_method*) &method_put_fiscal_property_print, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_type", (ruby_method*) &method_put_fiscal_property_type, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_value", (ruby_method*) &method_put_fiscal_property_value, 1);
+  rb_define_method(DeviceDriver, "put_journal_font", (ruby_method*) &method_put_journal_font, 1);
+  rb_define_method(DeviceDriver, "put_journal_font_height", (ruby_method*) &method_put_journal_font_height, 1);
+  rb_define_method(DeviceDriver, "put_journal_linespacing", (ruby_method*) &method_put_journal_linespacing, 1);
+  rb_define_method(DeviceDriver, "put_journal_brightness", (ruby_method*) &method_put_journal_brightness, 1);
   rb_define_method(DeviceDriver, "put_inn", (ruby_method*) &method_put_inn, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
@@ -1321,7 +1673,12 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_position_sum", (ruby_method*) &method_put_position_sum, 1);
   rb_define_method(DeviceDriver, "put_price", (ruby_method*) &method_put_price, 1);
   rb_define_method(DeviceDriver, "put_print_check", (ruby_method*) &method_put_print_check, 1);
+  rb_define_method(DeviceDriver, "put_print_purpose", (ruby_method*) &method_put_print_purpose, 1);
   rb_define_method(DeviceDriver, "put_quantity", (ruby_method*) &method_put_quantity, 1);
+  rb_define_method(DeviceDriver, "put_receipt_font", (ruby_method*) &method_put_receipt_font, 1);
+  rb_define_method(DeviceDriver, "put_receipt_font_height", (ruby_method*) &method_put_receipt_font_height, 1);
+  rb_define_method(DeviceDriver, "put_receipt_linespacing", (ruby_method*) &method_put_receipt_linespacing, 1);
+  rb_define_method(DeviceDriver, "put_receipt_brightness", (ruby_method*) &method_put_receipt_brightness, 1);
   rb_define_method(DeviceDriver, "put_register_number", (ruby_method*) &method_put_register_number, 1);
   rb_define_method(DeviceDriver, "put_report_type", (ruby_method*) &method_put_report_type, 1);
   rb_define_method(DeviceDriver, "put_serial_number", (ruby_method*) &method_put_serial_number, 1);

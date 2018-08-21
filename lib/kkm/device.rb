@@ -8,7 +8,7 @@ class Kkm::Device
     @device_driver.turn_on
     yield @device_driver
   rescue => error
-    raise error.message
+    raise error
   ensure
     @device_driver.turn_off
   end
