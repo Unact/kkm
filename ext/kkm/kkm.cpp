@@ -1480,6 +1480,87 @@ extern "C" VALUE method_get_session_opened(VALUE self){
   return rb_boolean;
 }
 
+extern "C" VALUE method_put_file_name(VALUE self, VALUE rb_string){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  rb_string_to_wchar(rb_string, wc_string);
+
+  if (get_ifptr(self)->put_FileName(wc_string) < 0)
+    check_error(self);
+
+  delete[] wc_string;
+  return Qnil;
+}
+
+extern "C" VALUE method_get_file_name(VALUE self) {
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string;
+
+  if (get_ifptr(self)->get_FileName(wc_string, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string = wchar_to_rb_string(wc_string);
+
+  delete[] wc_string;
+  return rb_string;
+}
+
+extern "C" VALUE method_put_left_margin(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_LeftMargin(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_left_margin(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_LeftMargin(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_put_scale(VALUE self, VALUE dbl){
+  if (get_ifptr(self)->put_Scale(NUM2DBL(dbl)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_scale(VALUE self){
+  double* dbl = new double;
+  VALUE rb_dbl;
+
+  if (get_ifptr(self)->get_Scale(dbl) < 0)
+    check_error(self);
+
+  rb_dbl = rb_float_new(*dbl);
+
+  delete dbl;
+  return rb_dbl;
+}
+
+extern "C" VALUE method_get_pixel_line_length(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_PixelLineLength(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
+extern "C" VALUE method_print_picture(VALUE self){
+  if (get_ifptr(self)->PrintPicture() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_put_device_enabled(VALUE self, VALUE rb_boolean){
   int number;
   if (rb_boolean == Qtrue){
@@ -1588,6 +1669,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_font_dbl_width", (ruby_method*) &method_get_font_dbl_width, 0);
   rb_define_method(DeviceDriver, "get_font_dbl_height", (ruby_method*) &method_get_font_dbl_height, 0);
   rb_define_method(DeviceDriver, "get_font_italic", (ruby_method*) &method_get_font_italic, 0);
+  rb_define_method(DeviceDriver, "get_file_name", (ruby_method*) &method_get_file_name, 0);
   rb_define_method(DeviceDriver, "get_fiscal", (ruby_method*) &method_get_fiscal, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_number", (ruby_method*) &method_get_fiscal_property_number, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_print", (ruby_method*) &method_get_fiscal_property_print, 0);
@@ -1601,10 +1683,12 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_journal_brightness", (ruby_method*) &method_get_journal_brightness, 0);
   rb_define_method(DeviceDriver, "get_has_not_sended_docs", (ruby_method*) &method_get_has_not_sended_docs, 0);
   rb_define_method(DeviceDriver, "get_inn", (ruby_method*) &method_get_inn, 0);
+  rb_define_method(DeviceDriver, "get_left_margin", (ruby_method*) &method_get_left_margin, 0);
   rb_define_method(DeviceDriver, "get_mode", (ruby_method*) &method_get_mode, 0);
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
   rb_define_method(DeviceDriver, "get_network_error", (ruby_method*) &method_get_network_error, 0);
   rb_define_method(DeviceDriver, "get_ofd_error", (ruby_method*) &method_get_ofd_error, 0);
+  rb_define_method(DeviceDriver, "get_pixel_line_length", (ruby_method*) &method_get_pixel_line_length, 0);
   rb_define_method(DeviceDriver, "get_position_payment_type", (ruby_method*) &method_get_position_payment_type, 0);
   rb_define_method(DeviceDriver, "get_position_type", (ruby_method*) &method_get_position_type, 0);
   rb_define_method(DeviceDriver, "get_position_sum", (ruby_method*) &method_get_position_sum, 0);
@@ -1620,9 +1704,10 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_register_number", (ruby_method*) &method_get_register_number, 0);
   rb_define_method(DeviceDriver, "get_remainder", (ruby_method*) &method_get_remainder, 0);
   rb_define_method(DeviceDriver, "get_report_type", (ruby_method*) &method_get_report_type, 0);
-  rb_define_method(DeviceDriver, "get_status", (ruby_method*) &method_get_status, 0);
+  rb_define_method(DeviceDriver, "get_scale", (ruby_method*) &method_get_scale, 0);
   rb_define_method(DeviceDriver, "get_serial_number", (ruby_method*) &method_get_serial_number, 0);
   rb_define_method(DeviceDriver, "get_session_opened", (ruby_method*) &method_get_session_opened, 0);
+  rb_define_method(DeviceDriver, "get_status", (ruby_method*) &method_get_status, 0);
   rb_define_method(DeviceDriver, "get_summ", (ruby_method*) &method_get_summ, 0);
   rb_define_method(DeviceDriver, "get_tax_number", (ruby_method*) &method_get_tax_number, 0);
   rb_define_method(DeviceDriver, "get_test_mode", (ruby_method*) &method_get_test_mode, 0);
@@ -1638,6 +1723,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "print_formatted_text", (ruby_method*) &method_print_formatted_text, 0);
   rb_define_method(DeviceDriver, "print_footer", (ruby_method*) &method_print_footer, 0);
   rb_define_method(DeviceDriver, "print_header", (ruby_method*) &method_print_header, 0);
+  rb_define_method(DeviceDriver, "print_picture", (ruby_method*) &method_print_picture, 0);
   rb_define_method(DeviceDriver, "print_string", (ruby_method*) &method_print_string, 0);
   rb_define_method(DeviceDriver, "put_alignment", (ruby_method*) &method_put_alignment, 1);
   rb_define_method(DeviceDriver, "put_caption", (ruby_method*) &method_put_caption, 1);
@@ -1657,6 +1743,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_font_dbl_width", (ruby_method*) &method_put_font_dbl_width, 1);
   rb_define_method(DeviceDriver, "put_font_dbl_height", (ruby_method*) &method_put_font_dbl_height, 1);
   rb_define_method(DeviceDriver, "put_font_italic", (ruby_method*) &method_put_font_italic, 1);
+  rb_define_method(DeviceDriver, "put_file_name", (ruby_method*) &method_put_file_name, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_number", (ruby_method*) &method_put_fiscal_property_number, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_print", (ruby_method*) &method_put_fiscal_property_print, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_type", (ruby_method*) &method_put_fiscal_property_type, 1);
@@ -1666,6 +1753,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_journal_linespacing", (ruby_method*) &method_put_journal_linespacing, 1);
   rb_define_method(DeviceDriver, "put_journal_brightness", (ruby_method*) &method_put_journal_brightness, 1);
   rb_define_method(DeviceDriver, "put_inn", (ruby_method*) &method_put_inn, 1);
+  rb_define_method(DeviceDriver, "put_left_margin", (ruby_method*) &method_put_left_margin, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
   rb_define_method(DeviceDriver, "put_position_payment_type", (ruby_method*) &method_put_position_payment_type, 1);
@@ -1681,6 +1769,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_receipt_brightness", (ruby_method*) &method_put_receipt_brightness, 1);
   rb_define_method(DeviceDriver, "put_register_number", (ruby_method*) &method_put_register_number, 1);
   rb_define_method(DeviceDriver, "put_report_type", (ruby_method*) &method_put_report_type, 1);
+  rb_define_method(DeviceDriver, "put_scale", (ruby_method*) &method_put_scale, 1);
   rb_define_method(DeviceDriver, "put_serial_number", (ruby_method*) &method_put_serial_number, 1);
   rb_define_method(DeviceDriver, "put_summ", (ruby_method*) &method_put_summ, 1);
   rb_define_method(DeviceDriver, "put_tax_number", (ruby_method*) &method_put_tax_number, 1);
