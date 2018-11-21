@@ -312,7 +312,6 @@ extern "C" VALUE method_get_current_mode(VALUE self){
   return Qnil;
 }
 
-
 extern "C" VALUE method_new_document(VALUE self){
   if (get_ifptr(self)->NewDocument() < 0)
     check_error(self);
@@ -492,6 +491,18 @@ extern "C" VALUE method_get_doc_number(VALUE self){
 
   delete number;
   return rb_number;
+}
+
+extern "C" VALUE method_cash_income(VALUE self){
+  if (get_ifptr(self)->CashIncome() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_cash_outcome(VALUE self){
+  if (get_ifptr(self)->CashOutcome() < 0)
+    check_error(self);
+  return Qnil;
 }
 
 extern "C" VALUE method_put_check_number(VALUE self, VALUE number){
@@ -1643,6 +1654,8 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
   rb_define_method(DeviceDriver, "beep", (ruby_method*) &method_beep, 0);
   rb_define_method(DeviceDriver, "cancel_check", (ruby_method*) &method_cancel_check, 0);
+  rb_define_method(DeviceDriver, "cash_income", (ruby_method*) &method_cash_income, 0);
+  rb_define_method(DeviceDriver, "cash_outcome", (ruby_method*) &method_cash_outcome, 0);  
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
   rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
