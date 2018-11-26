@@ -56,7 +56,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   # :enable_check_summ, :text_wrap, :quantity, :name, :price, :tax, :position_type, :position_payment_type
   def setup_goods_info goods
     put_enable_check_summ goods[:enable_check_summ] || false
-    put_tax_number TaxNumber.tax_number_by_tax(goods[:tax])
+    put_tax_number goods[:tax] || TaxNumber::TAX_NONE
     put_quantity goods[:quantity]
     put_price goods[:price]
     put_position_sum goods[:price] * goods[:quantity]
@@ -200,6 +200,16 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     "t=#{last_check_datetime.strftime("%Y%m%dT%H%M%S")}&s=#{last_check_sum}" +
     "&fn=#{fiscal_storage_number}&i=#{last_check_doc_number}" +
     "&fp=#{last_check_fiscal_doc_number}&n=#{last_check_type}"
+  end
+
+  def machine_number
+    get_register_by_number RegisterNumber::FISCAL_PARAMS
+    get_machine_number.strip
+  end
+
+  def factory_number
+    get_register_by_number RegisterNumber::FACTORY_NUMBER
+    get_serial_number
   end
 
   def fiscal_storage_number
