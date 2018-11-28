@@ -217,6 +217,19 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     get_serial_number
   end
 
+  def current_datetime
+    get_register_by_number RegisterNumber::CURRENT_DATETIME
+    get_time
+  end
+
+  def current_session
+    get_register_by_number RegisterNumber::CURRENT_SESSION
+    {
+      opened: get_session_opened,
+      datetime: get_time
+    }
+  end
+
   def get_register_by_number number
     put_register_number number
     get_register
