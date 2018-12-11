@@ -222,8 +222,33 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     get_time
   end
 
-  def current_session
-    get_register_by_number RegisterNumber::CURRENT_SESSION
+  # Номер ИНН указанный при фискализации
+  def fiscal_inn
+    get_register_by_number RegisterNumber::FISCAL_PARAMS
+    get_inn
+  end
+
+  # Сквозной номер документа
+  def current_doc_number
+    get_register_by_number RegisterNumber::CURRENT_CHECK_DOC
+    get_doc_number
+  end
+
+  # Номер смены последней смены ФН
+  def last_check_session_number
+    get_register_by_number RegisterNumber::LAST_CHECK_SESSION
+    get_session
+  end
+
+  # Номер чека последней смены ФН
+  def last_check_session_check_number
+    get_register_by_number RegisterNumber::LAST_CHECK_SESSION
+    get_check_number
+  end
+
+  # Информация о закрытости смены
+  def current_close_session
+    get_register_by_number RegisterNumber::CURRENT_CLOSE_SESSION
     {
       opened: get_session_opened,
       datetime: get_time

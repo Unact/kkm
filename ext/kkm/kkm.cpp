@@ -1491,6 +1491,25 @@ extern "C" VALUE method_get_session_opened(VALUE self){
   return rb_boolean;
 }
 
+extern "C" VALUE method_put_session(VALUE self, VALUE number){
+  if (get_ifptr(self)->put_Session(NUM2INT(number)) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_session(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_Session(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
 extern "C" VALUE method_put_file_name(VALUE self, VALUE rb_string){
   wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
   rb_string_to_wchar(rb_string, wc_string);
@@ -1744,6 +1763,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_report_type", (ruby_method*) &method_get_report_type, 0);
   rb_define_method(DeviceDriver, "get_scale", (ruby_method*) &method_get_scale, 0);
   rb_define_method(DeviceDriver, "get_serial_number", (ruby_method*) &method_get_serial_number, 0);
+  rb_define_method(DeviceDriver, "get_session", (ruby_method*) &method_get_session, 0);
   rb_define_method(DeviceDriver, "get_session_opened", (ruby_method*) &method_get_session_opened, 0);
   rb_define_method(DeviceDriver, "get_status", (ruby_method*) &method_get_status, 0);
   rb_define_method(DeviceDriver, "get_summ", (ruby_method*) &method_get_summ, 0);
@@ -1809,6 +1829,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_register_number", (ruby_method*) &method_put_register_number, 1);
   rb_define_method(DeviceDriver, "put_report_type", (ruby_method*) &method_put_report_type, 1);
   rb_define_method(DeviceDriver, "put_scale", (ruby_method*) &method_put_scale, 1);
+  rb_define_method(DeviceDriver, "put_session", (ruby_method*) &method_put_session, 1);
   rb_define_method(DeviceDriver, "put_serial_number", (ruby_method*) &method_put_serial_number, 1);
   rb_define_method(DeviceDriver, "put_summ", (ruby_method*) &method_put_summ, 1);
   rb_define_method(DeviceDriver, "put_tax_number", (ruby_method*) &method_put_tax_number, 1);
