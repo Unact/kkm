@@ -1,5 +1,6 @@
 require 'kkm/kkm'
 require 'kkm/constants'
+require 'kkm/constants/agent_type'
 require 'kkm/constants/position_type'
 require 'kkm/constants/position_payment_type'
 require 'kkm/constants/ffd_version'

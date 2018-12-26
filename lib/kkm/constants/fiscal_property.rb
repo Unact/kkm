@@ -5,6 +5,7 @@ module Kkm::Constants::FiscalProperty
   TRANSFER_OPERATOR_INN     = 1016
   CASHIER                   = 1021
   TRANSFER_OPERATOR_NAME    = 1026
+  AGENT_TYPE                = 1057
   TRANSFER_OPERATOR_PHONE   = 1075
   ADDITIONAL_CHEQUE_PARAM   = 1192
 end
