@@ -10,6 +10,7 @@ module Kkm::Constants::PositionType
   LOTTERY_WIN       = 8  # Выгрыш лотереи
   INTELLECT_RESULT  = 9  # Предоставление РИД (Результата интеллектуальной деятельности)
   PAYMENT           = 10 # Платеж
-  COMPOSITE         = 11 # Составной предмет расчета
-  OTHER             = 12 # Иной предмет расчета
+  AGENT_REWARD      = 11 # Агентское вознаграждение
+  COMPOSITE         = 12 # Составной предмет расчета
+  OTHER             = 13 # Иной предмет расчета
 end
