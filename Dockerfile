@@ -6,7 +6,7 @@ RUN locale-gen ru_RU.UTF-8
 ENV LANG ru_RU.UTF-8
 ENV LANGUAGE ru_RU:ru
 ENV LC_ALL ru_RU.UTF-8
-RUN gem install bundler
+RUN gem install bundler -v 1.17.1
 
 ENV app /app
 

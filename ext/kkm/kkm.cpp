@@ -12,7 +12,6 @@ typedef VALUE (ruby_method)(...);
 // C(Qnil) == Ruby(nil)
 VALUE Kkm = Qnil;
 VALUE DeviceDriver = Qnil;
-VALUE DeviceDriverError = Qnil;
 
 // Для работы с char и wchar_t всегда используется буффер этого размера
 int BUFFER_MAX_SIZE = 2000;
@@ -37,7 +36,7 @@ extern "C" VALUE wchar_to_rb_string(wchar_t* wc_string){
   VALUE rb_string;
 
   wchar_to_char(wc_string, c_string);
-  rb_string = rb_str_new2(c_string);
+  rb_string = rb_enc_str_new_cstr(c_string, rb_enc_find("UTF-8"));
 
   delete[] c_string;
   return rb_string;
@@ -53,78 +52,38 @@ extern "C" TED::Fptr::IFptr* get_ifptr(VALUE self){
 // Обработчик ошибок из ККМ
 extern "C" void check_error(VALUE self) {
   TED::Fptr::IFptr *ifptr = get_ifptr(self);
+  VALUE DeviceDriverError = rb_const_get(Kkm, rb_intern("DeviceDriverError"));
   int result_code = EC_OK;
   wchar_t* wc_result_error = new wchar_t[BUFFER_MAX_SIZE];
   wchar_t* wc_bad_param_error = new wchar_t[BUFFER_MAX_SIZE];
-  wchar_t* wc_ip_address = new wchar_t[BUFFER_MAX_SIZE];
-  wchar_t* wc_device_name = new wchar_t[BUFFER_MAX_SIZE];
-  char* c_ip_address = new char[BUFFER_MAX_SIZE];
-  char* c_device_name = new char[BUFFER_MAX_SIZE];
-  char* c_result_error = new char[BUFFER_MAX_SIZE];
-  char* c_bad_param_error = new char[BUFFER_MAX_SIZE];
-  int error_result;
-  rb_encoding* rb_utf8 = rb_enc_find("UTF-8");
+  VALUE rb_result_error_msg;
+  int result;
 
-  ifptr->get_DeviceSingleSetting(L"IPAddress", wc_ip_address, BUFFER_MAX_SIZE);
-  ifptr->get_DeviceSingleSetting(L"DeviceName", wc_device_name, BUFFER_MAX_SIZE);
-  wchar_to_char(wc_ip_address, c_ip_address);
-  wchar_to_char(wc_device_name, c_device_name);
   ifptr->get_ResultCode(&result_code);
 
   if (result_code < 0) {
-    error_result = ifptr->get_ResultDescription(wc_result_error, BUFFER_MAX_SIZE);
-    wchar_to_char(wc_result_error, c_result_error);
-    if (error_result <= 0) {
-      rb_enc_raise(
-        rb_utf8,
-        DeviceDriverError,
-        "Ошибка при получения ошибки выполнения\nIPAddress: %s\nDeviceName: %s",
-        c_ip_address,
-        c_device_name
-      );
-    }
+    ifptr->get_ResultDescription(wc_result_error, BUFFER_MAX_SIZE);
+    rb_result_error_msg = rb_sprintf("%"PRIsVALUE, wchar_to_rb_string(wc_result_error));
+
     if (result_code == EC_INVALID_PARAM) {
-      error_result = ifptr->get_BadParamDescription(wc_bad_param_error, BUFFER_MAX_SIZE);
-      wchar_to_char(wc_bad_param_error, c_bad_param_error);
-
-      if (error_result <= 0) {
-        rb_enc_raise(
-          rb_utf8,
-          DeviceDriverError,
-          "Ошибка при получения ошибки параметров выполнения\nIPAddress: %s\nDeviceName: %s",
-          c_ip_address,
-          c_device_name
-        );
-      }
-      rb_enc_raise(
-        rb_utf8,
-        DeviceDriverError,
-        "Ошибка выполнения: %s %s\nIPAddress: %s\nDeviceName: %s",
-        c_result_error,
-        c_bad_param_error,
-        c_ip_address,
-        c_device_name
+      ifptr->get_BadParamDescription(wc_bad_param_error, BUFFER_MAX_SIZE);
+      rb_result_error_msg = rb_sprintf(
+        "%"PRIsVALUE", %"PRIsVALUE,
+        wchar_to_rb_string(wc_result_error),
+        wchar_to_rb_string(wc_bad_param_error)
       );
     }
 
-    rb_enc_raise(
-      rb_utf8,
-      DeviceDriverError,
-      "Ошибка выполнения: %s\nIPAddress: %s\nDeviceName: %s",
-      c_result_error,
-      c_ip_address,
-      c_device_name
+    rb_funcall(
+      rb_intern("Kernel"),
+      rb_intern("raise"),
+      1,
+      rb_funcall(DeviceDriverError, rb_intern("new"), 3, INT2NUM(result), rb_result_error_msg, self)
     );
   }
 
   delete [] wc_result_error;
   delete [] wc_bad_param_error;
-  delete [] wc_ip_address;
-  delete [] wc_device_name;
-  delete [] c_result_error;
-  delete [] c_bad_param_error;
-  delete [] c_ip_address;
-  delete [] c_device_name;
 }
 // *************************
 // НАЧАЛО ДЕКЛАРАЦИИ МЕТОДОВ
@@ -1641,6 +1600,48 @@ extern "C" VALUE method_get_device_enabled(VALUE self){
   return rb_boolean;
 }
 
+extern "C" VALUE method_put_device_single_setting(VALUE self, VALUE rb_string_name, VALUE rb_string_value){
+  wchar_t* wc_string_name = new wchar_t[BUFFER_MAX_SIZE];
+  wchar_t* wc_string_value = new wchar_t[BUFFER_MAX_SIZE];
+  rb_string_to_wchar(rb_string_name, wc_string_name);
+  rb_string_to_wchar(rb_string_value, wc_string_value);
+
+  if (get_ifptr(self)->put_DeviceSingleSetting(wc_string_name, wc_string_value) < 0)
+    check_error(self);
+
+  delete[] wc_string_name;
+  delete[] wc_string_value;
+  return Qnil;
+}
+
+extern "C" VALUE method_get_device_single_setting(VALUE self, VALUE rb_string_name) {
+  wchar_t* wc_string_name = new wchar_t[BUFFER_MAX_SIZE];
+  wchar_t* wc_string_value = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string_value;
+  rb_string_to_wchar(rb_string_name, wc_string_name);
+
+  if (get_ifptr(self)->get_DeviceSingleSetting(wc_string_name, wc_string_value, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string_value = wchar_to_rb_string(wc_string_value);
+
+  delete[] wc_string_name;
+  delete[] wc_string_value;
+  return rb_string_value;
+}
+
+extern "C" VALUE method_apply_single_settings(VALUE self){
+  if (get_ifptr(self)->ApplySingleSettings() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_reset_single_settings(VALUE self){
+  if (get_ifptr(self)->ResetSingleSettings() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_put_device_settings(VALUE self, VALUE rb_string){
   wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
   rb_string_to_wchar(rb_string, wc_string);
@@ -1691,10 +1692,10 @@ extern "C" VALUE method_initialize(VALUE self, VALUE settings) {
 extern "C" void Init_kkm() {
   Kkm = rb_define_module("Kkm");
   DeviceDriver = rb_define_class_under(Kkm, "DeviceDriver", rb_cObject);
-  DeviceDriverError = rb_define_class_under(Kkm, "DeviceDriverError", rb_eStandardError);
 
   rb_define_alloc_func(DeviceDriver, alloc_device_driver);
   rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
+  rb_define_method(DeviceDriver, "apply_single_settings", (ruby_method*) &method_apply_single_settings, 0);
   rb_define_method(DeviceDriver, "beep", (ruby_method*) &method_beep, 0);
   rb_define_method(DeviceDriver, "cancel_check", (ruby_method*) &method_cancel_check, 0);
   rb_define_method(DeviceDriver, "cash_income", (ruby_method*) &method_cash_income, 0);
@@ -1715,6 +1716,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_device_enabled", (ruby_method*) &method_get_device_enabled, 0);
   rb_define_method(DeviceDriver, "get_device_ffd_version", (ruby_method*) &method_get_device_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_device_settings", (ruby_method*) &method_get_device_settings, 0);
+  rb_define_method(DeviceDriver, "get_device_single_setting", (ruby_method*) &method_get_device_single_setting, 1);
   rb_define_method(DeviceDriver, "get_doc_number", (ruby_method*) &method_get_doc_number, 0);
   rb_define_method(DeviceDriver, "get_discount_type", (ruby_method*) &method_get_discount_type, 0);
   rb_define_method(DeviceDriver, "get_enable_check_summ", (ruby_method*) &method_get_enable_check_summ, 0);
@@ -1792,6 +1794,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_date", (ruby_method*) &method_put_date, 1);
   rb_define_method(DeviceDriver, "put_device_enabled", (ruby_method*) &method_put_device_enabled, 1);
   rb_define_method(DeviceDriver, "put_device_settings", (ruby_method*) &method_put_device_settings, 1);
+  rb_define_method(DeviceDriver, "put_device_single_setting", (ruby_method*) &method_put_device_single_setting, 2);
   rb_define_method(DeviceDriver, "put_doc_number", (ruby_method*) &method_put_doc_number, 1);
   rb_define_method(DeviceDriver, "put_discount_type", (ruby_method*) &method_put_discount_type, 1);
   rb_define_method(DeviceDriver, "put_enable_check_summ", (ruby_method*) &method_put_enable_check_summ, 1);
@@ -1842,6 +1845,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "registration", (ruby_method*) &method_registration, 0);
   rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);
+  rb_define_method(DeviceDriver, "reset_single_settings", (ruby_method*) &method_reset_single_settings, 0);
   rb_define_method(DeviceDriver, "sound", (ruby_method*) &method_sound, 0);
   rb_define_method(DeviceDriver, "set_date", (ruby_method*) &method_set_date, 0);
   rb_define_method(DeviceDriver, "set_mode", (ruby_method*) &method_set_mode, 0);
