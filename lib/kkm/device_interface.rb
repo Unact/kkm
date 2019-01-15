@@ -145,7 +145,8 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
 
   def turn_on
     put_device_enabled true
-    get_status
+    kkm_status
+    nil
   end
 
   def turn_off
@@ -255,8 +256,85 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     }
   end
 
+  # Информация о версии ФН
+  def fn_version
+    res = execute_command(Command::FN_VERSION)
+
+    {
+      version: [res[2..17].join].pack('H*').delete("\x00"),
+      debug: Integer(res[18], 16) == 0
+    }
+  end
+
+  # Информация о статусе информационного обмена с ОФД
+  def ofd_status
+    res = execute_command(Command::OFD_STATUS)
+
+    {
+      state: Integer(res[2], 16),
+      read_message: res[3].to_i == 1,
+      to_send: Integer(res[4..5].reverse.join, 16),
+      first_doc: Integer(res[6..9].reverse.join, 16)
+    }
+  end
+
+  # Информация о статусе ККТ
+  def kkm_status
+    res = execute_command(Command::KKM_STATUS)
+
+    {
+      cashier: res[1],
+      operator: Integer(res[2], 16),
+      datetime: Time.new("20#{res[3]}".to_i, res[4].to_i, res[5].to_i, res[6].to_i, res[7].to_i, res[8].to_i),
+      flags: Integer(res[9], 16),
+      model: Integer(res[14], 16),
+      os_version: res[16].split('').join('.'),
+      mode: res[17][1],
+      advanced_mode: res[17][0],
+      doc_number: (res[18..19].reverse.join).to_i,
+      session_number: (res[20..21].reverse.join).to_i,
+      cheque_status: res[22].to_i,
+      cheque_summ: res[23..27].join.to_i,
+      floating_point: res[28].to_i,
+      port_type: res[29].to_i
+    }
+  end
+
+  # Информация о статусе ФН
+  def fn_status
+    res = execute_command(Command::FN_STATUS)
+
+    {
+      phase: res[2].to_i,
+      document: Integer(res[3], 16),
+      has_document_data: res[4].to_i == 1,
+      session_opened: res[5].to_i == 1,
+      flags: Integer(res[6], 16),
+      fiscal_storage_number: [res[12..27].join].pack('H*')
+    }
+  end
+
+  # Информация о текущем режиме
+  def current_mode
+    res = execute_command(Command::KKM_STATUS_CODE)
+
+    {
+      mode: Integer(res[1][0], 16),
+      advanced_mode: Integer(res[1][1], 16),
+      short_flags: Integer(res[2], 16)
+    }
+  end
+
   def get_register_by_number number
     put_register_number number
     get_register
+  end
+
+  # Выолнить команду протокола Атол 3.1
+  def execute_command command
+    put_need_result_flag true
+    put_command_buffer command
+    run_command
+    get_answer_buffer.split
   end
 end
