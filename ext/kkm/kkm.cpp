@@ -181,6 +181,75 @@ extern "C" VALUE method_get_time(VALUE self){
   return rb_time;
 }
 
+extern "C" VALUE method_put_need_result_flag(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_NeedResultFlag(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_need_result_flag(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_NeedResultFlag(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_command_buffer(VALUE self, VALUE rb_string){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  rb_string_to_wchar(rb_string, wc_string);
+
+  if (get_ifptr(self)->put_CommandBuffer(wc_string) < 0)
+    check_error(self);
+
+  delete[] wc_string;
+  return Qnil;
+}
+
+extern "C" VALUE method_get_command_buffer(VALUE self){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string;
+
+  if (get_ifptr(self)->get_CommandBuffer(wc_string, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string = wchar_to_rb_string(wc_string);
+
+  delete[] wc_string;
+  return rb_string;
+}
+
+extern "C" VALUE method_get_answer_buffer(VALUE self){
+  wchar_t* wc_string = new wchar_t[BUFFER_MAX_SIZE];
+  VALUE rb_string;
+
+  if (get_ifptr(self)->get_AnswerBuffer(wc_string, BUFFER_MAX_SIZE) < 0)
+    check_error(self);
+
+  rb_string = wchar_to_rb_string(wc_string);
+
+  delete[] wc_string;
+  return rb_string;
+}
+
+extern "C" VALUE method_run_command(VALUE self){
+  if (get_ifptr(self)->RunCommand() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_get_ofd_error(VALUE self){
   int* number = new int;
   VALUE rb_number;
@@ -1703,11 +1772,13 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
   rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
+  rb_define_method(DeviceDriver, "get_answer_buffer", (ruby_method*) &method_get_answer_buffer, 0);
   rb_define_method(DeviceDriver, "get_caption", (ruby_method*) &method_get_caption, 0);
   rb_define_method(DeviceDriver, "get_caption_purpose", (ruby_method*) &method_get_caption_purpose, 0);
   rb_define_method(DeviceDriver, "get_change", (ruby_method*) &method_get_change, 0);
   rb_define_method(DeviceDriver, "get_check_number", (ruby_method*) &method_get_check_number, 0);
   rb_define_method(DeviceDriver, "get_check_type", (ruby_method*) &method_get_check_type, 0);
+  rb_define_method(DeviceDriver, "get_command_buffer", (ruby_method*) &method_get_command_buffer, 0);
   rb_define_method(DeviceDriver, "get_count", (ruby_method*) &method_get_count, 0);
   rb_define_method(DeviceDriver, "get_current_mode", (ruby_method*) &method_get_current_mode, 0);
   rb_define_method(DeviceDriver, "get_current_status", (ruby_method*) &method_get_current_status, 0);
@@ -1745,6 +1816,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_machine_number", (ruby_method*) &method_get_machine_number, 0);
   rb_define_method(DeviceDriver, "get_mode", (ruby_method*) &method_get_mode, 0);
   rb_define_method(DeviceDriver, "get_name", (ruby_method*) &method_get_name, 0);
+  rb_define_method(DeviceDriver, "get_need_result_flag", (ruby_method*) &method_get_need_result_flag, 0);
   rb_define_method(DeviceDriver, "get_network_error", (ruby_method*) &method_get_network_error, 0);
   rb_define_method(DeviceDriver, "get_ofd_error", (ruby_method*) &method_get_ofd_error, 0);
   rb_define_method(DeviceDriver, "get_pixel_line_length", (ruby_method*) &method_get_pixel_line_length, 0);
@@ -1790,6 +1862,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_caption_purpose", (ruby_method*) &method_put_caption_purpose, 1);
   rb_define_method(DeviceDriver, "put_check_number", (ruby_method*) &method_put_check_number, 1);
   rb_define_method(DeviceDriver, "put_check_type", (ruby_method*) &method_put_check_type, 1);
+  rb_define_method(DeviceDriver, "put_command_buffer", (ruby_method*) &method_put_command_buffer, 1);
   rb_define_method(DeviceDriver, "put_count", (ruby_method*) &method_put_count, 1);
   rb_define_method(DeviceDriver, "put_date", (ruby_method*) &method_put_date, 1);
   rb_define_method(DeviceDriver, "put_device_enabled", (ruby_method*) &method_put_device_enabled, 1);
@@ -1818,6 +1891,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_machine_number", (ruby_method*) &method_put_machine_number, 1);
   rb_define_method(DeviceDriver, "put_mode", (ruby_method*) &method_put_mode, 1);
   rb_define_method(DeviceDriver, "put_name", (ruby_method*) &method_put_name, 1);
+  rb_define_method(DeviceDriver, "put_need_result_flag", (ruby_method*) &method_put_need_result_flag, 1);
   rb_define_method(DeviceDriver, "put_position_payment_type", (ruby_method*) &method_put_position_payment_type, 1);
   rb_define_method(DeviceDriver, "put_position_type", (ruby_method*) &method_put_position_type, 1);
   rb_define_method(DeviceDriver, "put_position_sum", (ruby_method*) &method_put_position_sum, 1);
@@ -1846,6 +1920,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);
   rb_define_method(DeviceDriver, "reset_single_settings", (ruby_method*) &method_reset_single_settings, 0);
+  rb_define_method(DeviceDriver, "run_command", (ruby_method*) &method_run_command, 0);
   rb_define_method(DeviceDriver, "sound", (ruby_method*) &method_sound, 0);
   rb_define_method(DeviceDriver, "set_date", (ruby_method*) &method_set_date, 0);
   rb_define_method(DeviceDriver, "set_mode", (ruby_method*) &method_set_mode, 0);
