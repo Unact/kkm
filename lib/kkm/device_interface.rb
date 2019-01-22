@@ -124,15 +124,29 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   # Установить фискальный параметр в ККМ
-  # Передавать параметр в формате :number, :value, :type, :print
+  # Передавать параметр в формате :number, :value, :type, :print, :properties
   # По умолчанию :type = FiscalPropertyType::STRING
   # По умолчанию :print = true
-  def setup_fiscal_property property
-    put_fiscal_property_type property[:type] || FiscalPropertyType::STRING
-    put_fiscal_property_print property.has_key?(:print) ? property[:print] : true
-    put_fiscal_property_number property[:number]
-    put_fiscal_property_value property[:value]
-    write_fiscal_property
+  # Если задан :properties, то переходим в режим создания составного тега
+  def setup_fiscal_property property, write = true
+    number = property[:number]
+    value = property[:value]
+    type = property[:type] || FiscalPropertyType::STRING
+
+    if property.has_key?(:properties)
+      begin_form_fiscal_property
+      property[:properties].each{|fiscal_prop| setup_fiscal_property(fiscal_prop, false)}
+      end_form_fiscal_property
+
+      value = get_fiscal_property_value
+      type = FiscalPropertyType::RAW
+    end
+
+    put_fiscal_property_type(type)
+    put_fiscal_property_print(property.has_key?(:print) ? property[:print] : true)
+    put_fiscal_property_number(number)
+    put_fiscal_property_value(value)
+    write ? write_fiscal_property : add_fiscal_property
   end
 
   # Считать фискальный параметр из ККМ

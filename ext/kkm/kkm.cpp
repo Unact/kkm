@@ -1356,6 +1356,30 @@ extern "C" VALUE method_get_current_caption(VALUE self){
   return Qnil;
 }
 
+extern "C" VALUE method_begin_form_fiscal_property(VALUE self){
+  if (get_ifptr(self)->BeginFormFiscalProperty() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_end_form_fiscal_property(VALUE self){
+  if (get_ifptr(self)->EndFormFiscalProperty() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_add_fiscal_property(VALUE self){
+  if (get_ifptr(self)->AddFiscalProperty() < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_reset_fiscal_properties(VALUE self){
+  if (get_ifptr(self)->ResetFiscalProperties() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_write_fiscal_property(VALUE self){
   if (get_ifptr(self)->WriteFiscalProperty() < 0)
     check_error(self);
@@ -1448,6 +1472,32 @@ extern "C" VALUE method_get_fiscal_property_print(VALUE self){
   VALUE rb_boolean;
 
   if (get_ifptr(self)->get_FiscalPropertyPrint(number) < 0)
+    check_error(self);
+
+  rb_boolean = *number == 1 ? Qtrue : Qfalse;
+
+  delete number;
+  return rb_boolean;
+}
+
+extern "C" VALUE method_put_fiscal_property_user(VALUE self, VALUE rb_boolean){
+  int number;
+  if (rb_boolean == Qtrue){
+    number = 1;
+  } else {
+    number = 0;
+  }
+
+  if (get_ifptr(self)->put_FiscalPropertyUser(number) < 0)
+    check_error(self);
+  return Qnil;
+}
+
+extern "C" VALUE method_get_fiscal_property_user(VALUE self){
+  int* number = new int;
+  VALUE rb_boolean;
+
+  if (get_ifptr(self)->get_FiscalPropertyUser(number) < 0)
     check_error(self);
 
   rb_boolean = *number == 1 ? Qtrue : Qfalse;
@@ -1764,12 +1814,15 @@ extern "C" void Init_kkm() {
 
   rb_define_alloc_func(DeviceDriver, alloc_device_driver);
   rb_define_method(DeviceDriver, "initialize", (ruby_method*) &method_initialize, 1);
+  rb_define_method(DeviceDriver, "add_fiscal_property", (ruby_method*) &method_add_fiscal_property, 0);
   rb_define_method(DeviceDriver, "apply_single_settings", (ruby_method*) &method_apply_single_settings, 0);
+  rb_define_method(DeviceDriver, "begin_form_fiscal_property", (ruby_method*) &method_begin_form_fiscal_property, 0);
   rb_define_method(DeviceDriver, "beep", (ruby_method*) &method_beep, 0);
   rb_define_method(DeviceDriver, "cancel_check", (ruby_method*) &method_cancel_check, 0);
   rb_define_method(DeviceDriver, "cash_income", (ruby_method*) &method_cash_income, 0);
   rb_define_method(DeviceDriver, "cash_outcome", (ruby_method*) &method_cash_outcome, 0);
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
+  rb_define_method(DeviceDriver, "end_form_fiscal_property", (ruby_method*) &method_end_form_fiscal_property, 0);
   rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
   rb_define_method(DeviceDriver, "get_answer_buffer", (ruby_method*) &method_get_answer_buffer, 0);
@@ -1803,6 +1856,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "get_fiscal_property_number", (ruby_method*) &method_get_fiscal_property_number, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_print", (ruby_method*) &method_get_fiscal_property_print, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_type", (ruby_method*) &method_get_fiscal_property_type, 0);
+  rb_define_method(DeviceDriver, "get_fiscal_property_user", (ruby_method*) &method_get_fiscal_property_user, 0);
   rb_define_method(DeviceDriver, "get_fiscal_property_value", (ruby_method*) &method_get_fiscal_property_value, 0);
   rb_define_method(DeviceDriver, "get_fn_ffd_version", (ruby_method*) &method_get_fn_ffd_version, 0);
   rb_define_method(DeviceDriver, "get_fn_error", (ruby_method*) &method_get_fn_error, 0);
@@ -1881,6 +1935,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "put_fiscal_property_number", (ruby_method*) &method_put_fiscal_property_number, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_print", (ruby_method*) &method_put_fiscal_property_print, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_type", (ruby_method*) &method_put_fiscal_property_type, 1);
+  rb_define_method(DeviceDriver, "put_fiscal_property_user", (ruby_method*) &method_put_fiscal_property_user, 1);
   rb_define_method(DeviceDriver, "put_fiscal_property_value", (ruby_method*) &method_put_fiscal_property_value, 1);
   rb_define_method(DeviceDriver, "put_journal_font", (ruby_method*) &method_put_journal_font, 1);
   rb_define_method(DeviceDriver, "put_journal_font_height", (ruby_method*) &method_put_journal_font_height, 1);
@@ -1919,6 +1974,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "registration", (ruby_method*) &method_registration, 0);
   rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);
+  rb_define_method(DeviceDriver, "reset_fiscal_properties", (ruby_method*) &method_reset_fiscal_properties, 0);
   rb_define_method(DeviceDriver, "reset_single_settings", (ruby_method*) &method_reset_single_settings, 0);
   rb_define_method(DeviceDriver, "run_command", (ruby_method*) &method_run_command, 0);
   rb_define_method(DeviceDriver, "sound", (ruby_method*) &method_sound, 0);
