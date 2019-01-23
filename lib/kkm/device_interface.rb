@@ -333,8 +333,8 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     res = execute_command(Command::KKM_STATUS_CODE)
 
     {
-      mode: Integer(res[1][0], 16),
-      advanced_mode: Integer(res[1][1], 16),
+      mode: Integer(res[1][1], 16),
+      advanced_mode: Integer(res[1][0], 16),
       short_flags: Integer(res[2], 16)
     }
   end

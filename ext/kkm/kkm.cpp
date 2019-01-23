@@ -376,6 +376,19 @@ extern "C" VALUE method_get_inn(VALUE self){
   return rb_string;
 }
 
+extern "C" VALUE method_get_advanced_mode(VALUE self){
+  int* number = new int;
+  VALUE rb_number;
+
+  if (get_ifptr(self)->get_AdvancedMode(number) < 0)
+    check_error(self);
+
+  rb_number = INT2NUM(*number);
+
+  delete number;
+  return rb_number;
+}
+
 extern "C" VALUE method_put_mode(VALUE self, VALUE number){
   if (get_ifptr(self)->put_Mode(NUM2INT(number)) < 0)
     check_error(self);
@@ -1824,6 +1837,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "close_check", (ruby_method*) &method_close_check, 0);
   rb_define_method(DeviceDriver, "end_form_fiscal_property", (ruby_method*) &method_end_form_fiscal_property, 0);
   rb_define_method(DeviceDriver, "fiscalization", (ruby_method*) &method_fiscalization, 0);
+  rb_define_method(DeviceDriver, "get_advanced_mode", (ruby_method*) &method_get_advanced_mode, 0);
   rb_define_method(DeviceDriver, "get_alignment", (ruby_method*) &method_get_alignment, 0);
   rb_define_method(DeviceDriver, "get_answer_buffer", (ruby_method*) &method_get_answer_buffer, 0);
   rb_define_method(DeviceDriver, "get_caption", (ruby_method*) &method_get_caption, 0);
