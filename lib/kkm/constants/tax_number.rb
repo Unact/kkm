@@ -1,3 +1,4 @@
+# Значения НДС для драйвера Атол
 module Kkm::Constants::TaxNumber
   TAX_0       = 1            # НДС 0%
   TAX_10      = 2            # НДС 10%
