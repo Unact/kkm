@@ -10,6 +10,7 @@ module Kkm::Constants::FiscalProperty
   POSITION_QUANTITY               = 1023
   TRANSFER_OPERATOR_NAME          = 1026
   POSITION_NAME                   = 1030
+  CASH_SUM                        = 1031
   MACHINE_NUMBER                  = 1037
   SESSION_NUMBER                  = 1038
   DOC_NUMBER                      = 1040
@@ -26,6 +27,7 @@ module Kkm::Constants::FiscalProperty
   ADDITIONAL_USER_PARAM           = 1084
   ADDITIONAL_USER_PARAM_NAME      = 1085
   ADDITIONAL_USER_PARAM_VALUE     = 1086
+  NO_NDS_SUM                      = 1105
   ADDITIONAL_CHEQUE_PARAM         = 1192
   POSITION_TAX_NUMBER             = 1199
   POSITION_TYPE                   = 1212
