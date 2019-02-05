@@ -414,6 +414,12 @@ extern "C" VALUE method_set_mode(VALUE self){
   return Qnil;
 }
 
+extern "C" VALUE method_reset_mode(VALUE self){
+  if (get_ifptr(self)->ResetMode() < 0)
+    check_error(self);
+  return Qnil;
+}
+
 extern "C" VALUE method_put_report_type(VALUE self, VALUE number){
   if (get_ifptr(self)->put_ReportType(NUM2INT(number)) < 0)
     check_error(self);
@@ -1989,6 +1995,7 @@ extern "C" void Init_kkm() {
   rb_define_method(DeviceDriver, "read_fiscal_property", (ruby_method*) &method_read_fiscal_property, 0);
   rb_define_method(DeviceDriver, "report", (ruby_method*) &method_report, 0);
   rb_define_method(DeviceDriver, "reset_fiscal_properties", (ruby_method*) &method_reset_fiscal_properties, 0);
+  rb_define_method(DeviceDriver, "reset_mode", (ruby_method*) &method_reset_mode, 0);
   rb_define_method(DeviceDriver, "reset_single_settings", (ruby_method*) &method_reset_single_settings, 0);
   rb_define_method(DeviceDriver, "run_command", (ruby_method*) &method_run_command, 0);
   rb_define_method(DeviceDriver, "sound", (ruby_method*) &method_sound, 0);

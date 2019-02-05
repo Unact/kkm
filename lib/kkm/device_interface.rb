@@ -159,11 +159,11 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
 
   def turn_on
     put_device_enabled true
-    kkm_status
-    nil
+    reset_mode
   end
 
   def turn_off
+    reset_mode
     put_device_enabled false
   end
 
