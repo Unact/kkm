@@ -28,8 +28,14 @@ module Kkm::Constants::FiscalProperty
   ADDITIONAL_USER_PARAM_NAME      = 1085
   ADDITIONAL_USER_PARAM_VALUE     = 1086
   NO_NDS_SUM                      = 1105
+  SUPPLIER_PHONE                  = 1171
   ADDITIONAL_CHEQUE_PARAM         = 1192
   POSITION_TAX_NUMBER             = 1199
   POSITION_TYPE                   = 1212
   POSITION_PAYMENT_TYPE           = 1214
+  POSITION_AGENT_TYPE             = 1222
+  AGENT_DATA                      = 1223
+  SUPPLIER_DATA                   = 1224
+  SUPPLIER_NAME                   = 1225
+  SUPPLIER_INN                    = 1226
 end

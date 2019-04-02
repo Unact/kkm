@@ -1,7 +1,11 @@
 FROM ruby:2.1.10
 
-RUN apt-get clean && apt-get update
+RUN apt-get clean
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+RUN apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get install locales locales-all -y
+
 RUN locale-gen ru_RU.UTF-8
 ENV LANG ru_RU.UTF-8
 ENV LANGUAGE ru_RU:ru

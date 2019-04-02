@@ -53,7 +53,8 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   # Передавать товар в формате
-  # :enable_check_summ, :text_wrap, :quantity, :name, :price, :tax, :position_type, :position_payment_type
+  # :enable_check_summ, :text_wrap, :quantity, :name, :price, :tax,
+  # :position_type, :position_payment_type, :fiscal_props
   def setup_goods_info goods
     put_enable_check_summ goods[:enable_check_summ] || false
     put_tax_number goods[:tax] || TaxNumber::TAX_NONE
@@ -64,6 +65,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     put_position_payment_type goods[:position_payment_type] || PositionPaymentType::FULL_PAYMENT
     put_text_wrap goods[:text_wrap] || TextWrap::TEXT_WRAP_WORD
     put_name goods[:name]
+    (goods[:fiscal_props] || []).each{|fiscal_prop| setup_fiscal_property(fiscal_prop, false)}
   end
 
   def register_goods goods
@@ -124,18 +126,18 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   # Установить фискальный параметр в ККМ
-  # Передавать параметр в формате :number, :value, :type, :print, :properties
+  # Передавать параметр в формате :number, :value, :type, :print, :fiscal_props
   # По умолчанию :type = FiscalPropertyType::STRING
   # По умолчанию :print = true
-  # Если задан :properties, то переходим в режим создания составного тега
+  # Если задан :fiscal_props, то переходим в режим создания составного тега
   def setup_fiscal_property property, write = true
     number = property[:number]
-    value = property[:value]
-    type = property[:type] || FiscalPropertyType::STRING
+    type = property[:type] || FiscalPropertyType.infer_type(property[:value])
+    value = property[:value].to_s
 
-    if property.has_key?(:properties)
+    if property.has_key?(:fiscal_props)
       begin_form_fiscal_property
-      property[:properties].each{|fiscal_prop| setup_fiscal_property(fiscal_prop, false)}
+      property[:fiscal_props].each{|fiscal_prop| setup_fiscal_property(fiscal_prop, false)}
       end_form_fiscal_property
 
       value = get_fiscal_property_value
@@ -290,6 +292,27 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
       to_send: Integer(res[4..5].reverse.join, 16),
       first_doc: Integer(res[6..9].reverse.join, 16)
     }
+  end
+
+  # Получение фискального документа по номеру
+  def cheque_data check_doc_number
+    result = []
+    param = check_doc_number.to_s(16).rjust(8, '0').split('').each_slice(2).to_a.reverse.map(&:join).join(' ')
+
+    execute_command("#{Command::FN_CHEQUE_DOCUMENT} #{param}")
+    loop { result.push(execute_command(Command::FN_CHEQUE_DOCUMENT_DATA)[2..-1]) }
+  rescue Kkm::DeviceDriverError => e
+    if e.code == ErrorCode::EC_3918
+      result.map do |tlv|
+        tag = Integer(tlv[0..1].reverse.join, 16).to_s
+        length = Integer(tlv[2..3].reverse.join, 16)
+        value = tlv[4..4+length]
+
+        { tag => value }
+      end.reduce({}, :merge)
+    else
+      raise e
+    end
   end
 
   # Информация о статусе ККТ

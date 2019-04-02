@@ -57,7 +57,6 @@ extern "C" void check_error(VALUE self) {
   wchar_t* wc_result_error = new wchar_t[BUFFER_MAX_SIZE];
   wchar_t* wc_bad_param_error = new wchar_t[BUFFER_MAX_SIZE];
   VALUE rb_result_error_msg;
-  int result;
 
   ifptr->get_ResultCode(&result_code);
 
@@ -78,7 +77,7 @@ extern "C" void check_error(VALUE self) {
       rb_intern("Kernel"),
       rb_intern("raise"),
       1,
-      rb_funcall(DeviceDriverError, rb_intern("new"), 3, INT2NUM(result), rb_result_error_msg, self)
+      rb_funcall(DeviceDriverError, rb_intern("new"), 3, INT2NUM(result_code), rb_result_error_msg, self)
     );
   }
 
