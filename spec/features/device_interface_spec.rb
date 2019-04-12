@@ -60,7 +60,7 @@ RSpec.describe Kkm::DeviceInterface do
       expect(device_interface.get_change).to eq(0)
       expect(device_interface.get_remainder).to eq(0)
       expect(device_interface.get_mode).to eq(Kkm::Constants::Mode::MODE_REGISTRATION)
-      expect(device_interface.get_check_type).to eq(Kkm::Constants::ChequeType::CHEQUE_SELL)
+      expect(device_interface.get_check_type).to eq(Kkm::Constants::ChequeTypeNumber::CHEQUE_SELL)
     end
 
     it 'should return correct check info' do

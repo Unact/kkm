@@ -79,7 +79,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   def print_cheque_sell goods, payments = [], fiscal_props = [], print_cheque = false
-    open_cheque_by_type ChequeType::CHEQUE_SELL, fiscal_props, print_cheque
+    open_cheque_by_type ChequeTypeNumber::CHEQUE_SELL, fiscal_props, print_cheque
     fiscal_props.each{|fiscal_prop| setup_fiscal_property(fiscal_prop)}
     goods.each{|goods_item| register_goods(goods_item)}
     payments.each{|pay| pay_for_goods(pay)}
@@ -91,7 +91,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
   end
 
   def print_cheque_sell_return goods, payments = [], fiscal_props = [], print_cheque = false
-    open_cheque_by_type ChequeType::CHEQUE_SELL_RETURN, fiscal_props, print_cheque
+    open_cheque_by_type ChequeTypeNumber::CHEQUE_SELL_RETURN, fiscal_props, print_cheque
     fiscal_props.each{|fiscal_prop| setup_fiscal_property(fiscal_prop)}
     goods.each{|goods_item| return_goods(goods_item)}
     payments.each{|pay| pay_for_goods(pay)}
@@ -194,7 +194,7 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     get_time
   end
 
-  def payment_register payment_type = PaymentType::CASH, check_type = ChequeType::CHEQUE_SELL
+  def payment_register payment_type = PaymentType::CASH, check_type = ChequeTypeNumber::CHEQUE_SELL
     put_check_type check_type
     put_type_close payment_type
     get_register_by_number RegisterNumber::PAYMENT_SUM
