@@ -1814,8 +1814,6 @@ extern "C" VALUE alloc_device_driver(VALUE self) {
 }
 
 extern "C" VALUE method_initialize(VALUE self, VALUE settings) {
-  TED::Fptr::IFptr *ifptr = get_ifptr(self);
-
   method_put_device_settings(self, settings);
 
   return self;

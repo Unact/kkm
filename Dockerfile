@@ -1,4 +1,4 @@
-FROM ruby:2.1.10
+FROM ruby:2.4.2
 
 RUN apt-get clean
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
