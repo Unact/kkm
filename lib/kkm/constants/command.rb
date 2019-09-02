@@ -7,4 +7,5 @@ module Kkm::Constants::Command
   KKM_STATUS = '3F'
   KKM_STATUS_CODE = '45'
   OFD_STATUS = 'A4 20'
+  REBOOT = 'CE 41'
 end

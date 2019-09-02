@@ -362,6 +362,11 @@ class Kkm::DeviceInterface < Kkm::DeviceDriver
     }
   end
 
+  # Перезагрузить
+  def reboot
+    execute_command(Command::REBOOT)
+  end
+
   def get_register_by_number number
     put_register_number number
     get_register
