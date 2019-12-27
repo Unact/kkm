@@ -1,3 +1,60 @@
+## 0.2.0
+
+**Breaking change** Имплементировать ДТО10, библиотека полностью переписана
+
+- Добавленая имплементация ДТО версии 10.6.1.0
+- Добавлена возможность использования библиотеки на macOS, Windows
+- Убраны классы `Kkm::DeviceInterface` и `Kkm::DeviceDriver`. Для печати чеков теперь есть только один класс `Kkm::Device`
+- На все ошибки ККТ теперь возвращается `Kkm::DeviceError` вместо `Kkm::DeviceInterfaceError`
+- Многие методы были либо убраны, либо были переименованы в соотвествии с новым ДТО. Ниже полный список изменений
+
+`Kkm::DeviceInterface.reboot` - `Kkm::Device.device_reboot`
+`Kkm::DeviceInterface.turn_on` - `Kkm::Device.open`
+`Kkm::DeviceInterface.turn_off` - `Kkm::Device.close`
+`Kkm::DeviceInterface.print_cheque_sell` - `Kkm::Device.print_receipt`
+`Kkm::DeviceInterface.print_cheque_sell_return` - `Kkm::Device.print_receipt`
+`Kkm::DeviceInterface.register_goods` - `Kkm::Device.register_position`
+`Kkm::DeviceInterface.pay_for_goods` - `Kkm::Device.register_payment`
+`Kkm::DeviceInterface.last_check_info`  - `Kkm::Device.fn_last_receipt_data`
+`Kkm::DeviceInterface.last_check_fiscal_doc_number`  - `Kkm::Device.fn_last_receipt_data`
+`Kkm::DeviceInterface.last_check_sum`  - `Kkm::Device.fn_last_receipt_data`
+`Kkm::DeviceInterface.last_check_datetime`  - `Kkm::Device.fn_last_receipt_data`
+`Kkm::DeviceInterface.last_check_doc_number`  - `Kkm::Device.fn_last_receipt_data`
+`Kkm::DeviceInterface.last_check_type`  - `Kkm::Device.fn_last_receipt_data`
+`Kkm::DeviceInterface.current_close_session` - `Kkm::Device.shift_state_data`
+`Kkm::DeviceInterface.last_check_session_number` - `Kkm::Device.status_data`
+`Kkm::DeviceInterface.last_check_session_check_number` - `Kkm::Device.status_data`
+`Kkm::DeviceInterface.current_mode` - `Kkm::Device.mode_raw_data`
+`Kkm::DeviceInterface.fn_status` - `Kkm::Device.fn_status_raw_data`
+`Kkm::DeviceInterface.kkm_status` - `Kkm::Device.status_raw_data`
+`Kkm::DeviceInterface.ofd_status` - `Kkm::Device.ofd_status_raw_data`
+`Kkm::DeviceInterface.last_check_web_params` - убран
+`Kkm::DeviceInterface.read_kkm_fiscal_property` - убран
+
+- Убраны следующие константы, так как они появились в новом ДТО, теперь необходимо использовать эти константы
+`Kkm::Constants::ReportType`
+`Kkm::Constants::Mode`
+`Kkm::Constants::TextWrap`
+`Kkm::Constants::FFDVersion`
+`Kkm::Constants::Alignment`
+`Kkm::Constants::ChequeType`
+`Kkm::Constants::FiscalPropertyType`
+`Kkm::Constants::ChequeTypeNumber`
+`Kkm::Constants::RegisterNumber`
+`Kkm::Constants::Tax`
+`Kkm::Constants::TaxNumber`
+`Kkm::Constants::AgentType`
+`Kkm::Constants::Command::FN_CHEQUE_DOCUMENT_DATA`
+`Kkm::Constants::Command::FN_CHEQUE_DOCUMENT`
+
+- Переименованы следующие константы
+`Kkm::Constants::FiscalProperty::CHEQUE_TYPE` => `Kkm::Constants::FiscalProperty::RECEIPT_TYPE`
+`Kkm::Constants::FiscalProperty::CHEQUE_NUMBER` => `Kkm::Constants::FiscalProperty::RECEIPT_NUMBER`
+`Kkm::Constants::FiscalProperty::PAYMENT_ADDRESS` - `Kkm::Constants::FiscalProperty::PAYMENTS_ADDRESS`
+
+- Убрана поддержка настроек передаваемых в формате XML, теперь поддерживается только Hash
+- Убрана поддержка Docker контейнера
+
 ## 0.1.21
 
 - Добавлена команда перезагрузки ККТ

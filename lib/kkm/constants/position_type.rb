@@ -1,16 +1,21 @@
-module Kkm::Constants::PositionType
-  # Таблица из Протокола ККТ 3.1
-  GOODS             = 1  # Товар
-  LICENSE_GOODS     = 2  # Подакциозный товар
-  WORK              = 3  # Работа
-  SERVICE           = 4  # Услуга
-  GAME_BET          = 5  # Ставка азартной игры
-  GAME_WIN          = 6  # Выигрыш азартной игры
-  LOTTERY_TICKET    = 7  # Лотерейный билет
-  LOTTERY_WIN       = 8  # Выгрыш лотереи
-  INTELLECT_RESULT  = 9  # Предоставление РИД (Результата интеллектуальной деятельности)
-  PAYMENT           = 10 # Платеж
-  AGENT_REWARD      = 11 # Агентское вознаграждение
-  COMPOSITE         = 12 # Составной предмет расчета
-  OTHER             = 13 # Иной предмет расчета
+# frozen_string_literal: true
+
+module Kkm
+  module Constants
+    module PositionType
+      GOODS             = 1
+      LICENSE_GOODS     = 2
+      WORK              = 3
+      SERVICE           = 4
+      GAME_BET          = 5
+      GAME_WIN          = 6
+      LOTTERY_TICKET    = 7
+      LOTTERY_WIN       = 8
+      INTELLECT_RESULT  = 9
+      PAYMENT           = 10
+      AGENT_REWARD      = 11
+      COMPOSITE         = 12
+      OTHER             = 13
+    end
+  end
 end

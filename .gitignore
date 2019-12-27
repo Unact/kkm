@@ -3,8 +3,6 @@
 *.log
 *.pid
 *.gem
-lib/kkm/*.bundle
-lib/kkm/*.so
 tmp/
 .settings/**/*
 .env
