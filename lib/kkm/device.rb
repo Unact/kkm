@@ -7,18 +7,19 @@ module Kkm
 
     def initialize(settings)
       @ifptr = IFptr.new
-      @device_name = settings["DeviceName"]
+      @device_name = settings["DeviceName"] || Constants::DEFAULT_DEVICE_NAME
+      @timeout = settings["Timeout"] || Constants::DEFAULT_CONNECTION_TIMEOUT
 
       set_settings(settings)
     end
 
     def work
-      open
+      turn_on
       yield(self)
     rescue StandardError => e
       raise e
     ensure
-      close
+      turn_off
     end
 
     def print_receipt(receipt_type, positions, payments, fiscal_props = [], print_physical = false)
@@ -309,12 +310,21 @@ module Kkm
       @ifptr.version
     end
 
-    def open
-      raise_error if @ifptr.open != LibFptr::LIBFPTR_OK
+    def turn_on
+      process_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+      begin
+        open
+      rescue DeviceError => e
+        raise e if e.code != LibFptr::LIBFPTR_ERROR_NO_CONNECTION
+        raise e if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= process_time + @timeout / 1000.0
+
+        retry
+      end
     end
 
-    def close
-      raise_error if @ifptr.close != LibFptr::LIBFPTR_OK
+    def turn_off
+      close
     end
 
     # rubocop:disable PredicateName
@@ -365,7 +375,7 @@ module Kkm
     def execute_command(command, wait = true)
       command_bytearray = command.split.map { |part| Integer(part, 16) }
       set_param(LibFptr::LIBFPTR_PARAM_COMMAND_BUFFER, command_bytearray)
-      set_param(LibFptr::LIBFPTR_PARAM_TIMEOUT_ENQ, Constants::DEFAULT_TIMEOUT)
+      set_param(LibFptr::LIBFPTR_PARAM_TIMEOUT_ENQ, Constants::DEFAULT_TIMEOUT_ENQ)
       set_param(LibFptr::LIBFPTR_PARAM_NO_NEED_ANSWER, !wait)
       run_command
 
@@ -390,6 +400,14 @@ module Kkm
 
     def apply_single_settings
       raise_error if @ifptr.apply_single_settings != LibFptr::LIBFPTR_OK
+    end
+
+    def open
+      raise_error if @ifptr.open != LibFptr::LIBFPTR_OK
+    end
+
+    def close
+      raise_error if @ifptr.close != LibFptr::LIBFPTR_OK
     end
 
     def error_code

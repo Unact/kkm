@@ -1,3 +1,9 @@
+## 0.2.1
+
+- Добавлена возможность задавать таймаут при подключении к ККТ. Задается через настройку "Timeout"
+- Убраны методы `Kkm::Device.open` и `Kkm::Device.close`. Вместо них добавлены методы `Kkm::Device.turn_on` и `Kkm::Device.turn_off`
+- Переименована константа `Kkm::Constants::DEFAULT_TIMEOUT` в `Kkm::Constants::DEFAULT_TIMEOUT_ENQ`
+
 ## 0.2.0
 
 **Breaking change** Имплементировать ДТО10, библиотека полностью переписана
