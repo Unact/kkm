@@ -8,16 +8,10 @@ module Kkm
   # Ruby implementation of LibFptr
   class IFptr
     def initialize
-      handle_create = FFI::MemoryPointer.new(:pointer)
-      interface_releaser = proc do |interface|
-        handle_destroy = FFI::MemoryPointer.new(:pointer)
-        handle_destroy.write_pointer(interface)
+      interface_pointer = FFI::MemoryPointer.new(:pointer)
 
-        LibFptr.destroy(handle_destroy)
-      end
-
-      LibFptr.create(handle_create)
-      @interface = FFI::AutoPointer.new(handle_create.get_pointer(0), interface_releaser)
+      LibFptr.create(interface_pointer)
+      @interface = FFI::AutoPointer.new(interface_pointer.get_pointer(0), self.class.method(:finalize))
     end
 
     def version
@@ -626,6 +620,12 @@ module Kkm
 
     def clear_universal_counters_cache
       LibFptr.clear_universal_counters_cache(@interface)
+    end
+
+    private_class_method def self.finalize(pointer)
+      interface_pointer = FFI::MemoryPointer.new(:pointer)
+      interface_pointer.write_pointer(pointer)
+      LibFptr.destroy(interface_pointer)
     end
 
     private
