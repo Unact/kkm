@@ -1,3 +1,7 @@
+## 0.2.3
+
+- Исправлен метод `Kkm::LibFptr.get_version_string`
+
 ## 0.2.2
 
 - Исправлен memory leak связанный с не вызыванием `Kkm::LibFptr.destroy`

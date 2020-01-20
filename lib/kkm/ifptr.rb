@@ -15,7 +15,7 @@ module Kkm
     end
 
     def version
-      LibFptr.get_version_string(@interface)
+      LibFptr.get_version_string
     end
 
     def set_settings(settings)

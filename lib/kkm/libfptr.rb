@@ -954,7 +954,7 @@ module Kkm
 
     typedef :pointer, :handle
 
-    attach_function :get_version_string, :libfptr_get_version_string, [:handle], :string
+    attach_function :get_version_string, :libfptr_get_version_string, [], :string
 
     attach_function :create, :libfptr_create, [:handle], :int
     attach_function :set_settings, :libfptr_set_settings, [:handle, :pointer], :int
