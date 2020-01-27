@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*", "ext/**/*", "LICENSE", "Gemfile", "README.md"]
 
   s.add_dependency "ffi"
+  s.add_development_dependency "irb", "~> 1.0"
 end
