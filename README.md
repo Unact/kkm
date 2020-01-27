@@ -22,16 +22,16 @@
   end
 ```
 
-Если нужен контроль над включением/выключением ККТ, то следует использовать методы `open`/`close`
+Если нужен контроль над включением/выключением ККТ, то следует использовать методы `turn_on`/`turn_off`
 Результат должен быть таким же, как и пример выше
 
 ```ruby
   settings = { "DeviceName" => "Test", "IPAddress" => "192.168.101.64", "IPPort" => "5555", "Model" => "63", "Port" => "2" }
   device = Kkm::Device.new(settings)
-  device.open
+  device.turn_on
   device.beep
   device.print_text("OMG")
-  device.close
+  device.turn_off
 ```
 
 ## Доработка гема
