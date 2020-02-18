@@ -17,7 +17,7 @@ module Kkm
       POSITION_QUANTITY                   = 1023
       TRANSFER_OPERATOR_NAME              = 1026
       POSITION_NAME                       = 1030
-      CASH_SUM                            = 1031
+      RECEIPT_CASH_PAYMENT_TYPE           = 1031
       MACHINE_NUMBER                      = 1036
       REGISTRATION_NUMBER                 = 1037
       SESSION_NUMBER                      = 1038
@@ -37,6 +37,7 @@ module Kkm
       TRANSFER_OPERATOR_PHONE             = 1075
       FISCAL_DOC_NUMBER                   = 1077
       POSITION_PRICE                      = 1079
+      RECEIPT_ELECTRONICALLY_PAYMENT_TYPE = 1081
       ADDITIONAL_USER_PARAM               = 1084
       ADDITIONAL_USER_PARAM_NAME          = 1085
       ADDITIONAL_USER_PARAM_VALUE         = 1086
@@ -56,6 +57,9 @@ module Kkm
       FFD_VERSION                         = 1209
       POSITION_TYPE                       = 1212
       POSITION_PAYMENT_TYPE               = 1214
+      RECEIPT_PREPAID_PAYMENT_TYPE        = 1215
+      RECEIPT_CREDIT_PAYMENT_TYPE         = 1216
+      RECEIPT_OTHER_PAYMENT_TYPE          = 1217
       MACHINE_INSTALLATION                = 1221
       POSITION_AGENT_TYPE                 = 1222
       AGENT_DATA                          = 1223

@@ -1,3 +1,8 @@
+## 0.2.4
+
+- Добавлены константы с суммами по чеку разных типов оплат
+- Переименована константа `Kkm::Constants::FiscalProperty::CASH_SUM` в `Kkm::Constants::FiscalProperty::RECEIPT_CASH_PAYMENT_TYPE`
+
 ## 0.2.3
 
 - Исправлен метод `Kkm::LibFptr.get_version_string`
