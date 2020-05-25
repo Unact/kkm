@@ -47,6 +47,7 @@ module Kkm
       BSO                                 = 1110
       ORGANIZATION_EMAIL                  = 1117
       LOTTERY                             = 1126
+      POSITION_MARKING_CODE               = 1162
       SUPPLIER_PHONE                      = 1171
       PAYMENTS_PLACE                      = 1187
       ADDITIONAL_RECEIPT_PARAM            = 1192

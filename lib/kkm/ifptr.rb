@@ -7,10 +7,15 @@ require "bigdecimal"
 module Kkm
   # Ruby implementation of LibFptr
   class IFptr
-    def initialize
+    def initialize id = nil
       interface_pointer = FFI::MemoryPointer.new(:pointer)
 
-      LibFptr.create(interface_pointer)
+      if id
+        LibFptr.create_with_id(interface_pointer, LibC.string_to_wchar_pointer(id))
+      else
+        LibFptr.create(interface_pointer)
+      end
+
       @interface = FFI::AutoPointer.new(interface_pointer.get_pointer(0), self.class.method(:finalize))
     end
 
@@ -620,6 +625,22 @@ module Kkm
 
     def clear_universal_counters_cache
       LibFptr.clear_universal_counters_cache(@interface)
+    end
+
+    def disable_ofd_channel
+      LibFptr.disable_ofd_channel(@interface)
+    end
+
+    def enable_ofd_channel
+      LibFptr.enable_ofd_channel(@interface)
+    end
+
+    def validate_json
+      LibFptr.validate_json(@interface)
+    end
+
+    def log_write_ex(tag, level, message)
+      LibFptr.log_write_ex(@interface, LibC.string_to_wchar_pointer(tag), level, LibC.string_to_wchar_pointer(message))
     end
 
     private_class_method def self.finalize(pointer)

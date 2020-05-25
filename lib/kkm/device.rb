@@ -6,9 +6,10 @@ module Kkm
     attr_accessor :device_name
 
     def initialize(settings)
-      @ifptr = IFptr.new
+      @device_id = settings["DeviceId"]
       @device_name = settings["DeviceName"] || Constants::DEFAULT_DEVICE_NAME
       @timeout = settings["Timeout"] || Constants::DEFAULT_CONNECTION_TIMEOUT
+      @ifptr = IFptr.new(@device_id)
 
       set_settings(settings)
     end
@@ -928,6 +929,22 @@ module Kkm
 
     def clear_universal_counters_cache
       raise_error if @ifptr.clear_universal_counters_cache != LibFptr::LIBFPTR_OK
+    end
+
+    def disable_ofd_channel
+      raise_error if @ifptr.disable_ofd_channel != LibFptr::LIBFPTR_OK
+    end
+
+    def enable_ofd_channel
+      raise_error if @ifptr.enable_ofd_channel != LibFptr::LIBFPTR_OK
+    end
+
+    def validate_json
+      raise_error if @ifptr.validate_json != LibFptr::LIBFPTR_OK
+    end
+
+    def log_write_ex(tag, level, message)
+      raise_error if @ifptr.log_write_ex(tag, level, message) != LibFptr::LIBFPTR_OK
     end
 
     def raise_error

@@ -251,13 +251,28 @@ module Kkm
     LIBFPTR_ERROR_CONNECTION_LOST                         = 241
     LIBFPTR_ERROR_UNIVERSAL_COUNTERS_FAULT                = 242
     LIBFPTR_ERROR_INVALID_TAX_SUM                         = 243
+    LIBFPTR_ERROR_INVALID_MARKING_CODE_TYPE               = 244
+    LIBFPTR_ERROR_LICENSE_HARD_FAULT                      = 245
+    LIBFPTR_ERROR_LICENSE_INVALID_SIGN                    = 246
+    LIBFPTR_ERROR_LICENSE_INVALID_SERIAL                  = 247
+    LIBFPTR_ERROR_LICENSE_INVALID_TIME                    = 248
+    LIBFPTR_ERROR_DOCUMENT_CANCELED                       = 249
+    LIBFPTR_ERROR_INVALID_SCRIPT_PARAMS                   = 250
+    LIBFPTR_ERROR_CLICHE_TOO_LONG                         = 251
 
     LIBFPTR_ERROR_BASE_WEB                                = 500
     LIBFPTR_ERROR_RECEIPT_PARSE_ERROR                     = 501
     LIBFPTR_ERROR_INTERRUPTED_BY_PREVIOUS_ERRORS          = 502
     LIBFPTR_ERROR_DRIVER_SCRIPT_ERROR                     = 503
+    LIBFPTR_ERROR_VALIDATE_FUNC_NOT_FOUND                 = 504
+    LIBFPTR_ERROR_WEB_FAIL                                = 505
+    LIBFPTR_ERROR_WEB_END                                 = 599
 
-    LIBFPTR_PARAM_TEXT                            = 65536
+    LIBFPTR_ERROR_USERS_SCRIPTS_BASE                      = 1000
+    LIBFPTR_ERROR_USERS_SCRIPTS_END                       = 1999
+
+    LIBFPTR_PARAM_FIRST                           = 65536
+    LIBFPTR_PARAM_TEXT                            = LIBFPTR_PARAM_FIRST
     LIBFPTR_PARAM_TEXT_WRAP                       = 65537
     LIBFPTR_PARAM_ALIGNMENT                       = 65538
     LIBFPTR_PARAM_FONT                            = 65539
@@ -547,6 +562,14 @@ module Kkm
     LIBFPTR_PARAM_USE_LICENSES                    = 65823
     LIBFPTR_PARAM_LICENSE_VALID_FROM              = 65824
     LIBFPTR_PARAM_LICENSE_VALID_UNTIL             = 65825
+    LIBFPTR_PARAM_MARKING_CODE_TYPE               = 65826
+    LIBFPTR_PARAM_SETTING_NAME                    = 65827
+    LIBFPTR_PARAM_SETTING_TYPE                    = 65828
+    LIBFPTR_PARAM_FONT_WIDTH                      = 65829
+    LIBFPTR_PARAM_REMOTE_CALL                     = 65830
+    LIBFPTR_PARAM_SCRIPT_PARAMS                   = 65831
+    LIBFPTR_PARAM_IGNORE_EMPTY                    = 65832
+    LIBFPTR_PARAM_LAST                            = 65833
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_25F                    = 57
@@ -601,15 +624,6 @@ module Kkm
     LIBFPTR_PORT_TCPIP     = 2
     LIBFPTR_PORT_BLUETOOTH = 3
 
-    LIBFPTR_PORT_BITS_7 = 7
-    LIBFPTR_PORT_BITS_8 = 8
-
-    LIBFPTR_PORT_PARITY_NO    = 0
-    LIBFPTR_PORT_PARITY_ODD   = 1
-    LIBFPTR_PORT_PARITY_EVEN  = 2
-    LIBFPTR_PORT_PARITY_MARK  = 3
-    LIBFPTR_PORT_PARITY_SPACE = 4
-
     LIBFPTR_PORT_BR_1200                      = 1200
     LIBFPTR_PORT_BR_2400                      = 2400
     LIBFPTR_PORT_BR_4800                      = 4800
@@ -621,6 +635,15 @@ module Kkm
     LIBFPTR_PORT_BR_230400                    = 230400
     LIBFPTR_PORT_BR_460800                    = 460800
     LIBFPTR_PORT_BR_921600                    = 921600
+
+    LIBFPTR_PORT_BITS_7 = 7
+    LIBFPTR_PORT_BITS_8 = 8
+
+    LIBFPTR_PORT_PARITY_NO    = 0
+    LIBFPTR_PORT_PARITY_ODD   = 1
+    LIBFPTR_PORT_PARITY_EVEN  = 2
+    LIBFPTR_PORT_PARITY_MARK  = 3
+    LIBFPTR_PORT_PARITY_SPACE = 4
 
     LIBFPTR_PORT_SB_1   = 0
     LIBFPTR_PORT_SB_1_5 = 1
@@ -720,6 +743,7 @@ module Kkm
     LIBFPTR_RT_DISCOUNTS                      = 20
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_NUMBERS    = 21
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_SHIFTS     = 22
+    LIBFPTR_RT_CLOSE_SHIFT_REPORTS            = 23
 
     LIBFPTR_PT_CASH           = 0
     LIBFPTR_PT_ELECTRONICALLY = 1
@@ -794,6 +818,7 @@ module Kkm
     LIBFPTR_DT_SCRIPTS_INFO                     = 44
     LIBFPTR_DT_SHIFT_TOTALS                     = 45
     LIBFPTR_DT_WIFI_INFO                        = 46
+    LIBFPTR_DT_FONT_INFO                        = 47
 
     LIBFPTR_FNDT_TAG_VALUE                = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
@@ -851,6 +876,7 @@ module Kkm
     LIBFPTR_OFD_CHANNEL_NONE  = 0
     LIBFPTR_OFD_CHANNEL_USB   = 1
     LIBFPTR_OFD_CHANNEL_PROTO = 2
+    LIBFPTR_OFD_CHANNEL_AUTO  = LIBFPTR_OFD_CHANNEL_PROTO
 
     LIBFPTR_PST_POWER_SUPPLY = 0
     LIBFPTR_PST_RTC_BATTERY  = 1
@@ -866,6 +892,7 @@ module Kkm
     LIBFPTR_RT_FN_SUM_COUNTERS         = 7
     LIBFPTR_RT_FN_QUANTITY_COUNTERS    = 8
     LIBFPTR_RT_FN_UNSENT_DOCS_COUNTERS = 9
+    LIBFPTR_RT_SETTINGS                = 10
 
     LIBFPTR_NT_FURS      = 0
     LIBFPTR_NT_MEDICINES = 1
@@ -924,6 +951,7 @@ module Kkm
 
     LIBFPTR_SCRIPT_EXECUTABLE = 0
     LIBFPTR_SCRIPT_JSON       = 1
+    LIBFPTR_SCRIPT_SETTINGS   = 2
 
     LIBFPTR_UCL_UNUSED         = 0
     LIBFPTR_UCL_RECEIPT_TYPE   = 1
@@ -944,6 +972,17 @@ module Kkm
     LIBFPTR_FNCT_SHIFT        = 0
     LIBFPTR_FNCT_NON_NULLABLE = 1
 
+    LIBFPTR_MCT_OTHER    = 0
+    LIBFPTR_MCT_EGAIS_20 = 1
+    LIBFPTR_MCT_EGAIS_30 = 2
+
+    LIBFPTR_ST_NUMBER = 0
+    LIBFPTR_ST_STRING = 1
+    LIBFPTR_ST_BOOL   = 2
+
+    LIBFPTR_FWT_FIRMWARE = 0
+    LIBFPTR_FWT_SCRIPTS  = 2
+
     LIBFPTR_UC_OTHERS = 4294967295
 
     DEFAULT_BUFF_SIZE = 512
@@ -957,6 +996,7 @@ module Kkm
     attach_function :get_version_string, :libfptr_get_version_string, [], :string
 
     attach_function :create, :libfptr_create, [:handle], :int
+    attach_function :create_with_id, :libfptr_create_with_id, [:handle, :pointer], :int
     attach_function :set_settings, :libfptr_set_settings, [:handle, :pointer], :int
     attach_function :destroy, :libfptr_destroy, [:handle], :void
     attach_function :get_settings, :libfptr_get_settings, [:handle, :pointer, :int], :int
@@ -1167,5 +1207,9 @@ module Kkm
     attach_function :read_universal_counter_sum, :libfptr_read_universal_counter_sum, [:handle], :int
     attach_function :read_universal_counter_quantity, :libfptr_read_universal_counter_quantity, [:handle], :int
     attach_function :clear_universal_counters_cache, :libfptr_clear_universal_counters_cache, [:handle], :int
+    attach_function :disable_ofd_channel, :libfptr_disable_ofd_channel, [:handle], :int
+    attach_function :enable_ofd_channel, :libfptr_enable_ofd_channel, [:handle], :int
+    attach_function :validate_json, :libfptr_validate_json, [:handle], :int
+    attach_function :log_write_ex, :libfptr_log_write_ex, [:handle, :pointer, :int, :pointer], :int
   end
 end

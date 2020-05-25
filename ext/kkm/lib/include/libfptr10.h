@@ -288,11 +288,25 @@ enum libfptr_error
     LIBFPTR_ERROR_CONNECTION_LOST,
     LIBFPTR_ERROR_UNIVERSAL_COUNTERS_FAULT,
     LIBFPTR_ERROR_INVALID_TAX_SUM,
+    LIBFPTR_ERROR_INVALID_MARKING_CODE_TYPE,
+    LIBFPTR_ERROR_LICENSE_HARD_FAULT,
+    LIBFPTR_ERROR_LICENSE_INVALID_SIGN,
+    LIBFPTR_ERROR_LICENSE_INVALID_SERIAL,
+    LIBFPTR_ERROR_LICENSE_INVALID_TIME,
+    LIBFPTR_ERROR_DOCUMENT_CANCELED,
+    LIBFPTR_ERROR_INVALID_SCRIPT_PARAMS,
+    LIBFPTR_ERROR_CLICHE_TOO_LONG,
 
     LIBFPTR_ERROR_BASE_WEB = 500,
     LIBFPTR_ERROR_RECEIPT_PARSE_ERROR,
     LIBFPTR_ERROR_INTERRUPTED_BY_PREVIOUS_ERRORS,
     LIBFPTR_ERROR_DRIVER_SCRIPT_ERROR,
+    LIBFPTR_ERROR_VALIDATE_FUNC_NOT_FOUND,
+    LIBFPTR_ERROR_WEB_FAIL,
+    LIBFPTR_ERROR_WEB_END = 599,
+
+    LIBFPTR_ERROR_USERS_SCRIPTS_BASE = 1000,
+    LIBFPTR_ERROR_USERS_SCRIPTS_END = 1999,
 };
 
 enum libfptr_param
@@ -588,6 +602,13 @@ enum libfptr_param
     LIBFPTR_PARAM_USE_LICENSES,
     LIBFPTR_PARAM_LICENSE_VALID_FROM,
     LIBFPTR_PARAM_LICENSE_VALID_UNTIL,
+    LIBFPTR_PARAM_MARKING_CODE_TYPE,
+    LIBFPTR_PARAM_SETTING_NAME,
+    LIBFPTR_PARAM_SETTING_TYPE,
+    LIBFPTR_PARAM_FONT_WIDTH,
+    LIBFPTR_PARAM_REMOTE_CALL,
+    LIBFPTR_PARAM_SCRIPT_PARAMS,
+    LIBFPTR_PARAM_IGNORE_EMPTY,
 
     LIBFPTR_PARAM_LAST
 };
@@ -842,6 +863,7 @@ enum libfptr_report_type
     LIBFPTR_RT_DISCOUNTS,
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_NUMBERS,
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_SHIFTS,
+    LIBFPTR_RT_CLOSE_SHIFT_REPORTS
 };
 
 enum libfptr_payment_type
@@ -927,7 +949,8 @@ enum libfptr_kkt_data_type
     LIBFPTR_DT_ETHERNET_INFO,
     LIBFPTR_DT_SCRIPTS_INFO,
     LIBFPTR_DT_SHIFT_TOTALS,
-    LIBFPTR_DT_WIFI_INFO
+    LIBFPTR_DT_WIFI_INFO,
+    LIBFPTR_DT_FONT_INFO
 };
 
 enum libfptr_fn_data_type
@@ -1005,7 +1028,8 @@ enum libfptr_ofd_channel
 {
     LIBFPTR_OFD_CHANNEL_NONE = 0,
     LIBFPTR_OFD_CHANNEL_USB,
-    LIBFPTR_OFD_CHANNEL_PROTO
+    LIBFPTR_OFD_CHANNEL_PROTO,
+    LIBFPTR_OFD_CHANNEL_AUTO = LIBFPTR_OFD_CHANNEL_PROTO
 };
 
 enum libfptr_power_source_type
@@ -1027,6 +1051,7 @@ enum libfptr_records_type
     LIBFPTR_RT_FN_SUM_COUNTERS,
     LIBFPTR_RT_FN_QUANTITY_COUNTERS,
     LIBFPTR_RT_FN_UNSENT_DOCS_COUNTERS,
+    LIBFPTR_RT_SETTINGS,
 };
 
 enum libfptr_nomenclature_type
@@ -1112,6 +1137,7 @@ enum libfptr_script_type
 {
     LIBFPTR_SCRIPT_EXECUTABLE = 0,
     LIBFPTR_SCRIPT_JSON,
+    LIBFPTR_SCRIPT_SETTINGS,
 };
 
 enum libfptr_uc_layer
@@ -1142,6 +1168,26 @@ enum libfptr_fn_counter_type
     LIBFPTR_FNCT_NON_NULLABLE
 };
 
+enum libfptr_marking_code_type
+{
+    LIBFPTR_MCT_OTHER = 0,
+    LIBFPTR_MCT_EGAIS_20,
+    LIBFPTR_MCT_EGAIS_30,
+};
+
+enum libfptr_setting_type
+{
+    LIBFPTR_ST_NUMBER = 0,
+    LIBFPTR_ST_STRING,
+    LIBFPTR_ST_BOOL
+};
+
+enum libfptr_firmware_type
+{
+    LIBFPTR_FWT_FIRMWARE = 0,
+    LIBFPTR_FWT_SCRIPTS = 2,
+};
+
 #define LIBFPTR_UC_OTHERS 4294967295
 
 
@@ -1150,6 +1196,8 @@ DTOX_SHARED_EXPORT void DTOX_SHARED_CCA libfptr_init_library(void *params);
 DTOX_SHARED_EXPORT const char *DTOX_SHARED_CCA libfptr_get_version_string();
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_create(libfptr_handle *handle);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_create_with_id(libfptr_handle *handle, const wchar_t *id);
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_set_settings(libfptr_handle handle,
                                                             const wchar_t *settings);
@@ -1483,6 +1531,15 @@ DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_read_universal_counter_quantity(l
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_clear_universal_counters_cache(libfptr_handle handle);
 
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_disable_ofd_channel(libfptr_handle handle);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_enable_ofd_channel(libfptr_handle handle);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_validate_json(libfptr_handle handle);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_log_write_ex(libfptr_handle handle,
+                                                            const wchar_t *tag, int level,
+                                                            const wchar_t *message);
 
 #ifdef __cplusplus
 }
