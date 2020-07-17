@@ -25,7 +25,12 @@ module Kkm
 
     def print_receipt(receipt_type, positions, payments, fiscal_props = [], print_physical = false)
       setup_cashier(fiscal_props)
-      setup_fiscal_properties(fiscal_props)
+      receipt_fiscal_props = fiscal_props.reject do |prop|
+        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER ||
+        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
+      end
+
+      setup_fiscal_properties(receipt_fiscal_props)
 
       set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, receipt_type)
       set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, !print_physical)
@@ -246,10 +251,12 @@ module Kkm
     end
 
     def print_slip
+      begin_nonfiscal_document
+
       yield(self)
       (0..Constants::CHEQUE_CUT_LINES).each { print_text_line }
-      set_param(LibFptr::LIBFPTR_PARAM_CUT_TYPE, LibFptr::LIBFPTR_CT_PART)
-      cut
+    ensure
+      end_nonfiscal_document
     end
 
     def status_raw_data
@@ -339,7 +346,7 @@ module Kkm
     def setup_cashier(fiscal_props)
       cashier_fiscal_props = fiscal_props.select do |prop|
         prop[:number] == Kkm::Constants::FiscalProperty::CASHIER ||
-          prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
+        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
       end
 
       return if cashier_fiscal_props.empty?
