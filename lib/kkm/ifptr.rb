@@ -7,7 +7,7 @@ require "bigdecimal"
 module Kkm
   # Ruby implementation of LibFptr
   class IFptr
-    def initialize id = nil
+    def initialize(id = nil)
       interface_pointer = FFI::MemoryPointer.new(:pointer)
 
       if id
@@ -68,11 +68,11 @@ module Kkm
       LibFptr.close(@interface)
     end
 
-    # rubocop:disable PredicateName
+    # rubocop:disable Naming/PredicateName
     def is_opened
       LibFptr.is_opened(@interface)
     end
-    # rubocop:enable PredicateName
+    # rubocop:enable Naming/PredicateName
 
     def error_code
       LibFptr.error_code(@interface)
@@ -685,7 +685,7 @@ module Kkm
       LibFptr.send("#{method_prefix}_bytearray", @interface, param_id, ptr, value.size)
     end
 
-    # rubocop:disable CyclomaticComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity
     def set_method(method_prefix, param_id, value)
       case value
       when Integer
@@ -704,6 +704,6 @@ module Kkm
         raise TypeError, "Invalid 'param' type #{value.class}"
       end
     end
-    # rubocop:enable CyclomaticComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

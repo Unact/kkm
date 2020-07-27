@@ -1,7 +1,10 @@
 # Layout
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
+
+Layout/LineLength:
+  Max: 120
 
 # Metrics
 
@@ -11,16 +14,11 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Enabled: false
 
-Metrics/LineLength:
-  Max: 120
-
 Metrics/MethodLength:
   Enabled: false
 
 Metrics/ModuleLength:
   Enabled: false
-
-
 
 # Naming
 
@@ -42,5 +40,5 @@ Style/NumericLiterals:
 Style/AsciiComments:
   Enabled: false
 
-Style/BracesAroundHashParameters:
-  EnforcedStyle: context_dependent
+Style/DocumentationMethod:
+  Enabled: false

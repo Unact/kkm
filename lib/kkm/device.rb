@@ -23,11 +23,20 @@ module Kkm
       turn_off
     end
 
-    def print_receipt(receipt_type, positions, payments, fiscal_props = [], print_physical = false)
+    # rubocop:disable Metrics/ParameterLists
+    def print_receipt(
+      receipt_type,
+      positions,
+      payments,
+      fiscal_props = [],
+      print_physical = false,
+      total = nil,
+      taxes = []
+    )
       setup_cashier(fiscal_props)
       receipt_fiscal_props = fiscal_props.reject do |prop|
         prop[:number] == Kkm::Constants::FiscalProperty::CASHIER ||
-        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
+          prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
       end
 
       setup_fiscal_properties(receipt_fiscal_props)
@@ -37,41 +46,16 @@ module Kkm
       open_receipt
 
       positions.each { |position| register_position(position) }
+      register_total(total) unless total.nil?
       payments.each { |payment| register_payment(payment) }
+      taxes.each { |tax| register_tax(tax) }
 
       close_receipt
     rescue DeviceError => e
       cancel_receipt if receipt_data[:receipt_type] != LibFptr::LIBFPTR_RT_CLOSED
       raise e
     end
-
-    def register_position(position_data)
-      fiscal_props = position_data[:fiscal_props] || []
-      fiscal_props.push(
-        {
-          number: Constants::FiscalProperty::POSITION_TYPE,
-          value: position_data[:position_type] || Constants::PositionType::GOODS
-        },
-        {
-          number: Constants::FiscalProperty::POSITION_PAYMENT_TYPE,
-          value: position_data[:position_payment_type] || Constants::PositionPaymentType::FULL_PAYMENT
-        }
-      )
-
-      setup_fiscal_properties(fiscal_props)
-      set_param(LibFptr::LIBFPTR_PARAM_COMMODITY_NAME, position_data[:name])
-      set_param(LibFptr::LIBFPTR_PARAM_PRICE, position_data[:price])
-      set_param(LibFptr::LIBFPTR_PARAM_QUANTITY, position_data[:quantity])
-      set_param(LibFptr::LIBFPTR_PARAM_TAX_TYPE, position_data[:tax] || LibFptr::LIBFPTR_TAX_NO)
-
-      registration
-    end
-
-    def register_payment(payment_data)
-      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_SUM, payment_data[:sum])
-      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, payment_data[:type] || LibFptr::LIBFPTR_PT_CASH)
-      payment
-    end
+    # rubocop:enable Metrics/ParameterLists
 
     def status_data
       set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, LibFptr::LIBFPTR_DT_STATUS)
@@ -335,18 +319,56 @@ module Kkm
       close
     end
 
-    # rubocop:disable PredicateName
+    # rubocop:disable Naming/PredicateName
     def is_opened
       raise_error if @ifptr.is_opened != LibFptr::LIBFPTR_OK
     end
-    # rubocop:enable PredicateName
+    # rubocop:enable Naming/PredicateName
 
     private
+
+    def register_position(position_data)
+      fiscal_props = position_data[:fiscal_props] || []
+      fiscal_props.push(
+        {
+          number: Constants::FiscalProperty::POSITION_TYPE,
+          value: position_data[:position_type] || Constants::PositionType::GOODS
+        },
+        {
+          number: Constants::FiscalProperty::POSITION_PAYMENT_TYPE,
+          value: position_data[:position_payment_type] || Constants::PositionPaymentType::FULL_PAYMENT
+        }
+      )
+
+      setup_fiscal_properties(fiscal_props)
+      set_param(LibFptr::LIBFPTR_PARAM_COMMODITY_NAME, position_data[:name])
+      set_param(LibFptr::LIBFPTR_PARAM_PRICE, position_data[:price])
+      set_param(LibFptr::LIBFPTR_PARAM_QUANTITY, position_data[:quantity])
+      set_param(LibFptr::LIBFPTR_PARAM_TAX_TYPE, position_data[:tax] || LibFptr::LIBFPTR_TAX_NO)
+
+      registration
+    end
+
+    def register_payment(payment_data)
+      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_SUM, payment_data[:sum])
+      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, payment_data[:type] || LibFptr::LIBFPTR_PT_CASH)
+      payment
+    end
+
+    def register_total(total)
+      set_param(LibFptr::LIBFPTR_PARAM_SUM, total)
+      receipt_total
+    end
+
+    def register_tax(tax_data)
+      set_param(LibFptr::LIBFPTR_PARAM_TAX_SUM, tax_data[:sum])
+      set_param(LibFptr::LIBFPTR_PARAM_TAX_TYPE, tax_data[:type] || LibFptr::LIBFPTR_TAX_NO)
+    end
 
     def setup_cashier(fiscal_props)
       cashier_fiscal_props = fiscal_props.select do |prop|
         prop[:number] == Kkm::Constants::FiscalProperty::CASHIER ||
-        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
+          prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
       end
 
       return if cashier_fiscal_props.empty?
