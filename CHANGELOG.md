@@ -1,3 +1,61 @@
+## 0.3.0
+
+**Breaking change** Корневой модуль переименован из `Kkm` в `KKM`  
+**Breaking change** Сильно изменены сигнатуры и входящие параметры методов `KKM::Device`
+
+- Убраны константы команд `KKM::Constants::Command`, так как они не поддерживаются платформой 5.0  
+- Переименованы константы  
+
+`KKM::Constants::FiscalProperty::CASHIER` - `KKM::Constants::FiscalProperty::OPERATOR`  
+`KKM::Constants::FiscalProperty::CASHIER_INN` - `KKM::Constants::FiscalProperty::OPERATOR_VATIN`  
+`KKM::Constants::FiscalProperty::BUYER_INN` - `KKM::Constants::FiscalProperty::BUYER_VATIN`  
+`KKM::Constants::FiscalProperty::SUPPLIER_INN` - `KKM::Constants::FiscalProperty::SUPPLIER_VATIN`  
+`KKM::Constants::FiscalProperty::ORGANIZATION_INN` - `KKM::Constants::FiscalProperty::ORGANIZATION_VATIN`  
+`KKM::Constants::FiscalProperty::OFD_INN` - `KKM::Constants::FiscalProperty::OFD_VATIN`  
+`KKM::Constants::FiscalProperty::TRANSFER_OPERATOR_INN` - `KKM::Constants::FiscalProperty::TRANSFER_OPERATOR_VATIN`  
+
+- Переименованы все константы под `KKM::Constants::FiscalProperty` в `KKM::Constants::Tag`  
+- Добавлены константы для тегов  
+
+1173 - `KKM::Constants::Tag::CORRECTION_TYPE`  
+1174 - `KKM::Constants::Tag::CORRECTION_DOCUMENT`  
+1177 - `KKM::Constants::Tag::CORRECTION_DOCUMENT_NAME`  
+1178 - `KKM::Constants::Tag::CORRECTION_DOCUMENT_DATETIME`  
+1179 - `KKM::Constants::Tag::CORRECTION_DOCUMENT_NUMBER`  
+
+- Убраны методы, не поддерживаемые платформой 5.0  
+
+`KKM::Device.ofd_status_raw_data`  
+`KKM::Device.mode_raw_data`  
+`KKM::Device.fn_status_raw_data`  
+`KKM::Device.status_raw_data`  
+
+- Изменена инициализация класса `KKM::Device`, теперь на вход необходимо передавть экземпляр `KKM::Models::Settings`
+- Добавлен метод `KKM::Device.execute_command` для выполнения команд
+- Изменен метод `KKM::Device.print_receipt`, теперь на вход необходимо передавать экземпляр `KKM::Models::Receipt`
+- Переименован метод `KKM::Device.setup_cashier` - `KKM::Device.setup_operator`, теперь на вход необходимо передавать экземпляр `KKM::Models::Operator`
+- Изменен метод `print_report`, теперь на вход необходимо передавать экземпляр `KKM::Models::Report`
+- Изменены методы `open_day` и `close_day`, теперь кассира надо передавать как экземпляр `KKM::Models::Operator`
+- Изменен метод `print_text_line`, теперь текст для печати надо передавать как экземпляр `KKM::Models::TextLine`
+- Объеденены методы в один метод `KKM::Device.retrieve_fn_data`. На вход необходимо передавать `KKM::Models::FNData`  
+
+`KKM::Device.fn_last_receipt_data`  
+`KKM::Device.fn_info_data`  
+`KKM::Device.fn_registration_data`  
+`KKM::Device.fn_shift_data`  
+
+- Для `KKM::Device.retrieve_fn_data` с `KKM::Models::FNData` типа `LibFptr::LIBFPTR_FNDT_REG_INFO` изменены ответные теги  
+`organization_inn` - `organization_vatin`  
+`ofd_inn` - `ofd_vatin`  
+
+- Объеденены методы в один метод `KKM::Device.retrieve_data`. На вход необходимо передавать `KKM::Models::Data`  
+
+`KKM::Device.status_data`  
+`KKM::Device.datetime`  
+`KKM::Device.payment_register_data`  
+`KKM::Device.shift_state_data`  
+`KKM::Device.receipt_data`  
+
 ## 0.2.7
 
 - Добавлена возможность регистрации итога чека и налога на чек
