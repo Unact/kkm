@@ -3,12 +3,23 @@
 module Kkm
   # Class is intended for printing receipts, closing shifts and getting information from KKM device
   class Device
+    include DeviceMixins::Command
+    include DeviceMixins::Data
+    include DeviceMixins::FNData
+    include DeviceMixins::Receipt
+    include DeviceMixins::Report
+    include DeviceMixins::Text
+
     attr_accessor :device_name
+    attr_reader :device_id, :timeout
 
     def initialize(settings)
-      @device_id = settings["DeviceId"]
-      @device_name = settings["DeviceName"] || Constants::DEFAULT_DEVICE_NAME
-      @timeout = settings["Timeout"] || Constants::DEFAULT_CONNECTION_TIMEOUT
+      raise TypeError, "Parameter must be an Models::Settings" unless settings.is_a?(Models::Settings)
+
+      settings = settings.raw_settings
+      @device_id = settings.delete("DeviceId")
+      @device_name = settings.delete("DeviceName") || Constants::DEFAULT_DEVICE_NAME
+      @timeout = settings.delete("Timeout") || Constants::DEFAULT_CONNECTION_TIMEOUT
       @ifptr = IFptr.new(@device_id)
 
       set_settings(settings)
@@ -23,279 +34,28 @@ module Kkm
       turn_off
     end
 
-    # rubocop:disable Metrics/ParameterLists
-    def print_receipt(
-      receipt_type,
-      positions,
-      payments,
-      fiscal_props = [],
-      print_physical = false,
-      total = nil,
-      taxes = []
-    )
-      setup_cashier(fiscal_props)
-      receipt_fiscal_props = fiscal_props.reject do |prop|
-        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER ||
-          prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
-      end
+    def setup_operator(operator)
+      return if operator.nil?
+      raise TypeError, "Parameter must be an Models::Operator or nil" unless operator.is_a?(Models::Operator)
 
-      setup_fiscal_properties(receipt_fiscal_props)
+      tags = []
+      tags.push(Models::Tag.new(Constants::Tag::OPERATOR, operator.name)) unless operator.name.nil?
+      tags.push(Models::Tag.new(Constants::Tag::OPERATOR_VATIN, operator.vatin)) unless operator.vatin.nil?
 
-      set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, receipt_type)
-      set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, !print_physical)
-      open_receipt
-
-      positions.each { |position| register_position(position) }
-      register_total(total) unless total.nil?
-      payments.each { |payment| register_payment(payment) }
-      taxes.each { |tax| register_tax(tax) }
-
-      close_receipt
-    rescue DeviceError => e
-      cancel_receipt if receipt_data[:receipt_type] != LibFptr::LIBFPTR_RT_CLOSED
-      raise e
-    end
-    # rubocop:enable Metrics/ParameterLists
-
-    def status_data
-      set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, LibFptr::LIBFPTR_DT_STATUS)
-      query_data
-
-      {
-        operator_id: get_param_int(LibFptr::LIBFPTR_PARAM_OPERATOR_ID),
-        logical_number: get_param_int(LibFptr::LIBFPTR_PARAM_LOGICAL_NUMBER),
-        shift_state: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE),
-        model: get_param_int(LibFptr::LIBFPTR_PARAM_MODEL),
-        mode: get_param_int(LibFptr::LIBFPTR_PARAM_MODE),
-        submode: get_param_int(LibFptr::LIBFPTR_PARAM_SUBMODE),
-        receipt_number: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_NUMBER),
-        document_number: get_param_int(LibFptr::LIBFPTR_PARAM_DOCUMENT_NUMBER),
-        shift_number: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_NUMBER),
-        receipt_type: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE),
-        receipt_line_length: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_LINE_LENGTH),
-        receipt_line_length_pix: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_LINE_LENGTH_PIX),
-        receipt_sum: get_param_double(LibFptr::LIBFPTR_PARAM_RECEIPT_SUM),
-        datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME),
-        fiscal: get_param_bool(LibFptr::LIBFPTR_PARAM_FISCAL),
-        fn_fiscal: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_FISCAL),
-        fn_present: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_PRESENT),
-        invalid_fn: get_param_bool(LibFptr::LIBFPTR_PARAM_INVALID_FN),
-        cashdrawer_opened: get_param_bool(LibFptr::LIBFPTR_PARAM_CASHDRAWER_OPENED),
-        paper_present: get_param_bool(LibFptr::LIBFPTR_PARAM_RECEIPT_PAPER_PRESENT),
-        paper_near_end: get_param_bool(LibFptr::LIBFPTR_PARAM_PAPER_NEAR_END),
-        cover_opened: get_param_bool(LibFptr::LIBFPTR_PARAM_COVER_OPENED),
-        printer_connection_lost: get_param_bool(LibFptr::LIBFPTR_PARAM_PRINTER_CONNECTION_LOST),
-        printer_error: get_param_bool(LibFptr::LIBFPTR_PARAM_PRINTER_ERROR),
-        cut_error: get_param_bool(LibFptr::LIBFPTR_PARAM_CUT_ERROR),
-        printer_overheat: get_param_bool(LibFptr::LIBFPTR_PARAM_PRINTER_OVERHEAT),
-        blocked: get_param_bool(LibFptr::LIBFPTR_PARAM_BLOCKED),
-        serial_number: get_param_str(LibFptr::LIBFPTR_PARAM_SERIAL_NUMBER),
-        model_name: get_param_str(LibFptr::LIBFPTR_PARAM_MODEL_NAME),
-        unit_version: get_param_str(LibFptr::LIBFPTR_PARAM_UNIT_VERSION)
-      }
+      setup_tags(tags)
+      operator_login
     end
 
-    def datetime
-      set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, LibFptr::LIBFPTR_DT_DATE_TIME)
-      query_data
+    def open_day(operator = nil, electronically: true)
+      setup_operator(operator)
 
-      get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME)
-    end
-
-    def payment_register_data(payment_type = LibFptr::LIBFPTR_PT_CASH, receipt_type = LibFptr::LIBFPTR_RT_SELL)
-      set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, LibFptr::LIBFPTR_DT_PAYMENT_SUM)
-      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, payment_type)
-      set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, receipt_type)
-      query_data
-
-      get_param_double(LibFptr::LIBFPTR_PARAM_SUM)
-    end
-
-    def shift_state_data
-      set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, LibFptr::LIBFPTR_DT_SHIFT_STATE)
-      query_data
-
-      {
-        opened: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE) == LibFptr::LIBFPTR_SS_OPENED,
-        datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME)
-      }
-    end
-
-    def receipt_data
-      set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, LibFptr::LIBFPTR_DT_RECEIPT_STATE)
-      query_data
-
-      {
-        receipt_type: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE),
-        receipt_number: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_NUMBER),
-        document_number: get_param_str(LibFptr::LIBFPTR_PARAM_DOCUMENT_NUMBER),
-        receipt_sum: get_param_double(LibFptr::LIBFPTR_PARAM_RECEIPT_SUM),
-        remainder: get_param_double(LibFptr::LIBFPTR_PARAM_REMAINDER),
-        change: get_param_double(LibFptr::LIBFPTR_PARAM_CHANGE)
-      }
-    end
-
-    def fn_last_receipt_data
-      set_param(LibFptr::LIBFPTR_PARAM_FN_DATA_TYPE, LibFptr::LIBFPTR_FNDT_LAST_RECEIPT)
-      fn_query_data
-
-      {
-        datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME),
-        sum: get_param_double(LibFptr::LIBFPTR_PARAM_RECEIPT_SUM),
-        receipt_type: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE),
-        fiscal_sign: get_param_str(LibFptr::LIBFPTR_PARAM_FISCAL_SIGN),
-        document_number: get_param_int(LibFptr::LIBFPTR_PARAM_DOCUMENT_NUMBER)
-      }
-    end
-
-    def fn_info_data
-      set_param(LibFptr::LIBFPTR_PARAM_FN_DATA_TYPE, LibFptr::LIBFPTR_FNDT_FN_INFO)
-      fn_query_data
-
-      {
-        serial_number: get_param_str(LibFptr::LIBFPTR_PARAM_SERIAL_NUMBER),
-        version: get_param_str(LibFptr::LIBFPTR_PARAM_FN_VERSION),
-        type: get_param_int(LibFptr::LIBFPTR_PARAM_FN_TYPE),
-        state: get_param_int(LibFptr::LIBFPTR_PARAM_FN_STATE),
-        flags: get_param_int(LibFptr::LIBFPTR_PARAM_FN_FLAGS),
-        need_replacement: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_NEED_REPLACEMENT),
-        resource_exhausted: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_RESOURCE_EXHAUSTED),
-        memory_overflow: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_MEMORY_OVERFLOW),
-        ofd_timeout: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_OFD_TIMEOUT),
-        critical_error: get_param_bool(LibFptr::LIBFPTR_PARAM_FN_CRITICAL_ERROR)
-      }
-    end
-
-    def fn_registration_data
-      set_param(LibFptr::LIBFPTR_PARAM_FN_DATA_TYPE, LibFptr::LIBFPTR_FNDT_REG_INFO)
-      fn_query_data
-
-      {
-        taxation_types: get_param_int(Constants::FiscalProperty::TAXATION_TYPES),
-        agent_type: get_param_int(Constants::FiscalProperty::AGENT_TYPE),
-        ffd_version: get_param_int(Constants::FiscalProperty::FFD_VERSION),
-        auto_mode: get_param_bool(Constants::FiscalProperty::AUTO_MODE),
-        offline_mode: get_param_bool(Constants::FiscalProperty::OFFLINE_MODE),
-        encryption: get_param_bool(Constants::FiscalProperty::ENCRYPTION),
-        internet: get_param_bool(Constants::FiscalProperty::INTERNET),
-        service: get_param_bool(Constants::FiscalProperty::SERVICE),
-        bso: get_param_bool(Constants::FiscalProperty::BSO),
-        lottery: get_param_bool(Constants::FiscalProperty::LOTTERY),
-        gambling: get_param_bool(Constants::FiscalProperty::GAMBLING),
-        excise: get_param_bool(Constants::FiscalProperty::EXCISE),
-        machine_installation: get_param_bool(Constants::FiscalProperty::MACHINE_INSTALLATION),
-        organization_inn: get_param_str(Constants::FiscalProperty::ORGANIZATION_INN),
-        organization_name: get_param_str(Constants::FiscalProperty::ORGANIZATION_NAME),
-        organization_email: get_param_str(Constants::FiscalProperty::ORGANIZATION_EMAIL),
-        payments_address: get_param_str(Constants::FiscalProperty::PAYMENTS_ADDRESS),
-        payments_place: get_param_str(Constants::FiscalProperty::PAYMENTS_PLACE),
-        registration_number: get_param_str(Constants::FiscalProperty::REGISTRATION_NUMBER),
-        machine_number: get_param_str(Constants::FiscalProperty::MACHINE_NUMBER),
-        ofd_inn: get_param_str(Constants::FiscalProperty::OFD_INN),
-        ofd_name: get_param_str(Constants::FiscalProperty::OFD_NAME)
-      }
-    end
-
-    def fn_shift_data
-      set_param(LibFptr::LIBFPTR_PARAM_FN_DATA_TYPE, LibFptr::LIBFPTR_FNDT_SHIFT)
-      fn_query_data
-
-      {
-        shift_number: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_NUMBER),
-        receipt_number: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_NUMBER)
-      }
-    end
-
-    def print_report(report_type, document_number = nil)
-      set_param(LibFptr::LIBFPTR_PARAM_REPORT_TYPE, report_type)
-      set_param(LibFptr::LIBFPTR_PARAM_DOCUMENT_NUMBER, document_number) unless document_number.nil?
-      report
-    end
-
-    def open_day(fiscal_props = [], print_physical = false)
-      setup_cashier(fiscal_props)
-
-      set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, !print_physical)
+      set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, electronically)
       open_shift
     end
 
-    def close_day(fiscal_props = [], print_physical = false)
-      setup_cashier(fiscal_props)
-
-      set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, !print_physical)
-      print_report(LibFptr::LIBFPTR_RT_CLOSE_SHIFT)
-    end
-
-    def print_text_line(text = "", alignment = LibFptr::LIBFPTR_ALIGNMENT_CENTER, wrap = LibFptr::LIBFPTR_TW_WORDS)
-      set_param(LibFptr::LIBFPTR_PARAM_TEXT, text)
-      set_param(LibFptr::LIBFPTR_PARAM_ALIGNMENT, alignment)
-      set_param(LibFptr::LIBFPTR_PARAM_TEXT_WRAP, wrap)
-
-      print_text
-    end
-
-    def print_slip
-      begin_nonfiscal_document
-
-      yield(self)
-      (0..Constants::CHEQUE_CUT_LINES).each { print_text_line }
-    ensure
-      end_nonfiscal_document
-    end
-
-    def status_raw_data
-      res = execute_command(Constants::Command::STATUS)
-
-      {
-        cashier: res[1],
-        operator: Integer(res[2], 16),
-        datetime: Time.new("20#{res[3]}".to_i, res[4].to_i, res[5].to_i, res[6].to_i, res[7].to_i, res[8].to_i),
-        flags: Integer(res[9], 16),
-        model: Integer(res[14], 16),
-        os_version: res[16].split("").join("."),
-        mode: res[17][1],
-        advanced_mode: res[17][0],
-        doc_number: res[18..19].reverse.join.to_i,
-        session_number: res[20..21].reverse.join.to_i,
-        cheque_status: res[22].to_i,
-        cheque_summ: res[23..27].join.to_i,
-        floating_point: res[28].to_i,
-        port_type: res[29].to_i
-      }
-    end
-
-    def fn_status_raw_data
-      res = execute_command(Constants::Command::FN_STATUS)
-
-      {
-        phase: res[2].to_i,
-        document: Integer(res[3], 16),
-        has_document_data: res[4].to_i == 1,
-        session_opened: res[5].to_i == 1,
-        flags: Integer(res[6], 16),
-        fiscal_storage_number: [res[12..27].join].pack("H*")
-      }
-    end
-
-    def ofd_status_raw_data
-      res = execute_command(Constants::Command::OFD_STATUS)
-
-      {
-        state: Integer(res[2], 16),
-        read_message: res[3].to_i == 1,
-        to_send: Integer(res[4..5].reverse.join, 16),
-        first_doc: Integer(res[6..9].reverse.join, 16)
-      }
-    end
-
-    def mode_raw_data
-      res = execute_command(Constants::Command::STATUS_CODE)
-
-      {
-        mode: Integer(res[1][1], 16),
-        advanced_mode: Integer(res[1][0], 16),
-        short_flags: Integer(res[2], 16)
-      }
+    def close_day(operator = nil, electronically: true)
+      set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, electronically)
+      print_report(Models::Report.new(LibFptr::LIBFPTR_RT_CLOSE_SHIFT, operator))
     end
 
     def version
@@ -327,89 +87,31 @@ module Kkm
 
     private
 
-    def register_position(position_data)
-      fiscal_props = position_data[:fiscal_props] || []
-      fiscal_props.push(
-        {
-          number: Constants::FiscalProperty::POSITION_TYPE,
-          value: position_data[:position_type] || Constants::PositionType::GOODS
-        },
-        {
-          number: Constants::FiscalProperty::POSITION_PAYMENT_TYPE,
-          value: position_data[:position_payment_type] || Constants::PositionPaymentType::FULL_PAYMENT
-        }
-      )
+    def setup_tags(tags)
+      raise TypeError, "Parameter must be an Models::Tag array" if tags.any? { |tag| !tag.is_a?(Models::Tag) }
 
-      setup_fiscal_properties(fiscal_props)
-      set_param(LibFptr::LIBFPTR_PARAM_COMMODITY_NAME, position_data[:name])
-      set_param(LibFptr::LIBFPTR_PARAM_PRICE, position_data[:price])
-      set_param(LibFptr::LIBFPTR_PARAM_QUANTITY, position_data[:quantity])
-      set_param(LibFptr::LIBFPTR_PARAM_TAX_TYPE, position_data[:tax] || LibFptr::LIBFPTR_TAX_NO)
-
-      registration
+      tags
+        .sort { |tag| !tag.tags.empty? ? -1 : 1 }
+        .each { |tag| setup_tag(tag) }
     end
 
-    def register_payment(payment_data)
-      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_SUM, payment_data[:sum])
-      set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, payment_data[:type] || LibFptr::LIBFPTR_PT_CASH)
-      payment
-    end
+    def setup_tag(tag)
+      number = tag.number
+      value = tag.value
 
-    def register_total(total)
-      set_param(LibFptr::LIBFPTR_PARAM_SUM, total)
-      receipt_total
-    end
-
-    def register_tax(tax_data)
-      set_param(LibFptr::LIBFPTR_PARAM_TAX_SUM, tax_data[:sum])
-      set_param(LibFptr::LIBFPTR_PARAM_TAX_TYPE, tax_data[:type] || LibFptr::LIBFPTR_TAX_NO)
-    end
-
-    def setup_cashier(fiscal_props)
-      cashier_fiscal_props = fiscal_props.select do |prop|
-        prop[:number] == Kkm::Constants::FiscalProperty::CASHIER ||
-          prop[:number] == Kkm::Constants::FiscalProperty::CASHIER_INN
-      end
-
-      return if cashier_fiscal_props.empty?
-
-      setup_fiscal_properties(cashier_fiscal_props)
-      operator_login
-    end
-
-    def setup_fiscal_properties(fiscal_properties)
-      fiscal_properties
-        .sort { |fiscal_prop| fiscal_prop.key?(:fiscal_props) ? -1 : 1 }
-        .each { |fiscal_prop| setup_fiscal_property(fiscal_prop) }
-    end
-
-    def setup_fiscal_property(property, write = true)
-      number = property[:number]
-      value = property[:value]
-
-      if property.key?(:fiscal_props)
+      unless tag.tags.empty?
         util_form_tlv
-        setup_fiscal_properties(property[:fiscal_props])
+        setup_tags(tag.tags)
         util_form_tlv
 
         value = get_param_bytearray(LibFptr::LIBFPTR_PARAM_TAG_VALUE)
       end
 
-      if write
+      if tag.print
         set_param(number, value)
       else
         set_non_printable_param(number, value)
       end
-    end
-
-    def execute_command(command, wait = true)
-      command_bytearray = command.split.map { |part| Integer(part, 16) }
-      set_param(LibFptr::LIBFPTR_PARAM_COMMAND_BUFFER, command_bytearray)
-      set_param(LibFptr::LIBFPTR_PARAM_TIMEOUT_ENQ, Constants::DEFAULT_TIMEOUT_ENQ)
-      set_param(LibFptr::LIBFPTR_PARAM_NO_NEED_ANSWER, !wait)
-      run_command
-
-      get_param_bytearray(LibFptr::LIBFPTR_PARAM_ANSWER_BUFFER).map { |v| v.to_s(16).rjust(2, "0").upcase }
     end
 
     def set_settings(settings)

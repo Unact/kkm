@@ -2,18 +2,18 @@
 
 module Kkm
   module Constants
-    module FiscalProperty
+    module Tag
       AUTO_MODE                           = 1001
       OFFLINE_MODE                        = 1002
       TRANSFER_OPERATOR_ADDRESS           = 1005
       BUYER_ADDRESS                       = 1008
       PAYMENTS_ADDRESS                    = 1009
       DATETIME                            = 1012
-      TRANSFER_OPERATOR_INN               = 1016
-      OFD_INN                             = 1017
-      ORGANIZATION_INN                    = 1018
+      TRANSFER_OPERATOR_VATIN             = 1016
+      OFD_VATIN                           = 1017
+      ORGANIZATION_VATIN                  = 1018
       SUM                                 = 1020
-      CASHIER                             = 1021
+      OPERATOR                            = 1021
       POSITION_QUANTITY                   = 1023
       TRANSFER_OPERATOR_NAME              = 1026
       POSITION_NAME                       = 1030
@@ -49,11 +49,16 @@ module Kkm
       LOTTERY                             = 1126
       POSITION_MARKING_CODE               = 1162
       SUPPLIER_PHONE                      = 1171
+      CORRECTION_TYPE                     = 1173
+      CORRECTION_DOCUMENT                 = 1174
+      CORRECTION_DOCUMENT_NAME            = 1177
+      CORRECTION_DOCUMENT_DATETIME        = 1178
+      CORRECTION_DOCUMENT_NUMBER          = 1179
       PAYMENTS_PLACE                      = 1187
       ADDITIONAL_RECEIPT_PARAM            = 1192
       GAMBLING                            = 1193
       POSITION_TAX_NUMBER                 = 1199
-      CASHIER_INN                         = 1203
+      OPERATOR_VATIN                      = 1203
       EXCISE                              = 1207
       FFD_VERSION                         = 1209
       POSITION_TYPE                       = 1212
@@ -66,9 +71,9 @@ module Kkm
       AGENT_DATA                          = 1223
       SUPPLIER_DATA                       = 1224
       SUPPLIER_NAME                       = 1225
-      SUPPLIER_INN                        = 1226
+      SUPPLIER_VATIN                      = 1226
       BUYER_NAME                          = 1227
-      BUYER_INN                           = 1228
+      BUYER_VATIN                         = 1228
       POSITION_ORIGIN_COUNTY_CODE         = 1230
       POSITION_CUSTOMS_DECLARATION_NUMBER = 1231
     end
