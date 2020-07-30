@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   module Models
     # A utility class for passing fiscal tags
     class Tag

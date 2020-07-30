@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   module DeviceMixins
     # A utility mixin for printing reports
     module Report

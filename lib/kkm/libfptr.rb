@@ -2,7 +2,7 @@
 
 require "ffi"
 
-module Kkm
+module KKM
   # Ruby FFI interface mirroring /../../ext/kkm/lib/include/libfptr10.h
   module LibFptr
     extend FFI::Library

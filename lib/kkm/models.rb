@@ -10,7 +10,7 @@ require "kkm/models/settings"
 require "kkm/models/tag"
 require "kkm/models/text_line"
 
-module Kkm
+module KKM
   # Top level module for all models
   module Models
   end

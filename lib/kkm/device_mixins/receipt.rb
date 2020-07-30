@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   module DeviceMixins
     # A utility mixin for printing receipt
     module Receipt
@@ -21,7 +21,7 @@ module Kkm
 
         close_receipt
       rescue DeviceError => e
-        data = Kkm::Models::Data.new(LibFptr::LIBFPTR_DT_RECEIPT_STATE)
+        data = KKM::Models::Data.new(LibFptr::LIBFPTR_DT_RECEIPT_STATE)
 
         cancel_receipt if e.code != LibFptr::LIBFPTR_ERROR_CONNECTION_DISABLED &&
                           e.code != LibFptr::LIBFPTR_ERROR_CONNECTION_LOST &&

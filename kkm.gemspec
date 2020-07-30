@@ -4,7 +4,7 @@ require File.expand_path(__dir__ + "/lib/kkm/version")
 
 Gem::Specification.new do |s|
   s.name        = "kkm"
-  s.version     = Kkm::VERSION
+  s.version     = KKM::VERSION
   s.email       = "it@unact.ru"
   s.authors     = ["Unact"]
   s.homepage    = "https://github.com/Unact/kkm"

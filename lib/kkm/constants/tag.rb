@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   module Constants
     module Tag
       AUTO_MODE                           = 1001

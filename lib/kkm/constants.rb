@@ -4,7 +4,7 @@ require "kkm/constants/position_type"
 require "kkm/constants/position_payment_type"
 require "kkm/constants/tag"
 
-module Kkm
+module KKM
   module Constants
     CHEQUE_CUT_LINES           = 6
     DEFAULT_DEVICE_NAME        = "Device"

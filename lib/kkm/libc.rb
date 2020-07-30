@@ -2,8 +2,8 @@
 
 require "ffi"
 
-module Kkm
-  # Ruby FFI utility methods for working with Kkm::Libfptr
+module KKM
+  # Ruby FFI utility methods for working with KKM::Libfptr
   module LibC
     extend FFI::Library
     ffi_lib FFI::Library::LIBC

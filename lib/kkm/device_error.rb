@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   # Error for all device failures
   class DeviceError < StandardError
     attr_reader :code, :error_msg, :device_name

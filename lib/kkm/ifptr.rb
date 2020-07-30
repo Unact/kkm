@@ -4,7 +4,7 @@ require "json"
 require "time"
 require "bigdecimal"
 
-module Kkm
+module KKM
   # Ruby implementation of LibFptr
   class IFptr
     def initialize(id = nil)

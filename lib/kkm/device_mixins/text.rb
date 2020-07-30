@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   module DeviceMixins
     # A utility class for printing nonfiscal data on receipt
     module Text

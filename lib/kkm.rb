@@ -11,5 +11,5 @@ require "kkm/device"
 require "kkm/version"
 
 # Library for working with KKM devices
-module Kkm
+module KKM
 end

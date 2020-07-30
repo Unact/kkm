@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Kkm
+module KKM
   # Class is intended for printing receipts, closing shifts and getting information from KKM device
   class Device
     include DeviceMixins::Command

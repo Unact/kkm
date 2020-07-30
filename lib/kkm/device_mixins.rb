@@ -7,7 +7,7 @@ require "kkm/device_mixins/receipt"
 require "kkm/device_mixins/report"
 require "kkm/device_mixins/text"
 
-module Kkm
+module KKM
   # Top level module for all device mixins
   module DeviceMixins
   end
