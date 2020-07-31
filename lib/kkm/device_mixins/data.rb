@@ -60,7 +60,7 @@ module KKM
         }
       end
 
-      def datetime(data)
+      def datetime_data(data)
         set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, data.type)
         query_data
 

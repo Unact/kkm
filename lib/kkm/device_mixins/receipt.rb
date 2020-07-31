@@ -8,7 +8,7 @@ module KKM
       def print_receipt(receipt_data, electronically: true)
         raise TypeError, "Parameter must be a Models::Receipt" unless receipt_data.is_a?(Models::Receipt)
 
-        setup_operator(receipt_data.operator)
+        open_day(receipt_data.operator, electronically: electronically)
         setup_tags(receipt_data.tags)
         set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, receipt_data.type)
         set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, electronically)

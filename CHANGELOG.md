@@ -1,3 +1,9 @@
+## 0.3.1
+
+- Исправлена ошибка связанная с не работой флага electronically при открытии смены автоматически и при закрытии смены
+- Исправлена ошибка при выполнении `KKM::Device.retrieve_data` с типом отчета `LibFptr::LIBFPTR_DT_DATE_TIME`
+- Добавлена опция electronically в метод `KKM::Device.print_report`
+
 ## 0.3.0
 
 **Breaking change** Корневой модуль переименован из `Kkm` в `KKM`  

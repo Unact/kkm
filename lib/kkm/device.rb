@@ -51,11 +51,14 @@ module KKM
 
       set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, electronically)
       open_shift
+    rescue DeviceError => e
+      raise e if e.code != LibFptr::LIBFPTR_ERROR_DENIED_IN_OPENED_SHIFT
     end
 
     def close_day(operator = nil, electronically: true)
-      set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, electronically)
-      print_report(Models::Report.new(LibFptr::LIBFPTR_RT_CLOSE_SHIFT, operator))
+      print_report(Models::Report.new(LibFptr::LIBFPTR_RT_CLOSE_SHIFT, operator), electronically: electronically)
+    rescue DeviceError => e
+      raise e if e.code != LibFptr::LIBFPTR_ERROR_DENIED_IN_CLOSED_SHIFT
     end
 
     def version
