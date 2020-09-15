@@ -9,6 +9,8 @@ module KKM
         raise TypeError, "Parameter must be a Models::Receipt" unless receipt_data.is_a?(Models::Receipt)
 
         open_day(receipt_data.operator, electronically: electronically)
+        setup_operator(receipt_data.operator)
+
         setup_tags(receipt_data.tags)
         set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, receipt_data.type)
         set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, electronically)
