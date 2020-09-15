@@ -643,6 +643,14 @@ module KKM
       LibFptr.log_write_ex(@interface, LibC.string_to_wchar_pointer(tag), level, LibC.string_to_wchar_pointer(message))
     end
 
+    def reflection_call
+      LibFptr.reflection_call(@interface)
+    end
+
+    def get_remote_server_info
+      LibFptr.get_remote_server_info(@interface)
+    end
+
     private_class_method def self.finalize(pointer)
       interface_pointer = FFI::MemoryPointer.new(:pointer)
       interface_pointer.write_pointer(pointer)

@@ -259,6 +259,12 @@ module KKM
     LIBFPTR_ERROR_DOCUMENT_CANCELED                       = 249
     LIBFPTR_ERROR_INVALID_SCRIPT_PARAMS                   = 250
     LIBFPTR_ERROR_CLICHE_TOO_LONG                         = 251
+    LIBFPTR_ERROR_COMMODITIES_TABLE_FAULT                 = 252
+    LIBFPTR_ERROR_COMMODITIES_TABLE                       = 253
+    LIBFPTR_ERROR_COMMODITIES_TABLE_INVALID_TAG           = 254
+    LIBFPTR_ERROR_COMMODITIES_TABLE_INVALID_TAG_SIZE      = 255
+    LIBFPTR_ERROR_COMMODITIES_TABLE_NO_TAG_DATA           = 256
+    LIBFPTR_ERROR_COMMODITIES_TABLE_NO_FREE_MEMOR         = 257
 
     LIBFPTR_ERROR_BASE_WEB                                = 500
     LIBFPTR_ERROR_RECEIPT_PARSE_ERROR                     = 501
@@ -267,6 +273,12 @@ module KKM
     LIBFPTR_ERROR_VALIDATE_FUNC_NOT_FOUND                 = 504
     LIBFPTR_ERROR_WEB_FAIL                                = 505
     LIBFPTR_ERROR_WEB_END                                 = 599
+
+    LIBFPTR_ERROR_BASE_RPC                                = 600
+    LIBFPTR_ERROR_RCP_SERVER_BUSY                         = 601
+    LIBFPTR_ERROR_RCP_SERVER_VERSION                      = 602
+    LIBFPTR_ERROR_RCP_SERVER_EXCHANGE                     = 603
+    LIBFPTR_ERROR_RPC_END                                 = 699
 
     LIBFPTR_ERROR_USERS_SCRIPTS_BASE                      = 1000
     LIBFPTR_ERROR_USERS_SCRIPTS_END                       = 1999
@@ -569,7 +581,19 @@ module KKM
     LIBFPTR_PARAM_REMOTE_CALL                     = 65830
     LIBFPTR_PARAM_SCRIPT_PARAMS                   = 65831
     LIBFPTR_PARAM_IGNORE_EMPTY                    = 65832
-    LIBFPTR_PARAM_LAST                            = 65833
+    LIBFPTR_PARAM_METHOD_DATA                     = 65833
+    LIBFPTR_PARAM_METHOD_RESULT                   = 65834
+    LIBFPTR_PARAM_RPC_SERVER_OS                   = 65835
+    LIBFPTR_PARAM_RPC_SERVER_VERSION              = 65836
+    LIBFPTR_PARAM_RPC_DRIVER_VERSION              = 65837
+    LIBFPTR_PARAM_LOCKED                          = 65838
+    LIBFPTR_PARAM_BOUND                           = 65839
+    LIBFPTR_PARAM_COMMODITIES_TABLE_FAULT         = 65840
+    LIBFPTR_PARAM_HAS_ADDITIONAL_DATA             = 65841
+    LIBFPTR_PARAM_FISCAL_SIGN_ARCHIVE             = 65842
+    LIBFPTR_PARAM_COMMAND_GROUP                   = 65843
+    LIBFPTR_PARAM_ERROR_CODE                      = 65844
+    LIBFPTR_PARAM_LAST                            = 65845
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_25F                    = 57
@@ -595,29 +619,31 @@ module KKM
     LIBFPTR_MODEL_KAZNACHEY_FA                = 76
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
 
-    LIBFPTR_SETTING_LIBRARY_PATH              = "LibraryPath"
-    LIBFPTR_SETTING_MODEL                     = "Model"
-    LIBFPTR_SETTING_PORT                      = "Port"
-    LIBFPTR_SETTING_BAUDRATE                  = "BaudRate"
-    LIBFPTR_SETTING_BITS                      = "Bits"
-    LIBFPTR_SETTING_PARITY                    = "Parity"
-    LIBFPTR_SETTING_STOPBITS                  = "StopBits"
-    LIBFPTR_SETTING_IPADDRESS                 = "IPAddress"
-    LIBFPTR_SETTING_IPPORT                    = "IPPort"
-    LIBFPTR_SETTING_MACADDRESS                = "MACAddress"
-    LIBFPTR_SETTING_COM_FILE                  = "ComFile"
-    LIBFPTR_SETTING_USB_DEVICE_PATH           = "UsbDevicePath"
-    LIBFPTR_SETTING_BT_AUTOENABLE             = "AutoEnableBluetooth"
-    LIBFPTR_SETTING_BT_AUTODISABLE            = "AutoDisableBluetooth"
-    LIBFPTR_SETTING_ACCESS_PASSWORD           = "AccessPassword"
-    LIBFPTR_SETTING_USER_PASSWORD             = "UserPassword"
-    LIBFPTR_SETTING_SCRIPTS_PATH              = "ScriptsPath"
-    LIBFPTR_SETTING_OFD_CHANNEL               = "OfdChannel"
-    LIBFPTR_SETTING_EXISTED_COM_FILES         = "ExistedComFiles"
-    LIBFPTR_SETTING_DOCUMENTS_JOURNAL_PATH    = "DocumentsJournalPath"
-    LIBFPTR_SETTING_USE_DOCUMENTS_JOURNAL     = "UseDocumentsJournal"
-    LIBFPTR_SETTING_AUTO_RECONNECT            = "AutoReconnect"
-    LIBFPTR_SETTING_INVERT_CASH_DRAWER_STATUS = "InvertCashDrawerStatus"
+    LIBFPTR_SETTING_LIBRARY_PATH                     = "LibraryPath"
+    LIBFPTR_SETTING_MODEL                            = "Model"
+    LIBFPTR_SETTING_PORT                             = "Port"
+    LIBFPTR_SETTING_BAUDRATE                         = "BaudRate"
+    LIBFPTR_SETTING_BITS                             = "Bits"
+    LIBFPTR_SETTING_PARITY                           = "Parity"
+    LIBFPTR_SETTING_STOPBITS                         = "StopBits"
+    LIBFPTR_SETTING_IPADDRESS                        = "IPAddress"
+    LIBFPTR_SETTING_IPPORT                           = "IPPort"
+    LIBFPTR_SETTING_MACADDRESS                       = "MACAddress"
+    LIBFPTR_SETTING_COM_FILE                         = "ComFile"
+    LIBFPTR_SETTING_USB_DEVICE_PATH                  = "UsbDevicePath"
+    LIBFPTR_SETTING_BT_AUTOENABLE                    = "AutoEnableBluetooth"
+    LIBFPTR_SETTING_BT_AUTODISABLE                   = "AutoDisableBluetooth"
+    LIBFPTR_SETTING_ACCESS_PASSWORD                  = "AccessPassword"
+    LIBFPTR_SETTING_USER_PASSWORD                    = "UserPassword"
+    LIBFPTR_SETTING_SCRIPTS_PATH                     = "ScriptsPath"
+    LIBFPTR_SETTING_OFD_CHANNEL                      = "OfdChannel"
+    LIBFPTR_SETTING_EXISTED_COM_FILES                = "ExistedComFiles"
+    LIBFPTR_SETTING_DOCUMENTS_JOURNAL_PATH           = "DocumentsJournalPath"
+    LIBFPTR_SETTING_USE_DOCUMENTS_JOURNAL            = "UseDocumentsJournal"
+    LIBFPTR_SETTING_AUTO_RECONNECT                   = "AutoReconnect"
+    LIBFPTR_SETTING_INVERT_CASH_DRAWER_STATUS        = "InvertCashDrawerStatus"
+    LIBFPTR_SETTING_REMOTE_SERVER_ADDR               = "RemoteServerAddr"
+    LIBFPTR_SETTING_REMOTE_SERVER_CONNECTION_TIMEOUT = "RemoteServerConnectionTimeout"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -765,6 +791,7 @@ module KKM
     LIBFPTR_TAX_NO         = 6
     LIBFPTR_TAX_VAT20      = 7
     LIBFPTR_TAX_VAT120     = 8
+    LIBFPTR_TAX_INVALID    = 9
 
     LIBFPTR_EXTERNAL_DEVICE_DISPLAY         = 0
     LIBFPTR_EXTERNAL_DEVICE_PINPAD          = 1
@@ -819,6 +846,7 @@ module KKM
     LIBFPTR_DT_SHIFT_TOTALS                     = 45
     LIBFPTR_DT_WIFI_INFO                        = 46
     LIBFPTR_DT_FONT_INFO                        = 47
+    LIBFPTR_DT_SOFTLOCK_STATUS                  = 48
 
     LIBFPTR_FNDT_TAG_VALUE                = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
@@ -893,6 +921,7 @@ module KKM
     LIBFPTR_RT_FN_QUANTITY_COUNTERS    = 8
     LIBFPTR_RT_FN_UNSENT_DOCS_COUNTERS = 9
     LIBFPTR_RT_SETTINGS                = 10
+    LIBFPTR_RT_RUN_COMMAND             = 11
 
     LIBFPTR_NT_FURS      = 0
     LIBFPTR_NT_MEDICINES = 1
@@ -1211,5 +1240,7 @@ module KKM
     attach_function :enable_ofd_channel, :libfptr_enable_ofd_channel, [:handle], :int
     attach_function :validate_json, :libfptr_validate_json, [:handle], :int
     attach_function :log_write_ex, :libfptr_log_write_ex, [:handle, :pointer, :int, :pointer], :int
+    attach_function :reflection_call, :libfptr_reflection_call, [:handle], :int
+    attach_function :get_remote_server_info, :libfptr_get_remote_server_info, [:handle], :int
   end
 end

@@ -28,6 +28,10 @@ module KKM
                           retrieve_data(data)[:receipt_type] != LibFptr::LIBFPTR_RT_CLOSED
 
         raise e
+      rescue StandardError => e
+        cancel_receipt
+
+        raise e
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
