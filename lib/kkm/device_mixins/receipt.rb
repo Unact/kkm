@@ -31,7 +31,9 @@ module KKM
 
         raise e
       rescue StandardError => e
-        cancel_receipt
+        data = KKM::Models::Data.new(LibFptr::LIBFPTR_DT_RECEIPT_STATE)
+
+        cancel_receipt if retrieve_data(data)[:receipt_type] != LibFptr::LIBFPTR_RT_CLOSED
 
         raise e
       end
