@@ -3,6 +3,7 @@
 module KKM
   # Class is intended for printing receipts, closing shifts and getting information from KKM device
   class Device
+    include DeviceMixins::Cash
     include DeviceMixins::Command
     include DeviceMixins::Data
     include DeviceMixins::FNData

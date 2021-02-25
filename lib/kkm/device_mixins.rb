@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "kkm/device_mixins/cash"
 require "kkm/device_mixins/command"
 require "kkm/device_mixins/data"
 require "kkm/device_mixins/fn_data"
