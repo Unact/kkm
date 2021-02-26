@@ -2,7 +2,7 @@
 
 module KKM
   module DeviceMixins
-    # A utility mixin for executing kkm commands
+    # A utility mixin for adding or removing cash from kkm
     module Cash
       def add_cash(sum)
         set_param(LibFptr::LIBFPTR_PARAM_SUM, sum)
