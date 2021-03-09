@@ -82,6 +82,7 @@ module KKM
 
         {
           opened: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE) == LibFptr::LIBFPTR_SS_OPENED,
+          expired: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE) == LibFptr::LIBFPTR_SS_EXPIRED,
           datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME)
         }
       end
