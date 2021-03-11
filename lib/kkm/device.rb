@@ -22,17 +22,21 @@ module KKM
       @device_name = settings.delete("DeviceName") || Constants::DEFAULT_DEVICE_NAME
       @timeout = settings.delete("Timeout") || Constants::DEFAULT_CONNECTION_TIMEOUT
       @ifptr = IFptr.new(@device_id)
+      @work_cnt = 0
 
       set_settings(settings)
     end
 
     def work
-      turn_on
+      turn_on if @work_cnt == 0
+      @work_cnt += 1
+
       yield(self)
     rescue StandardError => e
       raise e
     ensure
-      turn_off
+      turn_off if @work_cnt == 1
+      @work_cnt -= 1
     end
 
     def setup_operator(operator)
@@ -85,7 +89,7 @@ module KKM
 
     # rubocop:disable Naming/PredicateName
     def is_opened
-      raise_error if @ifptr.is_opened != LibFptr::LIBFPTR_OK
+      @ifptr.is_opened != 0
     end
     # rubocop:enable Naming/PredicateName
 
