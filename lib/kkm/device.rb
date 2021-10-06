@@ -686,6 +686,66 @@ module KKM
       raise_error if @ifptr.log_write_ex(tag, level, message) != LibFptr::LIBFPTR_OK
     end
 
+    def reflection_call
+      raise_error if @ifptr.reflection_call != LibFptr::LIBFPTR_OK
+    end
+
+    def get_remote_server_info
+      raise_error if @ifptr.get_remote_server_info != LibFptr::LIBFPTR_OK
+    end
+
+    def begin_marking_code_validation
+      raise_error if @ifptr.begin_marking_code_validation != LibFptr::LIBFPTR_OK
+    end
+
+    def cancel_marking_code_validation
+      raise_error if @ifptr.cancel_marking_code_validation != LibFptr::LIBFPTR_OK
+    end
+
+    def get_marking_code_validation_status
+      raise_error if @ifptr.get_marking_code_validation_status != LibFptr::LIBFPTR_OK
+    end
+
+    def accept_marking_code
+      raise_error if @ifptr.accept_marking_code != LibFptr::LIBFPTR_OK
+    end
+
+    def decline_marking_code
+      raise_error if @ifptr.decline_marking_code != LibFptr::LIBFPTR_OK
+    end
+
+    def update_fnm_keys
+      raise_error if @ifptr.update_fnm_keys != LibFptr::LIBFPTR_OK
+    end
+
+    def write_sales_notice
+      raise_error if @ifptr.write_sales_notice != LibFptr::LIBFPTR_OK
+    end
+
+    def check_marking_code_validations_ready
+      raise_error if @ifptr.check_marking_code_validations_ready != LibFptr::LIBFPTR_OK
+    end
+
+    def clear_marking_code_validation_result
+      raise_error if @ifptr.clear_marking_code_validation_result != LibFptr::LIBFPTR_OK
+    end
+
+    def ping_marking_server
+      raise_error if @ifptr.ping_marking_server != LibFptr::LIBFPTR_OK
+    end
+
+    def get_marking_server_status
+      raise_error if @ifptr.get_marking_server_status != LibFptr::LIBFPTR_OK
+    end
+
+    def is_driver_locked
+      raise_error if @ifptr.is_driver_locked != LibFptr::LIBFPTR_OK
+    end
+
+    def get_last_document_journal
+      raise_error if @ifptr.get_last_document_journal != LibFptr::LIBFPTR_OK
+    end
+
     def raise_error
       raise DeviceError.new(error_code, error_description, device_name)
     end

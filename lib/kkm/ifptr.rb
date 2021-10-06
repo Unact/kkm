@@ -651,6 +651,58 @@ module KKM
       LibFptr.get_remote_server_info(@interface)
     end
 
+    def begin_marking_code_validation
+      LibFptr.begin_marking_code_validation(@interface)
+    end
+
+    def cancel_marking_code_validation
+      LibFptr.cancel_marking_code_validation(@interface)
+    end
+
+    def get_marking_code_validation_status
+      LibFptr.get_marking_code_validation_status(@interface)
+    end
+
+    def accept_marking_code
+      LibFptr.accept_marking_code(@interface)
+    end
+
+    def decline_marking_code
+      LibFptr.decline_marking_code(@interface)
+    end
+
+    def update_fnm_keys
+      LibFptr.update_fnm_keys(@interface)
+    end
+
+    def write_sales_notice
+      LibFptr.write_sales_notice(@interface)
+    end
+
+    def check_marking_code_validations_ready
+      LibFptr.check_marking_code_validations_ready(@interface)
+    end
+
+    def clear_marking_code_validation_result
+      LibFptr.clear_marking_code_validation_result(@interface)
+    end
+
+    def ping_marking_server
+      LibFptr.ping_marking_server(@interface)
+    end
+
+    def get_marking_server_status
+      LibFptr.get_marking_server_status(@interface)
+    end
+
+    def is_driver_locked
+      LibFptr.is_driver_locked(@interface)
+    end
+
+    def get_last_document_journal
+      LibFptr.get_last_document_journal(@interface)
+    end
+
     private_class_method def self.finalize(pointer)
       interface_pointer = FFI::MemoryPointer.new(:pointer)
       interface_pointer.write_pointer(pointer)
