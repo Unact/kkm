@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path(__dir__ + "/lib/kkm/version")
+require File.expand_path("#{__dir__}/lib/kkm/version")
 
 Gem::Specification.new do |s|
   s.name        = "kkm"
@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency "ffi"
   s.add_development_dependency "irb", "~> 1.0"
+  s.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
 end

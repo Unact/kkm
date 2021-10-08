@@ -695,7 +695,7 @@ module KKM
     LIBFPTR_MODEL_ATOL_PT_5F                  = 89
     LIBFPTR_MODEL_KAZNACHEY_FA                = 76
     LIBFPTR_MODEL_ATOL_1F                     = 93
-    LIBFPTR_MODEL_ATOL_22v2F                  = 95
+    LIBFPTR_MODEL_ATOL_22V2F                  = 95
 
     LIBFPTR_SETTING_LIBRARY_PATH                     = "LibraryPath"
     LIBFPTR_SETTING_MODEL                            = "Model"
@@ -1204,7 +1204,7 @@ module KKM
 
     DEFAULT_BUFF_SIZE = 512
 
-    lib_path = File.expand_path(__dir__ + "/../../ext/kkm/lib/bins")
+    lib_path = File.expand_path("#{__dir__}/../../ext/kkm/lib/bins")
 
     ffi_lib ["#{lib_path}/fptr10", "#{lib_path}/libfptr10.so", "#{lib_path}/fptr10.dll", "fptr10", "libfptr10"]
 

@@ -4,7 +4,6 @@ module KKM
   module DeviceMixins
     # A utility mixin for retrieving kkm data
     module Data
-      # rubocop:disable Metrics/CyclomaticComplexity
       def retrieve_data(data)
         raise TypeError, "Parameter must be a Models::Data" unless data.is_a?(Models::Data)
 
@@ -18,7 +17,6 @@ module KKM
           raise "Unknown data type"
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
       private
 

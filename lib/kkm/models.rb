@@ -3,6 +3,7 @@
 require "kkm/models/command"
 require "kkm/models/data"
 require "kkm/models/fn_data"
+require "kkm/models/marking_code"
 require "kkm/models/operator"
 require "kkm/models/receipt"
 require "kkm/models/report"

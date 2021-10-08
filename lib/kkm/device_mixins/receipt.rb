@@ -5,6 +5,7 @@ module KKM
     # A utility mixin for printing receipt
     module Receipt
       # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/PerceivedComplexity
       def print_receipt(receipt_data, electronically: true)
         raise TypeError, "Parameter must be a Models::Receipt" unless receipt_data.is_a?(Models::Receipt)
 
@@ -37,6 +38,7 @@ module KKM
 
         raise e
       end
+      # rubocop:enable Metrics/PerceivedComplexity
       # rubocop:enable Metrics/CyclomaticComplexity
 
       private
@@ -49,8 +51,22 @@ module KKM
         set_param(LibFptr::LIBFPTR_PARAM_PRICE, data.price)
         set_param(LibFptr::LIBFPTR_PARAM_QUANTITY, data.quantity)
         set_param(LibFptr::LIBFPTR_PARAM_TAX_TYPE, data.tax_type)
+        register_marking(data)
 
         registration
+      end
+
+      def register_marking(data)
+        return unless data.marking
+
+        if data.marking.fractional_quantity
+          set_param(LibFptr::LIBFPTR_PARAM_MARKING_FRACTIONAL_QUANTITY, data.marking.fractional_quantity)
+        end
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE, data.marking.code)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_STATUS, data.marking.status)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, data.marking.result)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_TYPE, data.marking.type)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_PROCESSING_MODE, data.marking.mode)
       end
 
       def register_payment(data)

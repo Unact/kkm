@@ -695,9 +695,11 @@ module KKM
       LibFptr.get_marking_server_status(@interface)
     end
 
+    # rubocop:disable Naming/PredicateName
     def is_driver_locked
       LibFptr.is_driver_locked(@interface)
     end
+    # rubocop:enable Naming/PredicateName
 
     def get_last_document_journal
       LibFptr.get_last_document_journal(@interface)
@@ -745,7 +747,6 @@ module KKM
       LibFptr.send("#{method_prefix}_bytearray", @interface, param_id, ptr, value.size)
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     def set_method(method_prefix, param_id, value)
       case value
       when Integer
@@ -764,6 +765,5 @@ module KKM
         raise TypeError, "Invalid 'param' type #{value.class}"
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

@@ -7,6 +7,7 @@ module KKM
     include DeviceMixins::Command
     include DeviceMixins::Data
     include DeviceMixins::FNData
+    include DeviceMixins::Marking
     include DeviceMixins::Receipt
     include DeviceMixins::Report
     include DeviceMixins::Text
@@ -93,13 +94,25 @@ module KKM
     end
     # rubocop:enable Naming/PredicateName
 
+    def accept_marking_code
+      raise_error if @ifptr.accept_marking_code != LibFptr::LIBFPTR_OK
+    end
+
+    def decline_marking_code
+      raise_error if @ifptr.decline_marking_code != LibFptr::LIBFPTR_OK
+    end
+
+    def clear_marking_code_validation_result
+      raise_error if @ifptr.clear_marking_code_validation_result != LibFptr::LIBFPTR_OK
+    end
+
     private
 
     def setup_tags(tags)
       raise TypeError, "Parameter must be an Models::Tag array" if tags.any? { |tag| !tag.is_a?(Models::Tag) }
 
       tags
-        .sort { |tag| !tag.tags.empty? ? -1 : 1 }
+        .sort { |tag, _| tag.tags.empty? ? 1 : -1 }
         .each { |tag| setup_tag(tag) }
     end
 
@@ -706,14 +719,6 @@ module KKM
       raise_error if @ifptr.get_marking_code_validation_status != LibFptr::LIBFPTR_OK
     end
 
-    def accept_marking_code
-      raise_error if @ifptr.accept_marking_code != LibFptr::LIBFPTR_OK
-    end
-
-    def decline_marking_code
-      raise_error if @ifptr.decline_marking_code != LibFptr::LIBFPTR_OK
-    end
-
     def update_fnm_keys
       raise_error if @ifptr.update_fnm_keys != LibFptr::LIBFPTR_OK
     end
@@ -726,10 +731,6 @@ module KKM
       raise_error if @ifptr.check_marking_code_validations_ready != LibFptr::LIBFPTR_OK
     end
 
-    def clear_marking_code_validation_result
-      raise_error if @ifptr.clear_marking_code_validation_result != LibFptr::LIBFPTR_OK
-    end
-
     def ping_marking_server
       raise_error if @ifptr.ping_marking_server != LibFptr::LIBFPTR_OK
     end
@@ -738,9 +739,11 @@ module KKM
       raise_error if @ifptr.get_marking_server_status != LibFptr::LIBFPTR_OK
     end
 
+    # rubocop:disable Naming/PredicateName
     def is_driver_locked
       raise_error if @ifptr.is_driver_locked != LibFptr::LIBFPTR_OK
     end
+    # rubocop:enable Naming/PredicateName
 
     def get_last_document_journal
       raise_error if @ifptr.get_last_document_journal != LibFptr::LIBFPTR_OK

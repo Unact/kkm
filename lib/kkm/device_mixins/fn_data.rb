@@ -4,7 +4,6 @@ module KKM
   module DeviceMixins
     # A utility mixin for retrieving fn data
     module FNData
-      # rubocop:disable Metrics/CyclomaticComplexity
       def retrieve_fn_data(fn_data)
         raise TypeError, "Parameter must be a Models::FNData" unless fn_data.is_a?(Models::FNData)
 
@@ -18,7 +17,6 @@ module KKM
           raise "Unknown fn data type"
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
       private
 

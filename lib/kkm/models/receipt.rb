@@ -4,7 +4,8 @@ module KKM
   module Models
     # A utility class for printing a receipt
     class Receipt
-      Position = Struct.new(:name, :quantity, :price, :tax_type, :tags)
+      Position = Struct.new(:name, :quantity, :price, :tax_type, :tags, :marking)
+      Marking = Struct.new(:type, :code, :status, :mode, :fractional_quantity, :result)
       Payment = Struct.new(:sum, :type)
       Tax = Struct.new(:sum, :type)
       Total = Struct.new(:sum, :type)
