@@ -52,17 +52,25 @@ module KKM
       operator_login
     end
 
-    def open_day(operator = nil, electronically: true)
+    def try_open_day(operator = nil, electronically: true)
       setup_operator(operator)
 
       set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, electronically)
       open_shift
+    end
+
+    def open_day(operator = nil, electronically: true)
+      try_open_day(operator, electronically: electronically)
     rescue DeviceError => e
       raise e if e.code != LibFptr::LIBFPTR_ERROR_DENIED_IN_OPENED_SHIFT
     end
 
-    def close_day(operator = nil, electronically: true)
+    def try_close_day(operator = nil, electronically: true)
       print_report(Models::Report.new(LibFptr::LIBFPTR_RT_CLOSE_SHIFT, operator), electronically: electronically)
+    end
+
+    def close_day(operator = nil, electronically: true)
+      try_close_day(operator, electronically: electronically)
     rescue DeviceError => e
       raise e if e.code != LibFptr::LIBFPTR_ERROR_DENIED_IN_CLOSED_SHIFT
     end
