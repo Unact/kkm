@@ -757,6 +757,10 @@ module KKM
       raise_error if @ifptr.get_last_document_journal != LibFptr::LIBFPTR_OK
     end
 
+    def change_label(label)
+      raise_error if @ifptr.change_label(label) != LibFptr::LIBFPTR_OK
+    end
+
     def raise_error
       raise DeviceError.new(error_code, error_description, device_name)
     end

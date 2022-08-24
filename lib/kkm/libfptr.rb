@@ -273,6 +273,10 @@ module KKM
     LIBFPTR_ERROR_MINIPOS_MODE_FR_DISABLED                = 263
     LIBFPTR_ERROR_ENTRY_NOT_FOUND_IN_OTP                  = 264
     LIBFPTR_ERROR_EXCISABLE_COMMODITY_WITHOUT_EXCISE      = 265
+    LIBFPTR_ERROR_BARCODE_TYPE_NOT_SUPPORTED              = 266
+    LIBFPTR_ERROR_OVERLAY_DATA_OVERFLOW                   = 267
+    LIBFPTR_ERROR_INVALID_MODULE_ADDRESS                  = 268
+    LIBFPTR_ERROR_ECR_MODEL_NOT_SUPPORTED                 = 269
 
     LIBFPTR_ERROR_BASE_MARKING                            = 400
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS     = 401
@@ -296,6 +300,12 @@ module KKM
     LIBFPTR_ERROR_UPDATE_KEYS_SERVICE                     = 419
     LIBFPTR_ERROR_MARK_NOT_CHECKED                        = 420
     LIBFPTR_ERROR_MARK_CHECK_TIMEOUT_EXPIRED              = 421
+
+    LIBFPTR_ERROR_NO_MARKING_CODE_IN_TABLE,
+    LIBFPTR_ERROR_CHEKING_MARK_IN_PROGRESS,
+    LIBFPTR_ERROR_INVALID_SERVER_ADDRESS,
+    LIBFPTR_ERROR_UPDATE_KEYS_TIMEOUT,
+    LIBFPTR_ERROR_PROPERTY_FOR_MARKING_POSITION_ONLY,
     LIBFPTR_ERROR_MARKING_END                             = 499
 
     LIBFPTR_ERROR_BASE_WEB                                = 500
@@ -668,7 +678,22 @@ module KKM
     LIBFPTR_PARAM_MARK_CHECKING_STAGE_IN_CASH                       = 65885
     LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT             = 65886
     LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION  = 65887
-    LIBFPTR_PARAM_LAST                                              = 65888
+    LIBFPTR_PARAM_FN_CONTAINS_KEYS_UPDATER_SERVER_URI               = 65888
+    LIBFPTR_PARAM_MARKING_CODE_CLEAR                                = 65889
+    LIBFPTR_PARAM_MODULE_ADDRESS                                    = 65890
+    LIBFPTR_PARAM_SEGMENT_ADDRESS                                   = 65891
+    LIBFPTR_PARAM_LAST_SUCCESSFUL_OKP                               = 65892
+    LIBFPTR_PARAM_FN_SERIAL_NUMBER                                  = 65893
+    LIBFPTR_PARAM_ECR_REGISTRATION_NUMBER                           = 65894
+    LIBFPTR_PARAM_OFD_VATIN                                         = 65895
+    LIBFPTR_PARAM_FNS_URL                                           = 65896
+    LIBFPTR_PARAM_MACHINE_NUMBER                                    = 65897
+    LIBFPTR_PARAM_MARKING_PRODUCT_ID                                = 65898
+    LIBFPTR_PARAM_TIMEOUT                                           = 65899
+    LIBFPTR_PARAM_PRINT_UPDATE_FNM_KEYS_REPORT                      = 65900
+    LIBFPTR_PARAM_FN_KEYS_UPDATER_SERVER_URI                        = 65901
+    LIBFPTR_PARAM_DOCUMENT_ELECTRONICALLY                           = 65902
+    LIBFPTR_PARAM_LAST                                              = 65903
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -724,6 +749,7 @@ module KKM
     LIBFPTR_SETTING_REMOTE_SERVER_CONNECTION_TIMEOUT = "RemoteServerConnectionTimeout"
     LIBFPTR_SETTING_VALIDATE_MARK_WITH_FNM_ONLY      = "ValidateMarksWithFnmOnly"
     LIBFPTR_SETTING_AUTO_MEASUREMENT_UNIT            = "AutoMeasurementUnit"
+    LIBFPTR_SETTING_SILENT_REBOOT                    = "SilentReboot"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -929,6 +955,8 @@ module KKM
     LIBFPTR_DT_SOFTLOCK_STATUS                  = 48
     LIBFPTR_DT_LAST_SENT_ISM_NOTICE_DATE_TIME   = 49
     LIBFPTR_DT_MCU_INFO                         = 50
+    LIBFPTR_DT_MODULE_ADDRESS                   = 51
+    LIBFPTR_DT_CACHE_REQUISITES                 = 52
 
     LIBFPTR_FNDT_TAG_VALUE                = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
@@ -1163,6 +1191,7 @@ module KKM
     LIBFPTR_NFM_FROM_50_TO_80_PERCENT = 1
     LIBFPTR_NFM_FROM_80_TO_90_PERCENT = 2
     LIBFPTR_NFM_MORE_90_PERCENT       = 3
+    LIBFPTR_NFM_OUT_OF_MEMORY         = 4
 
     LIBFPTR_DT_CLOSED                         = 0
     LIBFPTR_DT_RECEIPT_SELL                   = 1
@@ -1199,6 +1228,10 @@ module KKM
     LIBFPTR_MCST_DECODE_RESULT        = 5
     LIBFPTR_MCST_TASK_IS_OVER         = 6
     LIBFPTR_MCST_WAITING_FOR_REPEAT   = 7
+
+    LIBFPTR_SILENT_REBOOT_NO                    = 0
+    LIBFPTR_SILENT_REBOOT_AFTER_SESSION_CLOSE   = 1
+    LIBFPTR_SILENT_REBOOT_BEFORE_SESSION_OPEN   = 2
 
     LIBFPTR_UC_OTHERS = 4294967295
 
@@ -1449,5 +1482,6 @@ module KKM
     attach_function :get_marking_server_status, :libfptr_get_marking_server_status, [:handle], :int
     attach_function :is_driver_locked, :libfptr_is_driver_locked, [:handle], :int
     attach_function :get_last_document_journal, :libfptr_get_last_document_journal, [:handle], :int
+    attach_function :change_label, :libfptr_change_label, [:handle, :pointer], :int
   end
 end

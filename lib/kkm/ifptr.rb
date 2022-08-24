@@ -705,6 +705,10 @@ module KKM
       LibFptr.get_last_document_journal(@interface)
     end
 
+    def change_label(label)
+      LibFptr.change_label(@interface, label)
+    end
+
     private_class_method def self.finalize(pointer)
       interface_pointer = FFI::MemoryPointer.new(:pointer)
       interface_pointer.write_pointer(pointer)
