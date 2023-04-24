@@ -277,6 +277,8 @@ module KKM
     LIBFPTR_ERROR_OVERLAY_DATA_OVERFLOW                   = 267
     LIBFPTR_ERROR_INVALID_MODULE_ADDRESS                  = 268
     LIBFPTR_ERROR_ECR_MODEL_NOT_SUPPORTED                 = 269
+    LIBFPTR_ERROR_PAID_NOT_REQUIRED                       = 270
+    LIBFPTR_ERROR_NON_PRINTABLE_CHAR                      = 271
 
     LIBFPTR_ERROR_BASE_MARKING                            = 400
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS     = 401
@@ -697,7 +699,16 @@ module KKM
     LIBFPTR_PARAM_RECEIPT_SIZE                                      = 65904
     LIBFPTR_PARAM_MARK_SIZE                                         = 65905
     LIBFPTR_PARAM_MCU_TEMPERATURE                                   = 65906
-    LIBFPTR_PARAM_LAST                                              = 65907
+    LIBFPTR_PARAM_DATA_FOR_SEND_IS_EMPTY                            = 65907
+    LIBFPTR_PARAM_AVAILABLE_CLOSING                                 = 65908
+    LIBFPTR_PARAM_AVAILABLE_CANCELLATION                            = 65909
+    LIBFPTR_PARAM_AVAILABLE_POSITION_ADDING                         = 65910
+    LIBFPTR_PARAM_AVAILABLE_PAYMENT                                 = 65911
+    LIBFPTR_PARAM_AVAILABLE_TOTAL                                   = 65912
+    LIBFPTR_PARAM_AVAILABLE_ATTRIBUTES_ADDING                       = 65913
+    LIBFPTR_PARAM_OPERATOR_REGISTERED                               = 65914
+    LIBFPTR_PARAM_DEVICE_PLATFORM_VERSION                           = 65915
+    LIBFPTR_PARAM_LAST                                              = 65916
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -964,6 +975,7 @@ module KKM
     LIBFPTR_DT_CACHE_REQUISITES                 = 52
     LIBFPTR_DT_DEPARTMENT_SUM                   = 53
     LIBFPTR_DT_MCU_TEMPERATURE                  = 54
+    LIBFPTR_DT_AVAILABLE_OPERATIONS             = 55
 
     LIBFPTR_FNDT_TAG_VALUE                = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
@@ -1240,6 +1252,10 @@ module KKM
     LIBFPTR_SILENT_REBOOT_NO                    = 0
     LIBFPTR_SILENT_REBOOT_AFTER_SESSION_CLOSE   = 1
     LIBFPTR_SILENT_REBOOT_BEFORE_SESSION_OPEN   = 2
+
+    LIBFPTR_PLATFORM_UNKNOWN = 0
+    LIBFPTR_PLATFORM_25      = 25
+    LIBFPTR_PLATFORM_50      = 50
 
     LIBFPTR_UC_OTHERS = 4294967295
 
