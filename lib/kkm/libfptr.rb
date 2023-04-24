@@ -693,7 +693,11 @@ module KKM
     LIBFPTR_PARAM_PRINT_UPDATE_FNM_KEYS_REPORT                      = 65900
     LIBFPTR_PARAM_FN_KEYS_UPDATER_SERVER_URI                        = 65901
     LIBFPTR_PARAM_DOCUMENT_ELECTRONICALLY                           = 65902
-    LIBFPTR_PARAM_LAST                                              = 65903
+    LIBFPTR_PARAM_FORMAT_TEXT                                       = 65903
+    LIBFPTR_PARAM_RECEIPT_SIZE                                      = 65904
+    LIBFPTR_PARAM_MARK_SIZE                                         = 65905
+    LIBFPTR_PARAM_MCU_TEMPERATURE                                   = 65906
+    LIBFPTR_PARAM_LAST                                              = 65907
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -721,6 +725,7 @@ module KKM
     LIBFPTR_MODEL_KAZNACHEY_FA                = 76
     LIBFPTR_MODEL_ATOL_1F                     = 93
     LIBFPTR_MODEL_ATOL_22V2F                  = 95
+    LIBFPTR_MODEL_ATOL_42FA                   = 70
 
     LIBFPTR_SETTING_LIBRARY_PATH                     = "LibraryPath"
     LIBFPTR_SETTING_MODEL                            = "Model"
@@ -957,6 +962,8 @@ module KKM
     LIBFPTR_DT_MCU_INFO                         = 50
     LIBFPTR_DT_MODULE_ADDRESS                   = 51
     LIBFPTR_DT_CACHE_REQUISITES                 = 52
+    LIBFPTR_DT_DEPARTMENT_SUM                   = 53
+    LIBFPTR_DT_MCU_TEMPERATURE                  = 54
 
     LIBFPTR_FNDT_TAG_VALUE                = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
@@ -981,6 +988,7 @@ module KKM
     LIBFPTR_FNDT_ISM_EXCHANGE_STATUS      = 20
     LIBFPTR_FNDT_MARKING_MODE_STATUS      = 21
     LIBFPTR_FNDT_CHECK_MARK_TIME          = 22
+    LIBFPTR_FNDT_RECEIPT_SIZE             = 23
 
     LIBFPTR_FFD_UNKNOWN                       = 0
     LIBFPTR_FFD_1_0                           = 100
