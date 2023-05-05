@@ -8,16 +8,19 @@ module KKM
         raise TypeError, "Parameter must be a Models::MarkingCode" unless marking_code.is_a?(Models::MarkingCode)
 
         cancel_marking_code_validation
-        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_TYPE, marking_code.type)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_TYPE, marking_code.type) if marking_code.type
         set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE, marking_code.code)
         set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_STATUS, marking_code.status)
-        set_param(LibFptr::LIBFPTR_PARAM_QUANTITY, marking_code.quantity)
-        set_param(LibFptr::LIBFPTR_PARAM_MEASUREMENT_UNIT, marking_code.measure_unit)
+        set_param(LibFptr::LIBFPTR_PARAM_QUANTITY, marking_code.quantity) if marking_code.quantity
+        set_param(LibFptr::LIBFPTR_PARAM_MEASUREMENT_UNIT, marking_code.measure_unit) if marking_code.measure_unit
         set_param(LibFptr::LIBFPTR_PARAM_MARKING_PROCESSING_MODE, marking_code.mode)
         if marking_code.fractional_quantity
           set_param(LibFptr::LIBFPTR_PARAM_MARKING_FRACTIONAL_QUANTITY, marking_code.fractional_quantity)
         end
-        set_param(LibFptr::LIBFPTR_PARAM_MARKING_WAIT_FOR_VALIDATION_RESULT, true)
+        set_param(LibFptr::LIBFPTR_PARAM_TIMEOUT, marking_code.timeout) if marking_code.timeout
+        if marking_code.send_to_server
+          set_param(LibFptr::LIBFPTR_PARAM_MARKING_NOT_SEND_TO_SERVER, marking_code.send_to_server)
+        end
         begin_marking_code_validation
 
         process_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)

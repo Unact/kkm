@@ -58,14 +58,11 @@ module KKM
       def register_marking(data)
         return unless data.marking
 
-        if data.marking.fractional_quantity
-          set_param(LibFptr::LIBFPTR_PARAM_MARKING_FRACTIONAL_QUANTITY, data.marking.fractional_quantity)
-        end
         set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE, data.marking.code)
         set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_STATUS, data.marking.status)
-        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, data.marking.result)
-        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_TYPE, data.marking.type)
         set_param(LibFptr::LIBFPTR_PARAM_MARKING_PROCESSING_MODE, data.marking.mode)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, data.marking.result)
+        set_param(LibFptr::LIBFPTR_PARAM_MARKING_PRODUCT_ID, data.marking.id) if data.marking.id
       end
 
       def register_payment(data)

@@ -3,6 +3,16 @@
 module KKM
   module Models
     # A utility class for printing text lines
-    MarkingCode = Struct.new(:type, :code, :status, :quantity, :measure_unit, :mode, :fractional_quantity)
+    MarkingCode = Struct.new(
+      :type,
+      :code,
+      :status,
+      :mode,
+      :measure_unit,
+      :quantity,
+      :fractional_quantity,
+      :timeout,
+      :send_to_server
+    )
   end
 end

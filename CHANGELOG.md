@@ -1,3 +1,7 @@
+## 0.4.0
+
+- **Breaking change** Изменены теги `KKM::Models::MarkingCode` и `KKM::Models::Receipt::Marking`
+
 ## 0.3.13
 
 - Обновлена версися драйвера ДТО до 10.9.5.0
