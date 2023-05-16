@@ -1,3 +1,7 @@
+## 0.4.1
+
+- Добавлена константа для тега 1256 - `KKM::Constants::Tag::BUYER_INFO`
+
 ## 0.4.0
 
 - **Breaking change** Изменены теги `KKM::Models::MarkingCode` и `KKM::Models::Receipt::Marking`

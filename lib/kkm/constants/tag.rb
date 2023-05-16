@@ -76,6 +76,7 @@ module KKM
       BUYER_VATIN                         = 1228
       POSITION_ORIGIN_COUNTY_CODE         = 1230
       POSITION_CUSTOMS_DECLARATION_NUMBER = 1231
+      BUYER_INFO                          = 1256
       POSITION_MARKING_CODE_EAN13         = 1302
       MARKING_ONLINE_RESULT               = 2005
       MARKING_CODE_TYPE_RESULT            = 2100
