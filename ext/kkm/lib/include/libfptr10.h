@@ -316,6 +316,7 @@ enum libfptr_error
     LIBFPTR_ERROR_ECR_MODEL_NOT_SUPPORTED,
     LIBFPTR_ERROR_PAID_NOT_REQUIRED,
     LIBFPTR_ERROR_NON_PRINTABLE_CHAR,
+	LIBFPTR_ERROR_INVALID_USER_TAG,
 
     LIBFPTR_ERROR_BASE_MARKING = 400,
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS,
@@ -745,8 +746,12 @@ enum libfptr_param
     LIBFPTR_PARAM_AVAILABLE_PAYMENT,
     LIBFPTR_PARAM_AVAILABLE_TOTAL,
     LIBFPTR_PARAM_AVAILABLE_ATTRIBUTES_ADDING,
-    LIBFPTR_PARAM_OPERATOR_REGISTERED,
+	LIBFPTR_PARAM_OPERATOR_REGISTERED,
     LIBFPTR_PARAM_DEVICE_PLATFORM_VERSION,
+    LIBFPTR_PARAM_GUID,
+    LIBFPTR_PARAM_PATTERN_REGISTERS,
+    LIBFPTR_PARAM_PATTERN_TAGS,
+    LIBFPTR_PARAM_PATTERN_SETTINGS,
     LIBFPTR_PARAM_LAST
 };
 
@@ -779,6 +784,7 @@ enum libfptr_model
     LIBFPTR_MODEL_ATOL_1F = 93,
     LIBFPTR_MODEL_ATOL_22v2F = 95,
     LIBFPTR_MODEL_ATOL_42FA = 70,
+    LIBFPTR_MODEL_ALLIANCE_20F = 50,
 };
 
 #define LIBFPTR_SETTING_LIBRARY_PATH L"LibraryPath"
@@ -836,6 +842,10 @@ enum libfptr_model
 #define LIBFPTR_SETTING_AUTO_MEASUREMENT_UNIT L"AutoMeasurementUnit"
 
 #define LIBFPTR_SETTING_SILENT_REBOOT L"SilentReboot"
+
+#define LIBFPTR_SETTING_GUI_PARAMETERS L"GuiParametersMapping"
+
+#define LIBFPTR_SETTING_GUI_PATTERN_REG L"PatternParameters"
 
 enum libfptr_port
 {
@@ -1111,6 +1121,8 @@ enum libfptr_kkt_data_type
     LIBFPTR_DT_DEPARTMENT_SUM,
     LIBFPTR_DT_MCU_TEMPERATURE,
     LIBFPTR_DT_AVAILABLE_OPERATIONS,
+    LIBFPTR_DT_PATTERN_PARAMETERS,
+    LIBFPTR_DT_LAST_DATA_TYPE
 };
 
 enum libfptr_fn_data_type
@@ -1894,6 +1906,12 @@ DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_is_driver_locked(libfptr_handle h
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_get_last_document_journal(libfptr_handle handle);
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_change_label(libfptr_handle handle, const wchar_t *label);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_is_param_available(libfptr_handle handle, int param_id);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_error_recommendation(libfptr_handle handle, wchar_t *value, int size);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_find_document_in_journal(libfptr_handle handle);
 
 #ifdef __cplusplus
 }

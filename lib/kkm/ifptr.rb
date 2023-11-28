@@ -709,6 +709,26 @@ module KKM
       LibFptr.change_label(@interface, label)
     end
 
+    def is_param_available(param_id)
+      LibFptr.is_param_available(@interface, param_id)
+    end
+
+    def error_recommendation
+      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
+      size = LibFptr.error_recommendation(@interface, ptr, ptr.size)
+
+      if size > ptr.size
+        ptr = FFI::MemoryPointer.new(:pointer, size)
+        LibFptr.error_recommendation(@interface, ptr, size)
+      end
+
+      LibC.wchar_pointer_to_string(ptr)
+    end
+
+    def find_document_in_journal
+      LibFptr.find_document_in_journal(@interface)
+    end
+
     private_class_method def self.finalize(pointer)
       interface_pointer = FFI::MemoryPointer.new(:pointer)
       interface_pointer.write_pointer(pointer)

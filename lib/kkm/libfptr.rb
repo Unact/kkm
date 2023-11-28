@@ -279,6 +279,7 @@ module KKM
     LIBFPTR_ERROR_ECR_MODEL_NOT_SUPPORTED                 = 269
     LIBFPTR_ERROR_PAID_NOT_REQUIRED                       = 270
     LIBFPTR_ERROR_NON_PRINTABLE_CHAR                      = 271
+    LIBFPTR_ERROR_INVALID_USER_TAG                        = 272
 
     LIBFPTR_ERROR_BASE_MARKING                            = 400
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS     = 401
@@ -708,7 +709,11 @@ module KKM
     LIBFPTR_PARAM_AVAILABLE_ATTRIBUTES_ADDING                       = 65913
     LIBFPTR_PARAM_OPERATOR_REGISTERED                               = 65914
     LIBFPTR_PARAM_DEVICE_PLATFORM_VERSION                           = 65915
-    LIBFPTR_PARAM_LAST                                              = 65916
+    LIBFPTR_PARAM_GUID                                              = 65916
+    LIBFPTR_PARAM_PATTERN_REGISTERS                                 = 65917
+    LIBFPTR_PARAM_PATTERN_TAGS                                      = 65918
+    LIBFPTR_PARAM_PATTERN_SETTINGS                                  = 65919
+    LIBFPTR_PARAM_LAST                                              = 65920
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -737,6 +742,7 @@ module KKM
     LIBFPTR_MODEL_ATOL_1F                     = 93
     LIBFPTR_MODEL_ATOL_22V2F                  = 95
     LIBFPTR_MODEL_ATOL_42FA                   = 70
+    LIBFPTR_MODEL_ALLIANCE_20F                = 50
 
     LIBFPTR_SETTING_LIBRARY_PATH                     = "LibraryPath"
     LIBFPTR_SETTING_MODEL                            = "Model"
@@ -766,6 +772,8 @@ module KKM
     LIBFPTR_SETTING_VALIDATE_MARK_WITH_FNM_ONLY      = "ValidateMarksWithFnmOnly"
     LIBFPTR_SETTING_AUTO_MEASUREMENT_UNIT            = "AutoMeasurementUnit"
     LIBFPTR_SETTING_SILENT_REBOOT                    = "SilentReboot"
+    LIBFPTR_SETTING_GUI_PARAMETERS_MAPPING           = "GuiParametersMapping"
+    LIBFPTR_SETTING_PATTERN_PARAMETERS               = "PatternParameters"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -976,6 +984,8 @@ module KKM
     LIBFPTR_DT_DEPARTMENT_SUM                   = 53
     LIBFPTR_DT_MCU_TEMPERATURE                  = 54
     LIBFPTR_DT_AVAILABLE_OPERATIONS             = 55
+    LIBFPTR_DT_PATTERN_PARAMETERS               = 56
+    LIBFPTR_DT_LAST_DATA_TYPE                   = 57
 
     LIBFPTR_FNDT_TAG_VALUE                = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
@@ -1507,5 +1517,8 @@ module KKM
     attach_function :is_driver_locked, :libfptr_is_driver_locked, [:handle], :int
     attach_function :get_last_document_journal, :libfptr_get_last_document_journal, [:handle], :int
     attach_function :change_label, :libfptr_change_label, [:handle, :pointer], :int
+    attach_function :is_param_available, :libfptr_is_param_available, [:handle, :int], :int
+    attach_function :error_recommendation, :libfptr_error_recommendation, [:handle, :pointer, :int], :int
+    attach_function :find_document_in_journal, :libfptr_find_document_in_journal, [:handle], :int
   end
 end

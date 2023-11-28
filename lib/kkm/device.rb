@@ -761,6 +761,18 @@ module KKM
       raise_error if @ifptr.change_label(label) != LibFptr::LIBFPTR_OK
     end
 
+    def is_param_available(param_id)
+      raise_error if @ifptr.is_param_available(param_id) != LibFptr::LIBFPTR_OK
+    end
+
+    def error_recommendation
+      @ifptr.error_recommendation
+    end
+
+    def find_document_in_journal
+      raise_error if @ifptr.find_document_in_journal != LibFptr::LIBFPTR_OK
+    end
+
     def raise_error
       raise DeviceError.new(error_code, error_description, device_name)
     end
