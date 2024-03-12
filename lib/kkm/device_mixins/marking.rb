@@ -4,6 +4,7 @@ module KKM
   module DeviceMixins
     # A utility class for working with marking data
     module Marking
+      # rubocop:disable Metrics/CyclomaticComplexity
       def check_marking_code(marking_code)
         raise TypeError, "Parameter must be a Models::MarkingCode" unless marking_code.is_a?(Models::MarkingCode)
 
@@ -22,23 +23,26 @@ module KKM
           set_param(LibFptr::LIBFPTR_PARAM_MARKING_NOT_SEND_TO_SERVER, marking_code.send_to_server)
         end
         begin_marking_code_validation
+        wait_for_marking_code_status
+        marking_result
+      end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
+      private
+
+      def wait_for_marking_code_status
         process_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         loop do
           get_marking_code_validation_status
 
           break if get_param_bool(LibFptr::LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY)
 
-          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= process_time + @timeout / 1000.0
+          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= process_time + (@timeout / 1000.0)
             cancel_marking_code_validation
-            raise TimeoutError, "Couldn\'t validate marking code in #{@timeout} seconds"
+            raise TimeoutError, "Couldn't validate marking code in #{@timeout} seconds"
           end
         end
-
-        marking_result
       end
-
-      private
 
       # rubocop:disable Metrics/CyclomaticComplexity
       def marking_result

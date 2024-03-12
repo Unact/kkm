@@ -33,8 +33,6 @@ module KKM
       @work_cnt += 1
 
       yield(self)
-    rescue StandardError => e
-      raise e
     ensure
       turn_off if @work_cnt == 1
       @work_cnt -= 1
@@ -52,25 +50,25 @@ module KKM
       operator_login
     end
 
-    def try_open_day(operator = nil, electronically: true)
+    def try_open_operator_shift(operator = nil, electronically: true)
       setup_operator(operator)
 
       set_param(LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, electronically)
       open_shift
     end
 
-    def open_day(operator = nil, electronically: true)
-      try_open_day(operator, electronically: electronically)
+    def open_operator_shift(operator = nil, electronically: true)
+      try_open_operator_shift(operator, electronically: electronically)
     rescue DeviceError => e
       raise e if e.code != LibFptr::LIBFPTR_ERROR_DENIED_IN_OPENED_SHIFT
     end
 
-    def try_close_day(operator = nil, electronically: true)
+    def try_close_operator_shift(operator = nil, electronically: true)
       print_report(Models::Report.new(LibFptr::LIBFPTR_RT_CLOSE_SHIFT, operator), electronically: electronically)
     end
 
-    def close_day(operator = nil, electronically: true)
-      try_close_day(operator, electronically: electronically)
+    def close_operator_shift(operator = nil, electronically: true)
+      try_close_operator_shift(operator, electronically: electronically)
     rescue DeviceError => e
       raise e if e.code != LibFptr::LIBFPTR_ERROR_DENIED_IN_CLOSED_SHIFT
     end
@@ -86,7 +84,7 @@ module KKM
         open
       rescue DeviceError => e
         raise e if e.code != LibFptr::LIBFPTR_ERROR_NO_CONNECTION
-        raise e if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= process_time + @timeout / 1000.0
+        raise e if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= process_time + (@timeout / 1000.0)
 
         retry
       end
@@ -761,9 +759,11 @@ module KKM
       raise_error if @ifptr.change_label(label) != LibFptr::LIBFPTR_OK
     end
 
+    # rubocop:disable Naming/PredicateName
     def is_param_available(param_id)
       raise_error if @ifptr.is_param_available(param_id) != LibFptr::LIBFPTR_OK
     end
+    # rubocop:enable Naming/PredicateName
 
     def error_recommendation
       @ifptr.error_recommendation

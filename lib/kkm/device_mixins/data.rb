@@ -10,9 +10,9 @@ module KKM
         case data.type
         when LibFptr::LIBFPTR_DT_STATUS then status_data(data)
         when LibFptr::LIBFPTR_DT_DATE_TIME then datetime_data(data)
-        when LibFptr::LIBFPTR_DT_PAYMENT_SUM then payment_register_data(data)
+        when LibFptr::LIBFPTR_DT_PAYMENT_SUM then payment_sum_data(data)
         when LibFptr::LIBFPTR_DT_SHIFT_STATE then shift_state_data(data)
-        when LibFptr::LIBFPTR_DT_RECEIPT_STATE then receipt_data(data)
+        when LibFptr::LIBFPTR_DT_RECEIPT_STATE then receipt_state_data(data)
         else
           raise "Unknown data type"
         end
@@ -20,9 +20,15 @@ module KKM
 
       private
 
-      def status_data(data)
+      def query_with_data(data)
         set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, data.type)
+        set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, data.payment_type) if data.payment_type
+        set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, data.receipt_type) if data.receipt_type
         query_data
+      end
+
+      def status_data(data)
+        query_with_data(data)
 
         {
           operator_id: get_param_int(LibFptr::LIBFPTR_PARAM_OPERATOR_ID),
@@ -59,35 +65,33 @@ module KKM
       end
 
       def datetime_data(data)
-        set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, data.type)
-        query_data
-
-        get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME)
-      end
-
-      def payment_register_data(data)
-        set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, data.type)
-        set_param(LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, data.payment_type)
-        set_param(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, data.receipt_type)
-        query_data
-
-        get_param_double(LibFptr::LIBFPTR_PARAM_SUM)
-      end
-
-      def shift_state_data(data)
-        set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, data.type)
-        query_data
+        query_with_data(data)
 
         {
-          opened: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE) == LibFptr::LIBFPTR_SS_OPENED,
-          expired: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE) == LibFptr::LIBFPTR_SS_EXPIRED,
           datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME)
         }
       end
 
-      def receipt_data(data)
-        set_param(LibFptr::LIBFPTR_PARAM_DATA_TYPE, data.type)
-        query_data
+      def payment_sum_data(data)
+        query_with_data(data)
+
+        {
+          sum: get_param_double(LibFptr::LIBFPTR_PARAM_SUM)
+        }
+      end
+
+      def shift_state_data(data)
+        query_with_data(data)
+
+        {
+          state: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_STATE),
+          shift_number: get_param_int(LibFptr::LIBFPTR_PARAM_SHIFT_NUMBER),
+          datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME)
+        }
+      end
+
+      def receipt_state_data(data)
+        query_with_data(data)
 
         {
           receipt_type: get_param_int(LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE),

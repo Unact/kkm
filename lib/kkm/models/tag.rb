@@ -3,15 +3,14 @@
 module KKM
   module Models
     # A utility class for passing fiscal tags
-    class Tag
-      attr_reader :number, :value, :print, :tags
-
-      def initialize(number = nil, value = nil, print: true, tags: [])
-        @number = number
-        @value = value
-        @print = print
-        @tags = tags
+    Tag = Struct.new(:number, :value, :print, :tags) do
+      # rubocop:disable Style/OptionalBooleanParameter
+      # rubocop:disable Metrics/ParameterLists
+      def initialize(number = nil, value = nil, print = true, tags = [])
+        super(number, value, print, tags)
       end
+      # rubocop:enable Style/OptionalBooleanParameter
+      # rubocop:enable Metrics/ParameterLists
     end
   end
 end

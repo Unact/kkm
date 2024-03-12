@@ -3,13 +3,9 @@
 module KKM
   module Models
     # A utility class for printing text lines
-    class TextLine
-      attr_reader :text, :alignment, :wrap
-
-      def initialize(text = "", alignment: LibFptr::LIBFPTR_ALIGNMENT_CENTER, wrap: LibFptr::LIBFPTR_TW_WORDS)
-        @text = text
-        @alignment = alignment
-        @wrap = wrap
+    TextLine = Struct.new(:text, :alignment, :wrap) do
+      def initialize(text = "", alignment = LibFptr::LIBFPTR_ALIGNMENT_CENTER, wrap = LibFptr::LIBFPTR_TW_WORDS)
+        super(text, alignment, wrap)
       end
     end
   end
