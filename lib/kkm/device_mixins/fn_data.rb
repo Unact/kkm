@@ -35,7 +35,7 @@ module KKM
         query_with_fn_data(fn_data)
 
         result = {
-          type: get_param_int(LibFptr::LIBFPTR_PARAM_FN_DOCUMENT_TYPE),
+          document_type: get_param_int(LibFptr::LIBFPTR_PARAM_FN_DOCUMENT_TYPE),
           datetime: get_param_datetime(LibFptr::LIBFPTR_PARAM_DATE_TIME),
           document_number: get_param_int(LibFptr::LIBFPTR_PARAM_DOCUMENT_NUMBER),
           has_ofd_ticket: get_param_bool(LibFptr::LIBFPTR_PARAM_HAS_OFD_TICKET),
