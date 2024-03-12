@@ -11,9 +11,9 @@ Gem::Specification.new do |s|
   s.summary     = "Интерфейс для связи и печати чеков на ККТ"
   s.description = "Имплеметация ДТО ККТ Атол"
   s.license     = "MIT"
-  s.files = Dir["lib/**/*", "ext/**/*", "LICENSE", "Gemfile", "README.md", "CHANGELOG.md"]
+  s.files       = Dir["lib/**/*", "ext/**/*", "LICENSE", "Gemfile", "README.md", "CHANGELOG.md"]
+  s.metadata    = { "rubygems_mfa_required" => "true" }
 
   s.add_dependency "ffi"
-  s.add_development_dependency "irb", "~> 1.0"
   s.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
 end

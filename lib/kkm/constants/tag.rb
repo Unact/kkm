@@ -20,7 +20,7 @@ module KKM
       RECEIPT_CASH_PAYMENT_TYPE           = 1031
       MACHINE_NUMBER                      = 1036
       REGISTRATION_NUMBER                 = 1037
-      SESSION_NUMBER                      = 1038
+      SHIFT_NUMBER                        = 1038
       DOC_NUMBER                          = 1040
       FISCAL_STORAGE_NUMBER               = 1041
       RECEIPT_NUMBER                      = 1042
@@ -41,7 +41,14 @@ module KKM
       ADDITIONAL_USER_PARAM               = 1084
       ADDITIONAL_USER_PARAM_NAME          = 1085
       ADDITIONAL_USER_PARAM_VALUE         = 1086
-      NO_NDS_SUM                          = 1105
+      NOT_SENT_FD_TOTAL                   = 1097
+      FIRST_NOT_SENT_FD_DATETIME          = 1098
+      VAT20_SUM                           = 1102
+      VAT10_SUM                           = 1103
+      VAT0_SUM                            = 1104
+      NO_SUM                              = 1105
+      VAT120_SUM                          = 1106
+      VAT110_SUM                          = 1107
       INTERNET                            = 1108
       SERVICE                             = 1109
       BSO                                 = 1110
@@ -59,6 +66,7 @@ module KKM
       GAMBLING                            = 1193
       POSITION_TAX_NUMBER                 = 1199
       OPERATOR_VATIN                      = 1203
+      REREGISTRATION_CODES                = 1205
       EXCISE                              = 1207
       FFD_VERSION                         = 1209
       POSITION_TYPE                       = 1212
@@ -77,6 +85,7 @@ module KKM
       POSITION_ORIGIN_COUNTY_CODE         = 1230
       POSITION_CUSTOMS_DECLARATION_NUMBER = 1231
       BUYER_INFO                          = 1256
+      USAGE_CONDITIONS                    = 1290
       POSITION_MARKING_CODE_EAN13         = 1302
       MARKING_ONLINE_RESULT               = 2005
       MARKING_CODE_TYPE_RESULT            = 2100

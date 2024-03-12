@@ -1,6 +1,6 @@
 # KKM
 
-Библиотека на руби для работы с ККТ/ККМ АТОЛ  
+Библиотека на руби для работы с ККТ/ККМ [АТОЛ](https://integration.atol.ru/)  
 Полная имплементация ДТО 10 с использованием Ruby FFI  
 Текущая имплементированная версия [ДТО](https://github.com/Unact/kkm/blob/master/lib/kkm/version.rb#L5)
 
@@ -24,7 +24,7 @@
 При этом будет автоматически включен ККТ и по завершению выключен  
 
 ```ruby
-  settings = KKM::Models::Settings.new("IPAddress" => "192.168.101.64", "IPPort" => "5555", "Model" => "63", "Port" => "2")
+  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
   device = KKM::Device.new(settings)
   text_line = KKM::Models::TextLine.new("OMG")
 
@@ -37,7 +37,7 @@
 Результат должен быть таким же, как и пример выше
 
 ```ruby
-  settings = KKM::Models::Settings.new("IPAddress" => "192.168.101.64", "IPPort" => "5555", "Model" => "63", "Port" => "2")
+  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
   device = KKM::Device.new(settings)
   text_line = KKM::Models::TextLine.new("OMG")
 
@@ -49,19 +49,19 @@
 #### Закрытие смены
 
 ```ruby
-  settings = KKM::Models::Settings.new("IPAddress" => "192.168.101.64", "IPPort" => "5555", "Model" => "63", "Port" => "2")
+  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
   device = KKM::Device.new(settings)
-  operator = KKM::Models::Operator.new('Тест')
+  operator = KKM::Models::Operator.new("Тест")
 
   device.work do
-    device.close_day(operator, electronically: true)
+    device.close_operator_shift(operator, electronically: true)
   end
 ```
 
 #### Печать отчета
 
 ```ruby
-  settings = KKM::Models::Settings.new("IPAddress" => "192.168.101.64", "IPPort" => "5555", "Model" => "63", "Port" => "2")
+  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
   device = KKM::Device.new(settings)
   report = KKM::Models::Report.new(KKM::LibFptr::LIBFPTR_RT_X)
 
@@ -73,13 +73,13 @@
 #### Печать чека
 
 ```ruby
-  settings = KKM::Models::Settings.new("IPAddress" => "192.168.101.64", "IPPort" => "5555", "Model" => "63", "Port" => "2")
+  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
   device = KKM::Device.new(settings)
   receipt = KKM::Models::Receipt.new
   receipt.type = KKM::LibFptr::LIBFPTR_RT_SELL
   receipt.positions = [
     KKM::Models::Receipt::Position.new(
-      'Тест',
+      "Тест",
       10,
       1,
       KKM::LibFptr::LIBFPTR_TAX_NO,
@@ -87,8 +87,8 @@
     )
   ]
   receipt.payments = [KKM::Models::Receipt::Payment.new(10, KKM::LibFptr::LIBFPTR_PT_CASH)]
-  receipt.operator = KKM::Models::Operator.new('Тест')
-  receipt.tags = [KKM::Models::Tag.new(KKM::Constants::Tag::BUYER_ADDRESS, 'example@example.com')]
+  receipt.operator = KKM::Models::Operator.new("Тест")
+  receipt.tags = [KKM::Models::Tag.new(KKM::Constants::Tag::BUYER_ADDRESS, "example@example.com")]
   
   device.work do
     device.print_receipt(receipt, electronically: true)

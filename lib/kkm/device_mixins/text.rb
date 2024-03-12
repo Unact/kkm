@@ -18,7 +18,7 @@ module KKM
         begin_nonfiscal_document
 
         yield(self)
-        (0..Constants::CHEQUE_CUT_LINES).each { print_text_line(Models::TextLine.new) }
+        (0..Constants::RECEIPT_CUT_LINES).each { print_text_line(Models::TextLine.new) }
       ensure
         end_nonfiscal_document
       end

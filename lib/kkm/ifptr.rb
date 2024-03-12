@@ -709,9 +709,11 @@ module KKM
       LibFptr.change_label(@interface, label)
     end
 
+    # rubocop:disable Naming/PredicateName
     def is_param_available(param_id)
       LibFptr.is_param_available(@interface, param_id)
     end
+    # rubocop:enable Naming/PredicateName
 
     def error_recommendation
       ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
