@@ -2,7 +2,7 @@
 
 - `KKM::Models::FNData` теперь принимает доп. параметр `document_number`
 - Добавлена возможность получать отчеты ФН "Информация о последнем документе" и "Информация о документе по номеру"
-- Добавлены константы для тегов
+- Добавлены константы для тегов  
     1097 - `KKM::Constants::Tag::NOT_SENT_FD_TOTAL`  
     1098 - `KKM::Constants::Tag::FIRST_NOT_SENT_FD_DATETIME`  
     1102 - `KKM::Constants::Tag::VAT20_SUM`  
@@ -12,17 +12,17 @@
     1107 - `KKM::Constants::Tag::VAT110_SUM`  
     1205 - `KKM::Constants::Tag::REREGISTRATION_CODES`  
     1290 - `KKM::Constants::Tag::REREGISTRATION_CODES`  
-- **Breaking change** Переименованы константы
+- **Breaking change** Переименованы константы  
 `KKM::Constants::Tag::SESSION_NUMBER` в `KKM::Constants::Tag::SHIFT_NUMBER`  
 `KKM::Constants::Tag::NO_NDS_SUM` в `KKM::Constants::Tag::NO_SUM`  
 `KKM::Constants::CHEQUE_CUT_LINES` в `KKM::Constants::RECEIPT_CUT_LINES`  
 - **Breaking change** `KKM::Models::TextLine`, `KKM::Models::Tag` , `KKM::Models::Receipt`, `KKM::Models::Command` теперь наследуются от Struct.
-- **Breaking change** Переименованы методы
+- **Breaking change** Переименованы методы  
 `KKM::Device.open_day` в `KKM::Device.open_operator_shift`  
 `KKM::Device.try_open_day` в `KKM::Device.try_open_operator_shift`  
 `KKM::Device.close_day` в `KKM::Device.close_operator_shift`  
 `KKM::Device.try_close_day` в `KKM::Device.try_close_operator_shift`  
-- **Breaking change** Изменен формат отдоваемых данных для `KKM::Device.retrieve_data` для типов(`KKM::Models::Data.type`)
+- **Breaking change** Изменен формат отдоваемых данных для `KKM::Device.retrieve_data` для типов(`KKM::Models::Data.type`)  
 `KKM::LibFptr::LIBFPTR_DT_DATE_TIME`  
 `KKM::LibFptr::LIBFPTR_DT_PAYMENT_SUM`  
 `KKM::LibFptr::LIBFPTR_DT_SHIFT_STATE`  
