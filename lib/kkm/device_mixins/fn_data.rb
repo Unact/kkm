@@ -42,7 +42,7 @@ module KKM
           fiscal_sign: get_param_str(LibFptr::LIBFPTR_PARAM_FISCAL_SIGN)
         }
 
-        case result[:type]
+        case result[:document_type]
         when LibFptr::LIBFPTR_FN_DOC_REGISTRATION
           result.merge(
             organization_vatin: get_param_str(Constants::Tag::ORGANIZATION_VATIN),

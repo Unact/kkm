@@ -1,3 +1,7 @@
+## 0.5.1
+
+- Убрать приватность методов `KKM::Device.close_receipt` `KKM::Device.cancel_receipt`
+
 ## 0.5.0
 
 - `KKM::Models::FNData` теперь принимает доп. параметр `document_number`

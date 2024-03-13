@@ -112,6 +112,14 @@ module KKM
       raise_error if @ifptr.clear_marking_code_validation_result != LibFptr::LIBFPTR_OK
     end
 
+    def cancel_receipt
+      raise_error if @ifptr.cancel_receipt != LibFptr::LIBFPTR_OK
+    end
+
+    def close_receipt
+      raise_error if @ifptr.close_receipt != LibFptr::LIBFPTR_OK
+    end
+
     private
 
     def setup_tags(tags)
@@ -343,14 +351,6 @@ module KKM
 
     def open_receipt
       raise_error if @ifptr.open_receipt != LibFptr::LIBFPTR_OK
-    end
-
-    def cancel_receipt
-      raise_error if @ifptr.cancel_receipt != LibFptr::LIBFPTR_OK
-    end
-
-    def close_receipt
-      raise_error if @ifptr.close_receipt != LibFptr::LIBFPTR_OK
     end
 
     def check_document_closed
