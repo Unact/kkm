@@ -280,6 +280,11 @@ module KKM
     LIBFPTR_ERROR_PAID_NOT_REQUIRED                       = 270
     LIBFPTR_ERROR_NON_PRINTABLE_CHAR                      = 271
     LIBFPTR_ERROR_INVALID_USER_TAG                        = 272
+    LIBFPTR_ERROR_COMMODITIES_TABLE_ITERATION_STOPPED     = 273
+    LIBFPTR_ERROR_COMMODITIES_TABLE_INVALID_CSV_FORMAT    = 274
+    LIBFPTR_ERROR_MINIPOS_NO_FILE_ON_USB_STORE            = 275
+    LIBFPTR_ERROR_MINIPOS_NO_AGENT_FISCAL_PROPERTY        = 276
+    LIBFPTR_ERROR_NO_CONNECTION_WITH_PRINT_SERVICE        = 277
 
     LIBFPTR_ERROR_BASE_MARKING                            = 400
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS     = 401
@@ -682,7 +687,7 @@ module KKM
     LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT             = 65886
     LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION  = 65887
     LIBFPTR_PARAM_FN_CONTAINS_KEYS_UPDATER_SERVER_URI               = 65888
-    LIBFPTR_PARAM_MARKING_CODE_CLEAR                                = 65889
+    LIBFPTR_PARAM_CLEAR_MARKING_TABLE                               = 65889
     LIBFPTR_PARAM_MODULE_ADDRESS                                    = 65890
     LIBFPTR_PARAM_SEGMENT_ADDRESS                                   = 65891
     LIBFPTR_PARAM_LAST_SUCCESSFUL_OKP                               = 65892
@@ -713,7 +718,23 @@ module KKM
     LIBFPTR_PARAM_PATTERN_REGISTERS                                 = 65917
     LIBFPTR_PARAM_PATTERN_TAGS                                      = 65918
     LIBFPTR_PARAM_PATTERN_SETTINGS                                  = 65919
-    LIBFPTR_PARAM_LAST                                              = 65920
+    LIBFPTR_PARAM_VENDING                                           = 65920
+    LIBFPTR_PARAM_CATERING                                          = 65921
+    LIBFPTR_PARAM_WHOLESALE                                         = 65922
+    LIBFPTR_PARAM_REGISTRATION_POSITION_FORM                        = 65923
+    LIBFPTR_PARAM_MERGE_POSITIONS                                   = 65924
+    LIBFPTR_PARAM_DATAFLASH_JEDEC_ID                                = 65925
+    LIBFPTR_PARAM_DATAFLASH_NAME                                    = 65926
+    LIBFPTR_PARAM_DATAFLASH_SIZE                                    = 65927
+    LIBFPTR_PARAM_FRAM_EEPROM_NAME                                  = 65928
+    LIBFPTR_PARAM_FRAM_EEPROM_SIZE                                  = 65929
+    LIBFPTR_PARAM_MARKING_NOT_FORM_REQUEST                          = 65930
+
+    LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = 65931
+    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65932
+    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = 65933
+
+    LIBFPTR_PARAM_LAST                                              = 65934
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -729,6 +750,7 @@ module KKM
     LIBFPTR_MODEL_ATOL_50F                    = 80
     LIBFPTR_MODEL_ATOL_52F                    = 64
     LIBFPTR_MODEL_ATOL_55F                    = 62
+    LIBFPTR_MODEL_ATOL_55v2F                  = 66
     LIBFPTR_MODEL_ATOL_60F                    = 75
     LIBFPTR_MODEL_ATOL_77F                    = 69
     LIBFPTR_MODEL_ATOL_90F                    = 72
@@ -743,6 +765,9 @@ module KKM
     LIBFPTR_MODEL_ATOL_22V2F                  = 95
     LIBFPTR_MODEL_ATOL_42FA                   = 70
     LIBFPTR_MODEL_ALLIANCE_20F                = 50
+    LIBFPTR_MODEL_ATOL_STB_6                  = 94
+    LIBFPTR_MODEL_ATOL_35F                    = 97
+    LIBFPTR_MODEL_ATOL_27_FP7_F               = 99
 
     LIBFPTR_SETTING_LIBRARY_PATH                     = "LibraryPath"
     LIBFPTR_SETTING_MODEL                            = "Model"
@@ -774,6 +799,10 @@ module KKM
     LIBFPTR_SETTING_SILENT_REBOOT                    = "SilentReboot"
     LIBFPTR_SETTING_GUI_PARAMETERS_MAPPING           = "GuiParametersMapping"
     LIBFPTR_SETTING_PATTERN_PARAMETERS               = "PatternParameters"
+    LIBFPTR_SETTING_AUTO_TIME_SYNC                   = "AutoTimeSync"
+    LIBFPTR_SETTING_AUTO_TIME_SYNC_TIME              = "AutoTimeSyncTime"
+    LIBFPTR_SETTING_LOG_PATHS                        = "LogPaths"
+    LIBFPTR_SETTING_MERGE_RECEIPT_ITEMS              = "MergeReceiptItems"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -987,30 +1016,31 @@ module KKM
     LIBFPTR_DT_PATTERN_PARAMETERS               = 56
     LIBFPTR_DT_LAST_DATA_TYPE                   = 57
 
-    LIBFPTR_FNDT_TAG_VALUE                = 0
-    LIBFPTR_FNDT_OFD_EXCHANGE_STATUS      = 1
-    LIBFPTR_FNDT_FN_INFO                  = 2
-    LIBFPTR_FNDT_LAST_REGISTRATION        = 3
-    LIBFPTR_FNDT_LAST_RECEIPT             = 4
-    LIBFPTR_FNDT_LAST_DOCUMENT            = 5
-    LIBFPTR_FNDT_SHIFT                    = 6
-    LIBFPTR_FNDT_FFD_VERSIONS             = 7
-    LIBFPTR_FNDT_VALIDITY                 = 8
-    LIBFPTR_FNDT_REG_INFO                 = 9
-    LIBFPTR_FNDT_DOCUMENTS_COUNT_IN_SHIFT = 10
-    LIBFPTR_FNDT_ERRORS                   = 11
-    LIBFPTR_FNDT_TICKET_BY_DOC_NUMBER     = 12
-    LIBFPTR_FNDT_DOCUMENT_BY_NUMBER       = 13
-    LIBFPTR_FNDT_REGISTRATION_TLV         = 14
-    LIBFPTR_FNDT_ERROR_DETAIL             = 15
-    LIBFPTR_FNDT_VALIDITY_DAYS            = 16
-    LIBFPTR_FNDT_FREE_MEMORY              = 17
-    LIBFPTR_FNDT_TOTALS                   = 18
-    LIBFPTR_FNDT_ISM_ERRORS               = 19
-    LIBFPTR_FNDT_ISM_EXCHANGE_STATUS      = 20
-    LIBFPTR_FNDT_MARKING_MODE_STATUS      = 21
-    LIBFPTR_FNDT_CHECK_MARK_TIME          = 22
-    LIBFPTR_FNDT_RECEIPT_SIZE             = 23
+    LIBFPTR_FNDT_TAG_VALUE                      = 0
+    LIBFPTR_FNDT_OFD_EXCHANGE_STATUS            = 1
+    LIBFPTR_FNDT_FN_INFO                        = 2
+    LIBFPTR_FNDT_LAST_REGISTRATION              = 3
+    LIBFPTR_FNDT_LAST_RECEIPT                   = 4
+    LIBFPTR_FNDT_LAST_DOCUMENT                  = 5
+    LIBFPTR_FNDT_SHIFT                          = 6
+    LIBFPTR_FNDT_FFD_VERSIONS                   = 7
+    LIBFPTR_FNDT_VALIDITY                       = 8
+    LIBFPTR_FNDT_REG_INFO                       = 9
+    LIBFPTR_FNDT_DOCUMENTS_COUNT_IN_SHIFT       = 10
+    LIBFPTR_FNDT_ERRORS                         = 11
+    LIBFPTR_FNDT_TICKET_BY_DOC_NUMBER           = 12
+    LIBFPTR_FNDT_DOCUMENT_BY_NUMBER             = 13
+    LIBFPTR_FNDT_REGISTRATION_TLV               = 14
+    LIBFPTR_FNDT_ERROR_DETAIL                   = 15
+    LIBFPTR_FNDT_VALIDITY_DAYS                  = 16
+    LIBFPTR_FNDT_FREE_MEMORY                    = 17
+    LIBFPTR_FNDT_TOTALS                         = 18
+    LIBFPTR_FNDT_ISM_ERRORS                     = 19
+    LIBFPTR_FNDT_ISM_EXCHANGE_STATUS            = 20
+    LIBFPTR_FNDT_MARKING_MODE_STATUS            = 21
+    LIBFPTR_FNDT_CHECK_MARK_TIME                = 22
+    LIBFPTR_FNDT_RECEIPT_SIZE                   = 23
+    LIBFPTR_FNDT_FNM_KEYS_UPDATE_DATE_TIME      = 24
 
     LIBFPTR_FFD_UNKNOWN                       = 0
     LIBFPTR_FFD_1_0                           = 100
@@ -1267,6 +1297,14 @@ module KKM
     LIBFPTR_PLATFORM_25      = 25
     LIBFPTR_PLATFORM_50      = 50
 
+    LIBFPTR_RPF_ELECTRONIC_AND_PRINT        = 0
+    LIBFPTR_RPF_ONLY_ELECTRONIC             = 1
+    LIBFPTR_RPF_ONLY_PRINT                  = 2
+
+    LIBFPTR_MERGE_RECEIPT_NO                = 0,
+    LIBFPTR_MERGE_RECEIPT_ALL               = 1
+    LIBFPTR_MERGE_RECEIPT_MARK_ONLY         = 2
+
     LIBFPTR_UC_OTHERS = 4294967295
 
     DEFAULT_BUFF_SIZE = 512
@@ -1520,5 +1558,6 @@ module KKM
     attach_function :is_param_available, :libfptr_is_param_available, [:handle, :int], :int
     attach_function :error_recommendation, :libfptr_error_recommendation, [:handle, :pointer, :int], :int
     attach_function :find_document_in_journal, :libfptr_find_document_in_journal, [:handle], :int
+    attach_function :run_fn_command, :libfptr_run_fn_command, [:handle], :int
   end
 end

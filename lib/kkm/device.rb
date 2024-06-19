@@ -773,6 +773,10 @@ module KKM
       raise_error if @ifptr.find_document_in_journal != LibFptr::LIBFPTR_OK
     end
 
+    def run_fn_command
+      raise_error if @ifptr.run_fn_command != LibFptr::LIBFPTR_OK
+    end
+
     def raise_error
       raise DeviceError.new(error_code, error_description, device_name)
     end

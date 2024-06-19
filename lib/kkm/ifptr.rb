@@ -731,6 +731,10 @@ module KKM
       LibFptr.find_document_in_journal(@interface)
     end
 
+    def run_fn_command
+      LibFptr.run_fn_command(@interface)
+    end
+
     private_class_method def self.finalize(pointer)
       interface_pointer = FFI::MemoryPointer.new(:pointer)
       interface_pointer.write_pointer(pointer)
