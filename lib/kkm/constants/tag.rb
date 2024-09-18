@@ -85,6 +85,12 @@ module KKM
       POSITION_ORIGIN_COUNTY_CODE         = 1230
       POSITION_CUSTOMS_DECLARATION_NUMBER = 1231
       BUYER_INFO                          = 1256
+      POSITION_INDUSTRY_INFO              = 1260
+      INDUSTRY_INFO                       = 1261
+      FOIV_ID                             = 1262
+      GROUNDS_DOCUMENT_DATE               = 1263
+      GROUNDS_DOCUMENT_NUMBER             = 1264
+      INDUSTRY_INFO_VALUE                 = 1265
       USAGE_CONDITIONS                    = 1290
       POSITION_MARKING_CODE_EAN13         = 1302
       MARKING_ONLINE_RESULT               = 2005

@@ -1,3 +1,13 @@
+## 0.5.2
+
+- Добавлены константы для тегов  
+    1260 - `KKM::Constants::Tag::POSITION_INDUSTRY_INFO`  
+    1261 - `KKM::Constants::Tag::INDUSTRY_INFO`  
+    1262 - `KKM::Constants::Tag::FOIV_ID`  
+    1263 - `KKM::Constants::Tag::GROUNDS_DOCUMENT_DATE`  
+    1264 - `KKM::Constants::Tag::GROUNDS_DOCUMENT_NUMBE`  
+    1265 - `KKM::Constants::Tag::INDUSTRY_INFO_VALUE`  
+    
 ## 0.5.1
 
 - Убрать приватность методов `KKM::Device.close_receipt` `KKM::Device.cancel_receipt`
