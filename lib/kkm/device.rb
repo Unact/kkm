@@ -153,6 +153,10 @@ module KKM
       raise_error if @ifptr.set_settings(settings) != LibFptr::LIBFPTR_OK
     end
 
+    def validate_merge_position_support
+      @ifptr.validate_merge_position_support
+    end
+
     def get_settings
       @ifptr.get_settings
     end

@@ -285,6 +285,7 @@ module KKM
     LIBFPTR_ERROR_MINIPOS_NO_FILE_ON_USB_STORE            = 275
     LIBFPTR_ERROR_MINIPOS_NO_AGENT_FISCAL_PROPERTY        = 276
     LIBFPTR_ERROR_NO_CONNECTION_WITH_PRINT_SERVICE        = 277
+    LIBFPTR_ERROR_UNIVERSAL_COUNTERS_ARE_DISABLED         = 278
 
     LIBFPTR_ERROR_BASE_MARKING                            = 400
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS     = 401
@@ -729,6 +730,11 @@ module KKM
     LIBFPTR_PARAM_FRAM_EEPROM_NAME                                  = 65928
     LIBFPTR_PARAM_FRAM_EEPROM_SIZE                                  = 65929
     LIBFPTR_PARAM_MARKING_NOT_FORM_REQUEST                          = 65930
+    LIBFPTR_PARAM_PRINT_ENTITY_TYPE                                 = 65931
+    LIBFPTR_PARAM_RECEIPT_TAPE_PATH_LENGTH                          = 65932
+    LIBFPTR_PARAM_LICENSE_INDEX                                     = 65933
+    LIBFPTR_PARAM_IS_LICENSE_VALID                                  = 65934
+    LIBFPTR_PARAM_RECEIPT_PERCENTAGE_SIZE                           = 65935
 
     LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = 65931
     LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65932
@@ -765,7 +771,7 @@ module KKM
     LIBFPTR_MODEL_ATOL_22V2F                  = 95
     LIBFPTR_MODEL_ATOL_42FA                   = 70
     LIBFPTR_MODEL_ALLIANCE_20F                = 50
-    LIBFPTR_MODEL_ATOL_STB_6                  = 94
+    LIBFPTR_MODEL_ATOL_STB_6F                 = 94
     LIBFPTR_MODEL_ATOL_35F                    = 97
     LIBFPTR_MODEL_ATOL_27_FP7_F               = 99
 
@@ -803,6 +809,7 @@ module KKM
     LIBFPTR_SETTING_AUTO_TIME_SYNC_TIME              = "AutoTimeSyncTime"
     LIBFPTR_SETTING_LOG_PATHS                        = "LogPaths"
     LIBFPTR_SETTING_MERGE_RECEIPT_ITEMS              = "MergeReceiptItems"
+    LIBFPTR_SETTING_LICENSE                          = "Licenses"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -950,7 +957,11 @@ module KKM
     LIBFPTR_TAX_NO         = 6
     LIBFPTR_TAX_VAT20      = 7
     LIBFPTR_TAX_VAT120     = 8
-    LIBFPTR_TAX_INVALID    = 9
+    LIBFPTR_TAX_VAT5       = 9
+    LIBFPTR_TAX_VAT7       = 10
+    LIBFPTR_TAX_VAT105     = 11
+    LIBFPTR_TAX_VAT107     = 12
+    LIBFPTR_TAX_INVALID    = 13
 
     LIBFPTR_EXTERNAL_DEVICE_DISPLAY         = 0
     LIBFPTR_EXTERNAL_DEVICE_PINPAD          = 1
@@ -1014,7 +1025,8 @@ module KKM
     LIBFPTR_DT_MCU_TEMPERATURE                  = 54
     LIBFPTR_DT_AVAILABLE_OPERATIONS             = 55
     LIBFPTR_DT_PATTERN_PARAMETERS               = 56
-    LIBFPTR_DT_LAST_DATA_TYPE                   = 57
+    LIBFPTR_DT_RECEIPT_TAPE_PATH_LENGTH         = 57
+    LIBFPTR_DT_LAST_DATA_TYPE                   = 58
 
     LIBFPTR_FNDT_TAG_VALUE                      = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS            = 1
@@ -1040,7 +1052,8 @@ module KKM
     LIBFPTR_FNDT_MARKING_MODE_STATUS            = 21
     LIBFPTR_FNDT_CHECK_MARK_TIME                = 22
     LIBFPTR_FNDT_RECEIPT_SIZE                   = 23
-    LIBFPTR_FNDT_FNM_KEYS_UPDATE_DATE_TIME      = 24
+    LIBFPTR_FNDT_NOTIFICATION_STATUS            = 24
+    LIBFPTR_FNDT_FNM_KEYS_UPDATE_DATE_TIME      = 25
 
     LIBFPTR_FFD_UNKNOWN                       = 0
     LIBFPTR_FFD_1_0                           = 100
@@ -1301,9 +1314,33 @@ module KKM
     LIBFPTR_RPF_ONLY_ELECTRONIC             = 1
     LIBFPTR_RPF_ONLY_PRINT                  = 2
 
-    LIBFPTR_MERGE_RECEIPT_NO                = 0,
+    LIBFPTR_MERGE_RECEIPT_NO                = 0
     LIBFPTR_MERGE_RECEIPT_ALL               = 1
     LIBFPTR_MERGE_RECEIPT_MARK_ONLY         = 2
+
+    LIBFPTR_LIC_BASE_FISCAL                 = 1
+    LIBFPTR_LIC_WRITE_FW                    = 2
+    LIBFPTR_LIC_TAX_20                      = 3
+    LIBFPTR_LIC_FFD_1_1                     = 4
+    LIBFPTR_LIC_MARK_CODE                   = 5
+    LIBFPTR_LIC_EXT_FUNC                    = 6
+    LIBFPTR_LIC_TEMPLATE                    = 7
+    LIBFPTR_LIC_PRINT_BMP                   = 8
+    LIBFPTR_LIC_DISABLE_PF                  = 9
+    LIBFPTR_LIC_FFD_1_2                     = 10
+    LIBFPTR_LIC_FR_WORK                     = 11
+    LIBFPTR_LIC_WEB                         = 12
+    LIBFPTR_LIC_FFD_1_1_2                   = 13
+    LIBFPTR_LIC_TEST_LAB                    = 14
+    LIBFPTR_LIC_WEB_REQ                     = 15
+    LIBFPTR_LIC_RELESE                      = 16
+    LIBFPTR_LIC_EXT_PRINT                   = 17
+    LIBFPTR_LIC_OSU                         = 18
+    LIBFPTR_LIC_EXT_FISCAL                  = 19
+
+    LIBFPTR_PET_STRINGS                     = 0
+    LIBFPTR_PET_PICTURES                    = 1
+    LIBFPTR_PET_FISCAL_DOCUMENT             = 2
 
     LIBFPTR_UC_OTHERS = 4294967295
 
@@ -1311,7 +1348,7 @@ module KKM
 
     lib_path = File.expand_path("#{__dir__}/../../ext/kkm/lib/bins")
 
-    ffi_lib ["#{lib_path}/fptr10", "#{lib_path}/libfptr10.so", "#{lib_path}/fptr10.dll", "fptr10", "libfptr10"]
+    ffi_lib ["#{lib_path}/libfptr10.dylib", "#{lib_path}/libfptr10.so", "#{lib_path}/fptr10.dll", "fptr10", "libfptr10"]
 
     typedef :pointer, :handle
 
@@ -1320,6 +1357,12 @@ module KKM
     attach_function :create, :libfptr_create, [:handle], :int
     attach_function :create_with_id, :libfptr_create_with_id, [:handle, :pointer], :int
     attach_function :set_settings, :libfptr_set_settings, [:handle, :pointer], :int
+
+    attach_function :validate_merge_position_support,
+                    :libfptr_validate_merge_position_support,
+                    [:handle, :pointer, :int],
+                    :int
+
     attach_function :destroy, :libfptr_destroy, [:handle], :void
     attach_function :get_settings, :libfptr_get_settings, [:handle, :pointer, :int], :int
     attach_function :get_single_setting, :libfptr_get_single_setting, [:handle, :pointer, :pointer, :int], :int

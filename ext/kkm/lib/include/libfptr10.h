@@ -322,6 +322,7 @@ enum libfptr_error
     LIBFPTR_ERROR_MINIPOS_NO_FILE_ON_USB_STORE,
     LIBFPTR_ERROR_MINIPOS_NO_AGENT_FISCAL_PROPERTY,
     LIBFPTR_ERROR_NO_CONNECTION_WITH_PRINT_SERVICE,
+    LIBFPTR_ERROR_UNIVERSAL_COUNTERS_ARE_DISABLED,
 
     LIBFPTR_ERROR_BASE_MARKING = 400,
     LIBFPTR_ERROR_MARKING_CODE_VALIDATION_IN_PROGRESS,
@@ -768,6 +769,11 @@ enum libfptr_param
     LIBFPTR_PARAM_FRAM_EEPROM_NAME,
     LIBFPTR_PARAM_FRAM_EEPROM_SIZE,
     LIBFPTR_PARAM_MARKING_NOT_FORM_REQUEST,
+    LIBFPTR_PARAM_PRINT_ENTITY_TYPE,
+    LIBFPTR_PARAM_RECEIPT_TAPE_PATH_LENGTH,
+    LIBFPTR_PARAM_LICENSE_INDEX,
+    LIBFPTR_PARAM_IS_LICENSE_VALID,
+    LIBFPTR_PARAM_RECEIPT_PERCENTAGE_SIZE,
 
     // certification
     LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME,
@@ -808,7 +814,7 @@ enum libfptr_model
     LIBFPTR_MODEL_ATOL_22v2F = 95,
     LIBFPTR_MODEL_ATOL_42FA = 70,
     LIBFPTR_MODEL_ALLIANCE_20F = 50,
-    LIBFPTR_MODEL_ATOL_STB_6 = 94,
+    LIBFPTR_MODEL_ATOL_STB_6F = 94,
     LIBFPTR_MODEL_ATOL_35F = 97,
     // certification
     LIBFPTR_MODEL_ATOL_27_FP7_F = 99,
@@ -882,6 +888,7 @@ enum libfptr_model
 
 #define LIBFPTR_SETTING_MERGE_RECEIPT_ITEMS L"MergeReceiptItems"
 
+#define LIBFPTR_SETTING_LICENSE L"Licenses"
 
 enum libfptr_port
 {
@@ -1088,6 +1095,10 @@ enum libfptr_tax_type
     LIBFPTR_TAX_NO,
     LIBFPTR_TAX_VAT20,
     LIBFPTR_TAX_VAT120,
+    LIBFPTR_TAX_VAT5,
+    LIBFPTR_TAX_VAT7,
+    LIBFPTR_TAX_VAT105,
+    LIBFPTR_TAX_VAT107,
     LIBFPTR_TAX_INVALID,
 };
 
@@ -1158,6 +1169,7 @@ enum libfptr_kkt_data_type
     LIBFPTR_DT_MCU_TEMPERATURE,
     LIBFPTR_DT_AVAILABLE_OPERATIONS,
     LIBFPTR_DT_PATTERN_PARAMETERS,
+    LIBFPTR_DT_RECEIPT_TAPE_PATH_LENGTH,
     LIBFPTR_DT_LAST_DATA_TYPE
 };
 
@@ -1187,6 +1199,7 @@ enum libfptr_fn_data_type
     LIBFPTR_FNDT_MARKING_MODE_STATUS,
     LIBFPTR_FNDT_CHECK_MARK_TIME,
     LIBFPTR_FNDT_RECEIPT_SIZE,
+    LIBFPTR_FNDT_NOTIFICATION_STATUS,
 
     // certification
     LIBFPTR_FNDT_FNM_KEYS_UPDATE_DATE_TIME
@@ -1576,6 +1589,36 @@ enum libfptr_merge_receipt_items
     LIBFPTR_MERGE_RECEIPT_MARK_ONLY,
 };
 
+enum libfptr_license
+{
+    LIBFPTR_LIC_BASE_FISCAL = 1,
+    LIBFPTR_LIC_WRITE_FW,
+    LIBFPTR_LIC_TAX_20,
+    LIBFPTR_LIC_FFD_1_1,
+    LIBFPTR_LIC_MARK_CODE,
+    LIBFPTR_LIC_EXT_FUNC,
+    LIBFPTR_LIC_TEMPLATE,
+    LIBFPTR_LIC_PRINT_BMP,
+    LIBFPTR_LIC_DISABLE_PF,
+    LIBFPTR_LIC_FFD_1_2,
+    LIBFPTR_LIC_FR_WORK,
+    LIBFPTR_LIC_WEB,
+    LIBFPTR_LIC_FFD_1_1_2,
+    LIBFPTR_LIC_TEST_LAB,
+    LIBFPTR_LIC_WEB_REQ,
+    LIBFPTR_LIC_RELESE,
+    LIBFPTR_LIC_EXT_PRINT,
+    LIBFPTR_LIC_OSU,
+    LIBFPTR_LIC_EXT_FISCAL,
+};
+
+enum libfptr_print_entity_type
+{
+    LIBFPTR_PET_STRINGS = 0,
+    LIBFPTR_PET_PICTURES,
+    LIBFPTR_PET_FISCAL_DOCUMENT,
+};
+
 #define LIBFPTR_UC_OTHERS 4294967295
 
 
@@ -1589,6 +1632,9 @@ DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_create_with_id(libfptr_handle *ha
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_set_settings(libfptr_handle handle,
                                                             const wchar_t *settings);
+
+DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_validate_merge_position_support(libfptr_handle handle,
+                                                                               wchar_t *value, int size);
 
 DTOX_SHARED_EXPORT void DTOX_SHARED_CCA libfptr_destroy(libfptr_handle *handle);
 
@@ -1740,7 +1786,6 @@ DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_query_data(libfptr_handle handle)
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_cash_income(libfptr_handle handle);
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_cash_outcome(libfptr_handle handle);
-
 
 DTOX_SHARED_EXPORT int DTOX_SHARED_CCA libfptr_open_receipt(libfptr_handle handle);
 

@@ -27,29 +27,20 @@ module KKM
       LibFptr.set_settings(@interface, LibC.string_to_wchar_pointer(JSON.generate(settings)))
     end
 
+    def validate_merge_position_support
+      get_str_out { |ptr, size| LibFptr.validate_merge_position_support(@interface, ptr, size) }
+    end
+
     def get_settings
-      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
-      size = LibFptr.get_settings(@interface, ptr, ptr.size)
+      output = get_str_out { |ptr, size| LibFptr.get_settings(@interface, ptr, size) }
 
-      if size > ptr.size
-        ptr = FFI::MemoryPointer.new(:pointer, size)
-        LibFptr.get_settings(@interface, ptr, size)
-      end
-
-      JSON.parse(LibC.wchar_pointer_to_string(ptr))
+      JSON.parse(output)
     end
 
     def get_single_setting(key)
       ptr_key = LibC.string_to_wchar_pointer(key)
-      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
-      size = LibFptr.get_single_setting(@interface, ptr_key, ptr, ptr.size)
 
-      if size > ptr.size
-        ptr = FFI::MemoryPointer.new(:pointer, size)
-        LibFptr.get_single_setting(@interface, ptr_key, ptr, size)
-      end
-
-      LibC.wchar_pointer_to_string(ptr)
+      get_str_out { |ptr, size| LibFptr.get_single_setting(@interface, ptr_key, ptr, size) }
     end
 
     def set_single_setting(key, value)
@@ -79,15 +70,7 @@ module KKM
     end
 
     def error_description
-      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
-      size = LibFptr.error_description(@interface, ptr, ptr.size)
-
-      if size > ptr.size
-        ptr = FFI::MemoryPointer.new(:pointer, size)
-        LibFptr.error_description(@interface, ptr, size)
-      end
-
-      LibC.wchar_pointer_to_string(ptr)
+      get_str_out { |ptr, size| LibFptr.error_description(@interface, ptr, size) }
     end
 
     def reset_error
@@ -191,15 +174,7 @@ module KKM
     end
 
     def get_param_str(param_id)
-      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
-      size = LibFptr.get_param_str(@interface, param_id, ptr, ptr.size)
-
-      if size > ptr.size
-        ptr = FFI::MemoryPointer.new(:pointer, size)
-        LibFptr.get_param_str(@interface, param_id, ptr, size)
-      end
-
-      LibC.wchar_pointer_to_string(ptr)
+      get_str_out { |ptr, size| LibFptr.get_param_str(@interface, param_id, ptr, size) }
     end
 
     def get_param_datetime(param_id)
@@ -716,15 +691,7 @@ module KKM
     # rubocop:enable Naming/PredicateName
 
     def error_recommendation
-      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
-      size = LibFptr.error_recommendation(@interface, ptr, ptr.size)
-
-      if size > ptr.size
-        ptr = FFI::MemoryPointer.new(:pointer, size)
-        LibFptr.error_recommendation(@interface, ptr, size)
-      end
-
-      LibC.wchar_pointer_to_string(ptr)
+      get_str_out { |ptr, size| LibFptr.error_recommendation(@interface, ptr, size) }
     end
 
     def find_document_in_journal
@@ -742,6 +709,18 @@ module KKM
     end
 
     private
+
+    def get_str_out
+      ptr = FFI::MemoryPointer.new(:pointer, LibFptr::DEFAULT_BUFF_SIZE)
+      size = yield ptr, ptr.size
+
+      return LibC.wchar_pointer_to_string(ptr) if size <= ptr.size
+
+      ptr = FFI::MemoryPointer.new(:pointer, size)
+      yield ptr, size
+
+      LibC.wchar_pointer_to_string(ptr)
+    end
 
     def set_method_bool(method_prefix, param_id, value)
       LibFptr.send("#{method_prefix}_bool", @interface, param_id, value ? 1 : 0)
