@@ -735,12 +735,17 @@ module KKM
     LIBFPTR_PARAM_LICENSE_INDEX                                     = 65933
     LIBFPTR_PARAM_IS_LICENSE_VALID                                  = 65934
     LIBFPTR_PARAM_RECEIPT_PERCENTAGE_SIZE                           = 65935
+    LIBFPTR_PARAM_ADDITIONAL_ATTRIBUTE                              = 65936
+    LIBFPTR_PARAM_ADDITIONAL_DATA                                   = 65937
+    LIBFPTR_PARAM_ELECTRONICALLY_PAYMENT_METHOD                     = 65938
+    LIBFPTR_PARAM_ELECTRONICALLY_ID                                 = 65939
+    LIBFPTR_PARAM_ELECTRONICALLY_ADD_INFO                           = 65940
 
-    LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = 65931
-    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65932
-    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = 65933
+    LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = 65941
+    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65942
+    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = 65943
 
-    LIBFPTR_PARAM_LAST                                              = 65934
+    LIBFPTR_PARAM_LAST                                              = 65944
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -768,6 +773,7 @@ module KKM
     LIBFPTR_MODEL_ATOL_PT_5F                  = 89
     LIBFPTR_MODEL_KAZNACHEY_FA                = 76
     LIBFPTR_MODEL_ATOL_1F                     = 93
+    LIBFPTR_MODEL_ATOL_2F                     = 96
     LIBFPTR_MODEL_ATOL_22V2F                  = 95
     LIBFPTR_MODEL_ATOL_42FA                   = 70
     LIBFPTR_MODEL_ALLIANCE_20F                = 50
@@ -810,6 +816,8 @@ module KKM
     LIBFPTR_SETTING_LOG_PATHS                        = "LogPaths"
     LIBFPTR_SETTING_MERGE_RECEIPT_ITEMS              = "MergeReceiptItems"
     LIBFPTR_SETTING_LICENSE                          = "Licenses"
+    LIBFPTR_SETTING_TIME_ZONE                        = "TimeZone"
+    LIBFPTR_SETTING_REMOTE_TIMEOUT                   = "RemoteTimeout"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -947,6 +955,7 @@ module KKM
     LIBFPTR_PT_8              = 7
     LIBFPTR_PT_9              = 8
     LIBFPTR_PT_10             = 9
+    LIBFPTR_PT_ADD_INFO       = 10
 
     LIBFPTR_TAX_DEPARTMENT = 0
     LIBFPTR_TAX_VAT18      = 1
@@ -1206,6 +1215,8 @@ module KKM
     LIBFPTR_MES_DRY_FOR_SALE        = 2
     LIBFPTR_MES_PIECE_RETURN        = 3
     LIBFPTR_MES_DRY_RETURN          = 4
+    LIBFPTR_MES_PIECE_FOR_SALE      = 5
+    LIBFPTR_MES_DRY_SOLD            = 6
     LIBFPTR_MES_UNCHANGED           = 255
 
     LIBFPTR_IU_PIECE                = 0
@@ -1341,6 +1352,20 @@ module KKM
     LIBFPTR_PET_STRINGS                     = 0
     LIBFPTR_PET_PICTURES                    = 1
     LIBFPTR_PET_FISCAL_DOCUMENT             = 2
+
+    LIBFPTR_TIME_ZONE_NO                    = -1
+    LIBFPTR_TIME_ZONE_DEVICE                = 0
+    LIBFPTR_TIME_ZONE_1                     = 1
+    LIBFPTR_TIME_ZONE_2                     = 2
+    LIBFPTR_TIME_ZONE_3                     = 3
+    LIBFPTR_TIME_ZONE_4                     = 4
+    LIBFPTR_TIME_ZONE_5                     = 5
+    LIBFPTR_TIME_ZONE_6                     = 6
+    LIBFPTR_TIME_ZONE_7                     = 7
+    LIBFPTR_TIME_ZONE_8                     = 8
+    LIBFPTR_TIME_ZONE_9                     = 9
+    LIBFPTR_TIME_ZONE_10                    = 10
+    LIBFPTR_TIME_ZONE_11                    = 11
 
     LIBFPTR_UC_OTHERS = 4294967295
 
