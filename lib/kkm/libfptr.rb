@@ -740,12 +740,16 @@ module KKM
     LIBFPTR_PARAM_ELECTRONICALLY_PAYMENT_METHOD                     = 65938
     LIBFPTR_PARAM_ELECTRONICALLY_ID                                 = 65939
     LIBFPTR_PARAM_ELECTRONICALLY_ADD_INFO                           = 65940
+    LIBFPTR_PARAM_PRINTER_DRIVER_NAME                               = 65941
+    LIBFPTR_PARAM_SCRIPT_NUMBER                                     = 65942
+    LIBFPTR_PARAM_SCRIPT_EMBEDDED                                   = 65943
+    LIBFPTR_PARAM_OVERWRITE                                         = 65944
 
-    LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = 65941
-    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65942
-    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = 65943
+    LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = LIBFPTR_PARAM_FIRST + 900
+    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65946
+    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = 65947
 
-    LIBFPTR_PARAM_LAST                                              = 65944
+    LIBFPTR_PARAM_LAST                                              = 65948
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
@@ -818,6 +822,7 @@ module KKM
     LIBFPTR_SETTING_LICENSE                          = "Licenses"
     LIBFPTR_SETTING_TIME_ZONE                        = "TimeZone"
     LIBFPTR_SETTING_REMOTE_TIMEOUT                   = "RemoteTimeout"
+    LIBFPTR_SETTING_USE_COMMODITY_NAME_FOR_ADVANCE   = "UseCommodityNameForAdvance"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -944,6 +949,7 @@ module KKM
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_NUMBERS    = 21
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_SHIFTS     = 22
     LIBFPTR_RT_CLOSE_SHIFT_REPORTS            = 23
+    LIBFPTR_RT_CLICHE_PICTURES                = 24
 
     LIBFPTR_PT_CASH           = 0
     LIBFPTR_PT_ELECTRONICALLY = 1
@@ -970,7 +976,9 @@ module KKM
     LIBFPTR_TAX_VAT7       = 10
     LIBFPTR_TAX_VAT105     = 11
     LIBFPTR_TAX_VAT107     = 12
-    LIBFPTR_TAX_INVALID    = 13
+    LIBFPTR_TAX_VAT22      = 13
+    LIBFPTR_TAX_VAT122     = 14
+    LIBFPTR_TAX_INVALID    = 15
 
     LIBFPTR_EXTERNAL_DEVICE_DISPLAY         = 0
     LIBFPTR_EXTERNAL_DEVICE_PINPAD          = 1
@@ -1119,6 +1127,7 @@ module KKM
     LIBFPTR_RT_FN_UNSENT_DOCS_COUNTERS = 9
     LIBFPTR_RT_SETTINGS                = 10
     LIBFPTR_RT_RUN_COMMAND             = 11
+    LIBFPTR_RT_SCRIPTS_INFO            = 12
 
     LIBFPTR_NT_FURS      = 0
     LIBFPTR_NT_MEDICINES = 1
