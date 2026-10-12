@@ -744,18 +744,45 @@ module KKM
     LIBFPTR_PARAM_SCRIPT_NUMBER                                     = 65942
     LIBFPTR_PARAM_SCRIPT_EMBEDDED                                   = 65943
     LIBFPTR_PARAM_OVERWRITE                                         = 65944
+    LIBFPTR_PARAM_COMMUNICATION_CHANNEL                             = 65945
+    LIBFPTR_PARAM_ERRORS_COUNT                                      = 65946
+    LIBFPTR_PARAM_MAX_CONNECTION_TIME                               = 65947
+    LIBFPTR_PARAM_AVERAGE_CONNECTION_TIME                           = 65948
+    LIBFPTR_PARAM_MAX_RECEPTION_RATE                                = 65949
+    LIBFPTR_PARAM_MIN_RECEPTION_RATE                                = 65950
+    LIBFPTR_PARAM_AVERAGE_RECEPTION_RATE                            = 65951
+    LIBFPTR_PARAM_MAX_TRANSFER_RATE                                 = 65952
+    LIBFPTR_PARAM_MIN_TRANSFER_RATE                                 = 65953
+    LIBFPTR_PARAM_AVERAGE_TRANSFER_RATE                             = 65954
+    LIBFPTR_PARAM_POWER_OVER_VOLTAGE                                = 65955
+    LIBFPTR_PARAM_PAPER_JAM                                         = 65956
+    LIBFPTR_PARAM_PRINT_IN_PROGRESS                                 = 65957
+    LIBFPTR_PARAM_TICKET_IN_PRESENTER                               = 65958
+    LIBFPTR_PARAM_VPAPER_NEAR_END                                   = 65959
+    LIBFPTR_PARAM_FEED_LINE                                         = 65960
+    LIBFPTR_PARAM_FEED_FORM                                         = 65961
+    LIBFPTR_PARAM_PRINTER_IN_TEST_MODE                              = 65962
+    LIBFPTR_PARAM_PRINTER_SERVICE_CONNECTION_LOST                   = 65963
+    LIBFPTR_PARAM_UNIT_VARIANT                                      = 65964
+
+    LIBFPTR_PARAM_REQUEST_DATA                                      = LIBFPTR_PARAM_FIRST + 800
+    LIBFPTR_PARAM_ENCRYPT_DATA                                      = LIBFPTR_PARAM_FIRST + 801
+    LIBFPTR_PARAM_DECRYPT_DATA                                      = LIBFPTR_PARAM_FIRST + 802
+    LIBFPTR_PARAM_CHANNEL_TYPE                                      = LIBFPTR_PARAM_FIRST + 803
+    LIBFPTR_PARAM_EXTRA_DATA                                        = LIBFPTR_PARAM_FIRST + 804
 
     LIBFPTR_PARAM_LAST_SUCCESS_FNM_UPDATE_KEYS_DATE_TIME            = LIBFPTR_PARAM_FIRST + 900
-    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = 65946
-    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = 65947
+    LIBFPTR_PARAM_LAST_ATTEMPTION_FNM_UPDATE_KEYS_DATE_TIME         = LIBFPTR_PARAM_FIRST + 901
+    LIBFPTR_PARAM_COUNT_ATTEMPTION_FNM_UPDATE_KEYS                  = LIBFPTR_PARAM_FIRST + 902
 
-    LIBFPTR_PARAM_LAST                                              = 65948
+    LIBFPTR_PARAM_LAST                                              = 66439
 
     LIBFPTR_MODEL_UNKNOWN                     = 0
     LIBFPTR_MODEL_ATOL_AUTO                   = 500
     LIBFPTR_MODEL_ATOL_11F                    = 67
     LIBFPTR_MODEL_ATOL_15F                    = 78
     LIBFPTR_MODEL_ATOL_20F                    = 81
+    LIBFPTR_MODEL_ATOL_20v2F                  = 5
     LIBFPTR_MODEL_ATOL_22F                    = 63
     LIBFPTR_MODEL_ATOL_25F                    = 57
     LIBFPTR_MODEL_ATOL_27F                    = 87
@@ -823,6 +850,7 @@ module KKM
     LIBFPTR_SETTING_TIME_ZONE                        = "TimeZone"
     LIBFPTR_SETTING_REMOTE_TIMEOUT                   = "RemoteTimeout"
     LIBFPTR_SETTING_USE_COMMODITY_NAME_FOR_ADVANCE   = "UseCommodityNameForAdvance"
+    LIBFPTR_SETTING_GRPC_SERVER_PORT                 = "GrpcServerPort"
 
     LIBFPTR_PORT_COM       = 0
     LIBFPTR_PORT_USB       = 1
@@ -950,6 +978,7 @@ module KKM
     LIBFPTR_RT_JOURNAL_DOCUMENT_BY_SHIFTS     = 22
     LIBFPTR_RT_CLOSE_SHIFT_REPORTS            = 23
     LIBFPTR_RT_CLICHE_PICTURES                = 24
+    LIBFPTR_RT_COMMUNICATION_CHANNEL_STAT     = 25
 
     LIBFPTR_PT_CASH           = 0
     LIBFPTR_PT_ELECTRONICALLY = 1
@@ -1043,7 +1072,9 @@ module KKM
     LIBFPTR_DT_AVAILABLE_OPERATIONS             = 55
     LIBFPTR_DT_PATTERN_PARAMETERS               = 56
     LIBFPTR_DT_RECEIPT_TAPE_PATH_LENGTH         = 57
-    LIBFPTR_DT_LAST_DATA_TYPE                   = 58
+    LIBFPTR_DT_COMMUNICATION_CHANNEL_STAT       = 58
+    LIBFPTR_DT_PRINTER_STATUS                   = 59
+    LIBFPTR_DT_LAST_DATA_TYPE                   = 60
 
     LIBFPTR_FNDT_TAG_VALUE                      = 0
     LIBFPTR_FNDT_OFD_EXCHANGE_STATUS            = 1
@@ -1376,13 +1407,18 @@ module KKM
     LIBFPTR_TIME_ZONE_10                    = 10
     LIBFPTR_TIME_ZONE_11                    = 11
 
+    LIBFPTR_CT_CONTROLLED                   = 0
+    LIBFPTR_CT_TRUSTED                      = 1
+
+    LIBFPTR_CT_OFD                          = 0
+    LIBFPTR_CT_ISM                          = 1
+    LIBFPTR_CT_AS                           = 2
+
     LIBFPTR_UC_OTHERS = 4294967295
 
     DEFAULT_BUFF_SIZE = 512
 
-    lib_path = File.expand_path("#{__dir__}/../../ext/kkm/lib/bins")
-
-    ffi_lib ["#{lib_path}/libfptr10.dylib", "#{lib_path}/libfptr10.so", "#{lib_path}/fptr10.dll", "fptr10", "libfptr10"]
+    ffi_lib %w[fptr10 libfptr10]
 
     typedef :pointer, :handle
 
@@ -1635,6 +1671,9 @@ module KKM
     attach_function :is_param_available, :libfptr_is_param_available, [:handle, :int], :int
     attach_function :error_recommendation, :libfptr_error_recommendation, [:handle, :pointer, :int], :int
     attach_function :find_document_in_journal, :libfptr_find_document_in_journal, [:handle], :int
+    attach_function :form_pirs_request, :libfptr_form_pirs_request, [:handle], :int
+    attach_function :pirs_data, :libfptr_pirs_data, [:handle], :int
     attach_function :run_fn_command, :libfptr_run_fn_command, [:handle], :int
+    attach_function :service_call, :libfptr_service_call, [:handle], :string
   end
 end

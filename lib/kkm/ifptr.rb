@@ -698,8 +698,20 @@ module KKM
       LibFptr.find_document_in_journal(@interface)
     end
 
+    def form_pirs_request
+      LibFptr.form_pirs_request(@interface)
+    end
+
+    def pirs_data
+      LibFptr.pirs_data(@interface)
+    end
+
     def run_fn_command
       LibFptr.run_fn_command(@interface)
+    end
+
+    def service_call
+      LibFptr.service_call(@interface)
     end
 
     private_class_method def self.finalize(pointer)
