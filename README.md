@@ -2,9 +2,9 @@
 
 Библиотека на руби для работы с ККТ/ККМ [АТОЛ](https://integration.atol.ru/)  
 Полная имплементация ДТО 10 с использованием Ruby FFI  
-Текущая имплементированная версия [ДТО](https://github.com/Unact/kkm/blob/master/lib/kkm/version.rb#L5)
+Имплементирует интерфейс[ДТО](https://github.com/Unact/kkm/blob/master/support/libfptr10.h)  
 
-**Требует предварительно установленный ДТО 10**  
+**Требуется предварительно установленный ДТО 10**  
 
 ## Работа с гемом
 
@@ -13,88 +13,86 @@
 При таком использовании, вся ответственность о работе с памятью возлагается на создаваемое решение.  
 Если не хочется вручную работать с памятью, то следует использовать [`KKM::IFptr`](https://github.com/Unact/kkm/blob/master/lib/kkm/ifptr.rb)  
 
-Также в геме присутсвует возможность работа с ККТ в упрощенном формате, для этого необходимо создать экземпляр [`KKM::Device`](https://github.com/Unact/kkm/blob/master/lib/kkm/device.rb)  
-
 ### Примеры
 
 #### Общее
 
 В результате выполнения ККТ(по настройкам соединения) должен распечатать текст "OMG"
-При этом будет автоматически включен ККТ и по завершению выключен  
 
 ```ruby
-  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
-  device = KKM::Device.new(settings)
-  text_line = KKM::Models::TextLine.new("OMG")
+  require "json"
 
-  device.work do
-    device.print_text_line(text_line)
-  end
-```
+  settings = { "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" }.to_json
+  fptr = IFptr.new
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.set_settings(settings) != KKM::LibFptr::LIBFPTR_OK
 
-Если нужен контроль над включением/выключением ККТ, то следует использовать методы `turn_on`/`turn_off`
-Результат должен быть таким же, как и пример выше
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.open != KKM::LibFptr::LIBFPTR_OK
 
-```ruby
-  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
-  device = KKM::Device.new(settings)
-  text_line = KKM::Models::TextLine.new("OMG")
+  fptr.set_param_str(KKM::LibFptr::LIBFPTR_PARAM_TEXT, "OMG")
+  fptr.set_param_int(KKM::LibFptr::LIBFPTR_PARAM_ALIGNMENT, KKM::LibFptr::LIBFPTR_ALIGNMENT_CENTER)
+  fptr.set_param_int(KKM::LibFptr::LIBFPTR_PARAM_TEXT_WRAP, KKM::LibFptr::LIBFPTR_TW_WORDS)
 
-  device.turn_on
-  device.print_text_line(text_line)
-  device.turn_off
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.print_text != KKM::LibFptr::LIBFPTR_OK
+
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.close != KKM::LibFptr::LIBFPTR_OK
 ```
 
 #### Закрытие смены
 
 ```ruby
-  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
-  device = KKM::Device.new(settings)
-  operator = KKM::Models::Operator.new("Тест")
+  require "json"
 
-  device.work do
-    device.close_operator_shift(operator, electronically: true)
-  end
-```
+  settings = { "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" }.to_json
+  fptr = IFptr.new
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.set_settings(settings) != KKM::LibFptr::LIBFPTR_OK
 
-#### Печать отчета
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.open != KKM::LibFptr::LIBFPTR_OK
 
-```ruby
-  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
-  device = KKM::Device.new(settings)
-  report = KKM::Models::Report.new(KKM::LibFptr::LIBFPTR_RT_X)
+  fptr.set_param_str(1021, "Тест")
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.operator_login != KKM::LibFptr::LIBFPTR_OK
 
-  device.work do
-    device.print_report(report)
-  end
+  fptr.set_param_bool(KKM::LibFptr::LIBFPTR_PARAM_REPORT_ELECTRONICALLY, true)
+  fptr.set_param_int(KKM::LibFptr::LIBFPTR_PARAM_REPORT_TYPE, KKM::LibFptr::LIBFPTR_RT_CLOSE_SHIFT)
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.report != KKM::LibFptr::LIBFPTR_OK
+
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.close != KKM::LibFptr::LIBFPTR_OK
 ```
 
 #### Печать чека
 
 ```ruby
-  settings = KKM::Models::Settings.new({ "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" })
-  device = KKM::Device.new(settings)
-  receipt = KKM::Models::Receipt.new
-  receipt.type = KKM::LibFptr::LIBFPTR_RT_SELL
-  receipt.positions = [
-    KKM::Models::Receipt::Position.new(
-      "Тест",
-      10,
-      1,
-      KKM::LibFptr::LIBFPTR_TAX_NO,
-      [KKM::Models::Tag.new(KKM::Constants::Tag::POSITION_TYPE, KKM::Constants::PositionType::GOODS)]
-    )
-  ]
-  receipt.payments = [KKM::Models::Receipt::Payment.new(10, KKM::LibFptr::LIBFPTR_PT_CASH)]
-  receipt.operator = KKM::Models::Operator.new("Тест")
-  receipt.tags = [KKM::Models::Tag.new(KKM::Constants::Tag::BUYER_ADDRESS, "example@example.com")]
+  require "json"
+
+  settings = { "IPAddress" => "0.0.0.0", "IPPort" => "5555", "Model" => "63", "Port" => "2" }.to_json
+  fptr = IFptr.new
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.set_settings(settings) != KKM::LibFptr::LIBFPTR_OK
+
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.open != KKM::LibFptr::LIBFPTR_OK
+
+  fptr.set_param_str(1021, "Тест")
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.operator_login != KKM::LibFptr::LIBFPTR_OK
+
+  fptr.set_param_str(1008, "example@example.com")
+  fptr.set_param_int(KKM::LibFptr::LIBFPTR_PARAM_RECEIPT_TYPE, KKM::LibFptr::LIBFPTR_RT_SELL)
+  fptr.set_param_bool(KKM::LibFptr::LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true)
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.open_receipt != KKM::LibFptr::LIBFPTR_OK
+
+  fptr.set_param_str(KKM::LibFptr::LIBFPTR_PARAM_COMMODITY_NAME, "Тест")
+  fptr.set_param_double(KKM::LibFptr::LIBFPTR_PARAM_PRICE, 10)
+  fptr.set_param_double(KKM::LibFptr::LIBFPTR_PARAM_QUANTITY, 1)
+  fptr.set_param_int(KKM::LibFptr::LIBFPTR_PARAM_TAX_TYPE, KKM::LibFptr::LIBFPTR_TAX_NO)
+  fptr.set_param_int(1212, 1)
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.registration != KKM::LibFptr::LIBFPTR_OK
   
-  device.work do
-    device.print_receipt(receipt, electronically: true)
-  end
+  fptr.set_param_double(KKM::LibFptr::LIBFPTR_PARAM_PAYMENT_SUM, 10)
+  fptr.set_param_int(KKM::LibFptr::LIBFPTR_PARAM_PAYMENT_TYPE, KKM::LibFptr::LIBFPTR_PT_CASH)
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.payment != KKM::LibFptr::LIBFPTR_OK
+
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.close_receipt != KKM::LibFptr::LIBFPTR_OK
+
+  raise "#{fptr.error_code} [#{fptr.error_description}]" if fptr.close != KKM::LibFptr::LIBFPTR_OK
 ```
 
 ## Доработка гема
 
-Все новые методы, следует реализовывать в классе [`KKM::Device`](https://github.com/Unact/kkm/blob/master/lib/kkm/device.rb)  
-При обновлении версии ДТО, все новые методы добавляемые ДТО, следует добавлять в классы `KKM::LibFptr`, `KKM::IFptr`, `KKM::Device`
+При обновлении версии ДТО, все новые методы добавляемые ДТО, необходимо добавить в классы `KKM::LibFptr`, `KKM::IFptr`

@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   s.metadata    = { "rubygems_mfa_required" => "true" }
 
   s.add_dependency "ffi"
-  s.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
+  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0")
 end

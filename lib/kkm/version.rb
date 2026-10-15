@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
 module KKM
-  VERSION = "0.5.6"
-  DTO_DRIVER_VERSION = "10.10.9.20"
+  VERSION = "0.6.0"
 end

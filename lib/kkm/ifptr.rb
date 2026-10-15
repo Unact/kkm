@@ -1,17 +1,20 @@
 # frozen_string_literal: true
 
-require "json"
 require "time"
 require "bigdecimal"
 
 module KKM
   # Ruby implementation of LibFptr
   class IFptr
+    attr_reader :id
+
     def initialize(id = nil)
+      @id = id
+
       interface_pointer = FFI::MemoryPointer.new(:pointer)
 
-      if id
-        LibFptr.create_with_id(interface_pointer, LibC.string_to_wchar_pointer(id))
+      if @id
+        LibFptr.create_with_id(interface_pointer, LibC.string_to_wchar_pointer(@id))
       else
         LibFptr.create(interface_pointer)
       end
@@ -19,12 +22,12 @@ module KKM
       @interface = FFI::AutoPointer.new(interface_pointer.get_pointer(0), self.class.method(:finalize))
     end
 
-    def version
+    def get_version_string
       LibFptr.get_version_string
     end
 
     def set_settings(settings)
-      LibFptr.set_settings(@interface, LibC.string_to_wchar_pointer(JSON.generate(settings)))
+      LibFptr.set_settings(@interface, LibC.string_to_wchar_pointer(settings))
     end
 
     def validate_merge_position_support
@@ -32,9 +35,7 @@ module KKM
     end
 
     def get_settings
-      output = get_str_out { |ptr, size| LibFptr.get_settings(@interface, ptr, size) }
-
-      JSON.parse(output)
+      get_str_out { |ptr, size| LibFptr.get_settings(@interface, ptr, size) }
     end
 
     def get_single_setting(key)
@@ -101,10 +102,6 @@ module KKM
       set_method_bytearray(:set_param, param_id, value)
     end
 
-    def set_param(param_id, value)
-      set_method(:set_param, param_id, value)
-    end
-
     def set_user_param_bool(param_id, value)
       set_method_bool(:set_user_param, param_id, value)
     end
@@ -129,10 +126,6 @@ module KKM
       set_method_bytearray(:set_user_param, param_id, value)
     end
 
-    def set_user_param(param_id, value)
-      set_method(:set_user_param, param_id, value)
-    end
-
     def set_non_printable_param_bool(param_id, value)
       set_method_bool(:set_non_printable_param, param_id, value)
     end
@@ -155,10 +148,6 @@ module KKM
 
     def set_non_printable_param_bytearray(param_id, value)
       set_method_bytearray(:set_non_printable_param, param_id, value)
-    end
-
-    def set_non_printable_param(param_id, value)
-      set_method(:set_non_printable_param, param_id, value)
     end
 
     def get_param_bool(param_id)
@@ -766,25 +755,6 @@ module KKM
       ptr.put_array_of_uchar(0, value)
 
       LibFptr.send("#{method_prefix}_bytearray", @interface, param_id, ptr, value.size)
-    end
-
-    def set_method(method_prefix, param_id, value)
-      case value
-      when Integer
-        set_method_int(method_prefix, param_id, value)
-      when TrueClass, FalseClass
-        set_method_bool(method_prefix, param_id, value)
-      when Float, BigDecimal
-        set_method_double(method_prefix, param_id, value)
-      when Array
-        set_method_bytearray(method_prefix, param_id, value)
-      when Time, DateTime
-        set_method_datetime(method_prefix, param_id, value)
-      when String
-        set_method_str(method_prefix, param_id, value)
-      else
-        raise TypeError, "Invalid 'param' type #{value.class}"
-      end
     end
   end
 end
