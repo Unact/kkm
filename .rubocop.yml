@@ -2,7 +2,7 @@
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 3.0
 
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
